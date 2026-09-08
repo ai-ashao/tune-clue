@@ -1,8 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "shiplean",
+  "name": "tune-clue",
   "compatibility_date": "2026-08-06",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
-  "vars": { "SHIPLEAN_SANDBOX": "false" }
+  "vars": {
+    "SHIPLEAN_SANDBOX": "false"
+  }
 }

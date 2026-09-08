@@ -65,13 +65,20 @@ export const saasSiteNavigation: SiteNavigationConfig = {
 }
 
 export const toolSiteNavigation: SiteNavigationConfig = {
-  guidesPlacement: 'header',
+  guidesPlacement: 'none',
   header: {
-    links: ['tools', 'guides'],
-    toolsHref: { en: '/#tool', 'zh-CN': '/zh#tool' },
+    links: ['tools'],
+    toolsHref: { en: '/#tool' },
   },
   footer: {
-    toolGroups: [],
+    toolGroups: [
+      {
+        id: 'song-finders',
+        title: { en: 'Song Finders' },
+        toolIds: ['video-song-finder'],
+        maxItems: 4,
+      },
+    ],
     secondaryPages: ['about', 'contact', 'privacy', 'terms'],
   },
 }

@@ -36,18 +36,14 @@ describe('locale-aware route registry', () => {
   })
 
   it('creates reciprocal hreflang only for real localized equivalents', () => {
-    expect(hreflangAlternates('home')).toEqual([
-      { locale: 'en', path: '/' },
-      { locale: 'zh-CN', path: '/zh' },
-      { locale: 'x-default', path: '/' },
-    ])
+    expect(hreflangAlternates('home')).toEqual([])
     expect(hreflangAlternates('pricing')).toEqual([])
     expect(hreflangAlternates('guides')).toEqual([])
   })
 
   it('offers a locale switch only when the current page has an equivalent route', () => {
-    expect(localeAlternatesForPath('/')).toMatchObject([{ locale: 'zh-CN', path: '/zh' }])
-    expect(localeAlternatesForPath('/zh')).toMatchObject([{ locale: 'en', path: '/' }])
+    expect(localeAlternatesForPath('/')).toEqual([])
+    expect(localeAlternatesForPath('/zh')).toEqual([])
     expect(localeAlternatesForPath('/pricing')).toEqual([])
     expect(localeAlternatesForPath('/missing')).toEqual([])
   })
@@ -80,12 +76,10 @@ describe('locale-aware route registry', () => {
     expect(messageShape(productHomeMessages['zh-CN'])).toEqual(messageShape(productHomeMessages.en))
   })
 
-  it('keeps localized route files as thin wrappers around one shared page component', () => {
+  it('keeps the shipped home route as a thin wrapper around the shared page component', () => {
     const englishRoute = readFileSync('src/routes/index.tsx', 'utf8')
-    const chineseRoute = readFileSync('src/routes/zh.index.tsx', 'utf8')
 
     expect(englishRoute).toContain('<ProductHome locale="en" />')
-    expect(chineseRoute).toContain('<ProductHome locale="zh-CN" />')
   })
 })
 

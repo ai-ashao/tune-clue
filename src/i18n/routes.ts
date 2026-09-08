@@ -28,7 +28,7 @@ const pricingIndexable = productSurfaceEnabled('pricing')
 const guidesIndexable = productSurfaceEnabled('guides')
 
 const staticPages: PublicPageRoute[] = [
-  { id: 'home', indexable: true, paths: { en: '/', 'zh-CN': '/zh' } },
+  { id: 'home', indexable: true, paths: { en: '/' } },
   { id: 'pricing', indexable: pricingIndexable, paths: { en: '/pricing' } },
   { id: 'guides', indexable: guidesIndexable, paths: { en: '/guides' } },
   { id: 'about', indexable: true, paths: { en: '/about' } },

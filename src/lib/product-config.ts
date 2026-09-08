@@ -11,30 +11,18 @@ export type ProductConfig = {
   starter: {
     showPreviewBanner: boolean
   }
-  /**
-   * Optional surface overrides.
-   *
-   * SaaS defaults Pricing + App on; Tool defaults them off.
-   * Guides default off for both modes so ShipLean starter guidance never becomes
-   * indexable product content by accident.
-   */
   surfaces?: Partial<Record<ProductSurface, boolean>>
 }
 
-/**
- * ShipLean's runtime is a product template, not the ShipLean marketing website.
- * Change this file first when adapting the repository into a real product.
- */
 export const productConfig: ProductConfig = {
-  mode: 'saas',
+  mode: 'tool',
   brand: {
-    name: 'Starter Product',
-    mark: 'SP',
-    description:
-      'A focused product starter with typed routes, shared UI, and repository-wide verification.',
+    name: 'TuneClue',
+    mark: 'TC',
+    description: 'Find the song playing in a video or supported social-video link.',
   },
   starter: {
-    showPreviewBanner: true,
+    showPreviewBanner: false,
   },
 }
 

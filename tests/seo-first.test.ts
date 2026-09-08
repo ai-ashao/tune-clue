@@ -75,6 +75,7 @@ describe('Tool SEO Brief contract', () => {
   it('blocks indexable Guides while starter guide slugs remain', () => {
     const config = {
       ...productConfig,
+      mode: 'saas',
       surfaces: {
         ...productConfig.surfaces,
         guides: true,

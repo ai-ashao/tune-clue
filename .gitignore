@@ -1,6 +1,8 @@
 node_modules/
 .output/
 dist/
+playwright-report/
+test-results/
 .wrangler/
 .gstack/
 research/

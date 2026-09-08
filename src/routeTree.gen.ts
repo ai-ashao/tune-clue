@@ -13,18 +13,20 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as TiktokSongFinderRouteImport } from './routes/tiktok-song-finder'
 import { Route as ToolReferenceRouteImport } from './routes/tool-reference'
 import { Route as ToolReferenceUploadRouteImport } from './routes/tool-reference-upload'
 import { Route as ApiHealthRouteImport } from './routes/api.health'
+import { Route as ApiRecognizeRouteImport } from './routes/api.recognize'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
-import { Route as ZhIndexRouteImport } from './routes/zh.index'
 import { Route as ApiSandboxSessionRouteImport } from './routes/api.sandbox.session'
 
 const IndexRoute = IndexRouteImport.update({
@@ -45,6 +47,11 @@ const ContactRoute = ContactRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdentifyRoute = IdentifyRouteImport.update({
+  id: '/identify',
+  path: '/identify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -77,6 +84,11 @@ const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   path: '/terms-of-service',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TiktokSongFinderRoute = TiktokSongFinderRouteImport.update({
+  id: '/tiktok-song-finder',
+  path: '/tiktok-song-finder',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolReferenceRoute = ToolReferenceRouteImport.update({
   id: '/tool-reference',
   path: '/tool-reference',
@@ -92,6 +104,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
   path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRecognizeRoute = ApiRecognizeRouteImport.update({
+  id: '/api/recognize',
+  path: '/api/recognize',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
@@ -100,11 +117,6 @@ const GuidesIndexRoute = GuidesIndexRouteImport.update({
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/guides/$slug',
   path: '/guides/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ZhIndexRoute = ZhIndexRouteImport.update({
-  id: '/zh/',
-  path: '/zh/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSandboxSessionRoute = ApiSandboxSessionRouteImport.update({
@@ -118,18 +130,20 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/identify': typeof IdentifyRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/tiktok-song-finder': typeof TiktokSongFinderRoute
   '/tool-reference': typeof ToolReferenceRoute
   '/tool-reference-upload': typeof ToolReferenceUploadRoute
   '/api/health': typeof ApiHealthRoute
+  '/api/recognize': typeof ApiRecognizeRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides/': typeof GuidesIndexRoute
-  '/zh/': typeof ZhIndexRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
 }
 export interface FileRoutesByTo {
@@ -137,18 +151,20 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/identify': typeof IdentifyRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/tiktok-song-finder': typeof TiktokSongFinderRoute
   '/tool-reference': typeof ToolReferenceRoute
   '/tool-reference-upload': typeof ToolReferenceUploadRoute
   '/api/health': typeof ApiHealthRoute
+  '/api/recognize': typeof ApiRecognizeRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides': typeof GuidesIndexRoute
-  '/zh': typeof ZhIndexRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
 }
 export interface FileRoutesById {
@@ -157,18 +173,20 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/identify': typeof IdentifyRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/tiktok-song-finder': typeof TiktokSongFinderRoute
   '/tool-reference': typeof ToolReferenceRoute
   '/tool-reference-upload': typeof ToolReferenceUploadRoute
   '/api/health': typeof ApiHealthRoute
+  '/api/recognize': typeof ApiRecognizeRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides/': typeof GuidesIndexRoute
-  '/zh/': typeof ZhIndexRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
 }
 export interface FileRouteTypes {
@@ -178,18 +196,20 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/dashboard'
+    | '/identify'
     | '/login'
     | '/pricing'
     | '/privacy-policy'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/tiktok-song-finder'
     | '/tool-reference'
     | '/tool-reference-upload'
     | '/api/health'
+    | '/api/recognize'
     | '/guides/$slug'
     | '/guides/'
-    | '/zh/'
     | '/api/sandbox/session'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,18 +217,20 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/dashboard'
+    | '/identify'
     | '/login'
     | '/pricing'
     | '/privacy-policy'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/tiktok-song-finder'
     | '/tool-reference'
     | '/tool-reference-upload'
     | '/api/health'
+    | '/api/recognize'
     | '/guides/$slug'
     | '/guides'
-    | '/zh'
     | '/api/sandbox/session'
   id:
     | '__root__'
@@ -216,18 +238,20 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/dashboard'
+    | '/identify'
     | '/login'
     | '/pricing'
     | '/privacy-policy'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/tiktok-song-finder'
     | '/tool-reference'
     | '/tool-reference-upload'
     | '/api/health'
+    | '/api/recognize'
     | '/guides/$slug'
     | '/guides/'
-    | '/zh/'
     | '/api/sandbox/session'
   fileRoutesById: FileRoutesById
 }
@@ -236,18 +260,20 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  IdentifyRoute: typeof IdentifyRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  TiktokSongFinderRoute: typeof TiktokSongFinderRoute
   ToolReferenceRoute: typeof ToolReferenceRoute
   ToolReferenceUploadRoute: typeof ToolReferenceUploadRoute
   ApiHealthRoute: typeof ApiHealthRoute
+  ApiRecognizeRoute: typeof ApiRecognizeRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
-  ZhIndexRoute: typeof ZhIndexRoute
   ApiSandboxSessionRoute: typeof ApiSandboxSessionRoute
 }
 
@@ -279,6 +305,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/identify': {
+      id: '/identify'
+      path: '/identify'
+      fullPath: '/identify'
+      preLoaderRoute: typeof IdentifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -323,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsOfServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tiktok-song-finder': {
+      id: '/tiktok-song-finder'
+      path: '/tiktok-song-finder'
+      fullPath: '/tiktok-song-finder'
+      preLoaderRoute: typeof TiktokSongFinderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tool-reference': {
       id: '/tool-reference'
       path: '/tool-reference'
@@ -344,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/recognize': {
+      id: '/api/recognize'
+      path: '/api/recognize'
+      fullPath: '/api/recognize'
+      preLoaderRoute: typeof ApiRecognizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/': {
       id: '/guides/'
       path: '/guides'
@@ -356,13 +403,6 @@ declare module '@tanstack/react-router' {
       path: '/guides/$slug'
       fullPath: '/guides/$slug'
       preLoaderRoute: typeof GuidesSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/zh/': {
-      id: '/zh/'
-      path: '/zh'
-      fullPath: '/zh/'
-      preLoaderRoute: typeof ZhIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/sandbox/session': {
@@ -380,18 +420,20 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  IdentifyRoute: IdentifyRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  TiktokSongFinderRoute: TiktokSongFinderRoute,
   ToolReferenceRoute: ToolReferenceRoute,
   ToolReferenceUploadRoute: ToolReferenceUploadRoute,
   ApiHealthRoute: ApiHealthRoute,
+  ApiRecognizeRoute: ApiRecognizeRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
-  ZhIndexRoute: ZhIndexRoute,
   ApiSandboxSessionRoute: ApiSandboxSessionRoute,
 }
 export const routeTree = rootRouteImport

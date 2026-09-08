@@ -25,7 +25,7 @@ export const legalProfile = defineLegalProfile({
     fallbackSiteUrl: starterFallbackSiteUrl,
   }),
   effectiveDate: '2026-09-03',
-  lastUpdated: '2026-09-03',
+  lastUpdated: '2026-09-08',
   governingLaw: 'the laws applicable where the product operator is established',
   features: {
     analytics,
@@ -50,6 +50,14 @@ export const legalProfile = defineLegalProfile({
           'only as long as needed to resolve the request and meet applicable legal obligations.',
         recipients: [operatorName],
       },
+      {
+        data: 'A short audio sample created from the point the user selects in a local media file.',
+        purpose: 'identify the song and return available track metadata and listening links.',
+        legalBasis: 'providing the song-recognition request initiated by the user.',
+        retention:
+          'subject to the recognition provider terms and the operator configuration; this must be verified before launch.',
+        recipients: ['AudD'],
+      },
       ...(analytics
         ? [
             {
@@ -67,6 +75,10 @@ export const legalProfile = defineLegalProfile({
       {
         name: 'Cloudflare',
         purpose: 'website hosting, request delivery, security, and operational infrastructure',
+      },
+      {
+        name: 'AudD',
+        purpose: 'music recognition for the short audio sample submitted by the user',
       },
     ],
     internationalTransfers:
