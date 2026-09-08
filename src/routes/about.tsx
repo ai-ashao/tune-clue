@@ -1,15 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { InformationPage } from '@/components/information-page'
 import { localizedPageHead } from '@/lib/seo'
-import { site } from '@/lib/site'
 
 export const Route = createFileRoute('/about')({
   head: () =>
     localizedPageHead({
       pageId: 'about',
       locale: 'en',
-      title: 'About Us',
-      description: `Learn what ${site.name} is built to help its users accomplish.`,
+      title: 'About TuneClue',
+      description: 'Learn how TuneClue helps identify songs from local video and audio clips.',
     }),
   component: AboutPage,
 })
@@ -18,17 +17,24 @@ function AboutPage() {
   return (
     <InformationPage
       eyebrow="About"
-      title={`Tell users why ${site.name} should exist.`}
-      description="This is neutral starter copy. Replace it with the real product story, operator details, and support commitments before launch."
+      title="A focused song finder for video clips."
+      description="TuneClue helps identify the music playing in a local video or audio clip without turning the site into a downloader or media library."
     >
       <p>
-        Explain the user problem, the product point of view, and the outcome your product is
-        designed to deliver. Keep the story specific enough that a visitor can understand why this
-        product is different.
+        Choose a local clip, select the point where the music is clearest, and TuneClue prepares a
+        short audio sample for music recognition. The original local file is not uploaded in full.
       </p>
       <p>
-        Before launch, replace every starter statement on this page with facts about the real
-        product and the real operator.
+        TuneClue does not provide song downloads, TikTok video downloads, or a public media mirror.
+        Social-video link support is only published after the corresponding extraction flow is
+        verified in production.
+      </p>
+      <p>
+        For support or privacy questions, contact{' '}
+        <a className="underline underline-offset-4" href="mailto:support@tuneclue.com">
+          support@tuneclue.com
+        </a>
+        .
       </p>
     </InformationPage>
   )

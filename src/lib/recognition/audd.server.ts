@@ -4,10 +4,17 @@ import type { RecognitionResult } from './types'
 const AUDD_ENDPOINT = 'https://api.audd.io/'
 const MAX_STANDARD_SAMPLE_BYTES = 10 * 1024 * 1024
 
+export class AudDConfigurationError extends Error {
+  constructor() {
+    super('AudD is not configured.')
+    this.name = 'AudDConfigurationError'
+  }
+}
+
 function auddToken() {
   const token = process.env.AUDD_API_TOKEN?.trim()
   if (!token) {
-    throw new Error('AUDD_API_TOKEN is not configured.')
+    throw new AudDConfigurationError()
   }
   return token
 }

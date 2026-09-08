@@ -18,7 +18,7 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
     primaryKeyword: 'tiktok song finder',
     title: 'TikTok Song Finder – Find a Song from a TikTok Link',
     description:
-      'Paste a public TikTok video link to identify the song, artist, and available listening links. TuneClue keeps this page noindex until the TikTok extractor launch gate passes.',
+      'Free online TikTok song finder for public video links. Paste a TikTok URL to identify the track and artist. No installation or signup required.',
     path: '/tiktok-song-finder',
     indexable: tuneClueFlags.tiktok,
     applicationCategory: 'UtilitiesApplication',
@@ -27,7 +27,7 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
     eyebrow: 'TikTok Song Finder',
     title: 'Find the Song in a TikTok',
     description:
-      'Paste a public TikTok link. TuneClue identifies the track after the TikTok extractor launch gate is enabled.',
+      'Free online TikTok song finder for public video links. Paste a TikTok URL to identify the track and artist. No installation or signup required.',
   },
   experience: {
     free: true,
@@ -111,9 +111,29 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
 }
 
 export function TikTokSongFinderPage() {
+  if (!tuneClueFlags.tiktok) {
+    return (
+      <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          TikTok Song Finder
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+          TikTok link recognition is not available yet.
+        </h1>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+          TuneClue only publishes a social-link finder after its extraction flow is verified in the
+          production runtime. You can use the local video and audio song finder now.
+        </p>
+        <a className="mt-6 inline-flex text-sm font-medium underline underline-offset-4" href="/">
+          Use Video Song Finder
+        </a>
+      </main>
+    )
+  }
+
   const structured = buildToolStructuredData(tiktokSongFinderConfig, site)
   return (
-    <div data-tiktok-live={tuneClueFlags.tiktok ? 'true' : 'false'}>
+    <div data-tiktok-live="true">
       <ToolStructuredData items={structured} />
       <ToolLandingPage
         config={tiktokSongFinderConfig}

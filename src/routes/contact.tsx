@@ -1,15 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { InformationPage } from '@/components/information-page'
 import { localizedPageHead } from '@/lib/seo'
-import { site } from '@/lib/site'
 
 export const Route = createFileRoute('/contact')({
   head: () =>
     localizedPageHead({
       pageId: 'contact',
       locale: 'en',
-      title: 'Contact',
-      description: `Find the support details for ${site.name}.`,
+      title: 'Contact TuneClue',
+      description: 'Contact TuneClue for product support, privacy questions, or issue reports.',
     }),
   component: ContactPage,
 })
@@ -18,16 +17,21 @@ function ContactPage() {
   return (
     <InformationPage
       eyebrow="Contact"
-      title="Make support easy to find."
-      description="This is the neutral starter contact page. Replace the guidance below with a real support channel before launch."
+      title="Contact TuneClue"
+      description="Use the support address below for product problems, privacy requests, or incorrect recognition behavior."
     >
       <p>
-        Add the support email, contact form, or community link that users should use for help. Keep
-        the first response path clear and owned by a real person or team.
+        Email{' '}
+        <a className="underline underline-offset-4" href="mailto:support@tuneclue.com">
+          support@tuneclue.com
+        </a>
+        . Include the browser, file type, and the error message you saw when reporting a technical
+        problem. Do not attach copyrighted media unless it is necessary and you have the right to
+        share it.
       </p>
       <p>
-        Align this page with the contact address used by the reviewed Privacy Policy and Terms of
-        Service before production release.
+        TuneClue does not operate a song-download service. Requests for downloadable music files or
+        TikTok video downloads are outside the product scope.
       </p>
     </InformationPage>
   )

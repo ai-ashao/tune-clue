@@ -39,4 +39,28 @@ describe('normalizeAudDResponse', () => {
       }),
     ).toThrow('bad token')
   })
+
+  it('drops unsafe artwork and non-HTTPS listening URLs', () => {
+    expect(
+      normalizeAudDResponse({
+        status: 'success',
+        result: {
+          title: 'Song',
+          artist: 'Artist',
+          song_link: 'javascript:alert(1)',
+          apple_music: {
+            url: 'http://music.apple.com/example',
+            artwork: { url: 'https://attacker.example/cover.jpg' },
+          },
+        },
+      }),
+    ).toMatchObject({
+      status: 'matched',
+      artworkUrl: undefined,
+      links: {
+        appleMusic: undefined,
+        songLink: undefined,
+      },
+    })
+  })
 })

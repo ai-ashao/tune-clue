@@ -17,7 +17,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     primaryKeyword: 'song finder by video',
     title: 'Song Finder by Video – Identify Music from a Clip',
     description:
-      'Find a song from a local video or audio clip. Select the clearest music point and TuneClue identifies the track, artist, and listening links.',
+      'Free online song finder by video. Upload a local clip, choose the clearest music point, and identify the track and artist. No installation or signup required.',
     path: '/',
     indexable: true,
     applicationCategory: 'UtilitiesApplication',
@@ -26,7 +26,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     eyebrow: 'Video Song Finder',
     title: 'Find the Song From a Video',
     description:
-      'Upload a local clip and pick the moment where the music is clearest. TuneClue prepares a short audio sample in your browser and identifies the song.',
+      'Free online song finder for local video and audio clips. Upload a clip, pick the clearest music moment, and TuneClue prepares a short sample for recognition. No installation or signup required.',
   },
   experience: {
     free: true,
@@ -40,7 +40,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
       'Browser-decodable audio',
       'MP4/WebM when your browser can decode the audio track',
     ],
-    maxFileSize: '100 MB',
+    maxFileSize: '40 MB',
     maxFiles: 1,
     other: ['About 10 seconds of audio is sampled for each recognition attempt.'],
   },

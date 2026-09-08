@@ -8,7 +8,6 @@ import {
 import { recognizeAudioSample } from '@/lib/recognition/client'
 import {
   type PendingRecognitionSource,
-  peekPendingRecognitionSource,
   takePendingRecognitionSource,
 } from '@/lib/recognition/pending-source'
 import type { RecognitionResult as RecognitionResultType } from '@/lib/recognition/types'
@@ -16,8 +15,8 @@ import { RecognitionResult } from './recognition-result'
 
 export function IdentifyWorkbench() {
   const positionId = useId()
-  const [source] = useState<PendingRecognitionSource | undefined>(
-    () => peekPendingRecognitionSource() ?? takePendingRecognitionSource(),
+  const [source] = useState<PendingRecognitionSource | undefined>(() =>
+    takePendingRecognitionSource(),
   )
   const [position, setPosition] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -139,8 +138,7 @@ export function IdentifyWorkbench() {
           <p className="text-sm font-medium">TikTok link</p>
           <p className="mt-2 break-all text-sm text-muted-foreground">{source.url}</p>
           <p className="mt-4 text-sm leading-6 text-muted-foreground">
-            The TikTok extractor is intentionally kept behind its launch gate. The SEO page remains
-            noindex until the Cloudflare runtime PoC can resolve public TikTok media reliably.
+            This TikTok request cannot run until TikTok link recognition is enabled.
           </p>
         </section>
       )}

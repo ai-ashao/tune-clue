@@ -70,6 +70,21 @@ for (const viewport of viewports) {
   })
 }
 
+test('local upload reaches the identify workbench with the pending file', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('#tool')).toHaveAttribute('data-mounted', 'true')
+  await page.locator('input[type="file"]').setInputFiles({
+    name: 'known-song-sample.wav',
+    mimeType: 'audio/wav',
+    buffer: Buffer.from('RIFF0000WAVEfmt '),
+  })
+  await page.getByRole('button', { name: 'Find song' }).click()
+
+  await expect(page).toHaveURL(/\/identify$/)
+  await expect(page.getByRole('heading', { level: 1, name: 'Identify this song' })).toBeVisible()
+  await expect(page.getByText('Choose the source again')).toHaveCount(0)
+})
+
 for (const fixture of fixtures) {
   for (const viewport of viewports) {
     test(`${fixture.name} tool first viewport contract at ${viewport.name}`, async ({ page }) => {

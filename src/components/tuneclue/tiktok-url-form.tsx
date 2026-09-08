@@ -14,9 +14,7 @@ export function TikTokUrlForm() {
   async function submit() {
     setError(undefined)
     if (!tuneClueFlags.tiktok) {
-      setError(
-        'TikTok recognition is not live yet. This page remains noindex until the extractor gate passes.',
-      )
+      setError('TikTok link recognition is not available yet.')
       return
     }
 

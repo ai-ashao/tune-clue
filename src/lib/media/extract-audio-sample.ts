@@ -1,8 +1,9 @@
 import { encodeMonoPcm16Wav } from './wav'
 
 const SAMPLE_RATE = 16_000
+const MAX_SAMPLE_SECONDS = 12
 export const DEFAULT_SAMPLE_SECONDS = 10
-export const MAX_LOCAL_FILE_BYTES = 100 * 1024 * 1024
+export const MAX_LOCAL_FILE_BYTES = 40 * 1024 * 1024
 
 export class LocalMediaDecodeError extends Error {
   constructor(message: string) {
@@ -18,7 +19,7 @@ export async function extractAudioSample(
 ): Promise<File> {
   if (file.size <= 0) throw new LocalMediaDecodeError('The selected file is empty.')
   if (file.size > MAX_LOCAL_FILE_BYTES) {
-    throw new LocalMediaDecodeError('Choose a file smaller than 100 MB for this V1 browser flow.')
+    throw new LocalMediaDecodeError('Choose a file smaller than 40 MB for this V1 browser flow.')
   }
 
   const AudioContextClass = window.AudioContext
@@ -29,12 +30,13 @@ export async function extractAudioSample(
   const context = new AudioContextClass()
   try {
     const bytes = await file.arrayBuffer()
-    const decoded = await context.decodeAudioData(bytes.slice(0))
+    const decoded = await context.decodeAudioData(bytes)
 
     const safeStart = Math.max(0, Math.min(startSeconds, Math.max(0, decoded.duration - 0.1)))
+    const requestedDuration = Math.max(0.5, Math.min(durationSeconds, MAX_SAMPLE_SECONDS))
     const safeDuration = Math.max(
       0.5,
-      Math.min(durationSeconds, Math.max(0.5, decoded.duration - safeStart)),
+      Math.min(requestedDuration, Math.max(0.5, decoded.duration - safeStart)),
     )
 
     const frameCount = Math.max(1, Math.ceil(safeDuration * SAMPLE_RATE))
