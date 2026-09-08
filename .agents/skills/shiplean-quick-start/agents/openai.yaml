@@ -1,0 +1,4 @@
+interface:
+  display_name: "ShipLean Quick Start"
+  short_description: "Turn a downloaded ShipLean template into a verified product"
+  default_prompt: "Use $shiplean-quick-start to turn this ShipLean template into my product."

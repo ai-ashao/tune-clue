@@ -1,0 +1,17 @@
+node_modules/
+.output/
+dist/
+.wrangler/
+.gstack/
+research/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Local patch / overlay handoff files are not product source.
+APPLY.md
+DELETE_THESE_FILES.txt
+OVERLAY_MANIFEST.json
+V0.*_MANIFEST.json
+VALIDATION.txt

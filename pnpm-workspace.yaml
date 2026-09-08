@@ -1,0 +1,16 @@
+allowBuilds:
+  esbuild: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - '@tanstack/react-router@1.170.20'
+  - '@tanstack/react-start-client@1.168.18'
+  - '@tanstack/react-start-rsc@0.1.36'
+  - '@tanstack/react-start-server@1.167.25'
+  - '@tanstack/react-start@1.168.37'
+  - '@tanstack/router-core@1.171.17'
+  - '@tanstack/router-generator@1.167.23'
+  - '@tanstack/router-plugin@1.168.25'
+  - '@tanstack/start-client-core@1.170.16'
+  - '@tanstack/start-plugin-core@1.171.28'
+  - '@tanstack/start-server-core@1.169.20'
+  - '@tanstack/start-storage-context@1.167.19'
