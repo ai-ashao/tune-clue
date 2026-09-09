@@ -7,4 +7,17 @@
   "vars": {
     "SHIPLEAN_SANDBOX": "false"
   }
+
+  // Google auth + credits require D1.
+  // Create the database first:
+  //   pnpm exec wrangler d1 create tune-clue
+  // Then add the generated database_id and uncomment:
+  // ,"d1_databases": [
+  //   {
+  //     "binding": "TUNECLUE_DB",
+  //     "database_name": "tune-clue",
+  //     "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+  //     "migrations_dir": "migrations"
+  //   }
+  // ]
 }

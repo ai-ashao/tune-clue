@@ -18,7 +18,7 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
     primaryKeyword: 'tiktok song finder',
     title: 'TikTok Song Finder – Find a Song from a TikTok Link',
     description:
-      'Free online TikTok song finder for public video links. Paste a TikTok URL to identify the track and artist. No installation or signup required.',
+      'Free online TikTok song finder for public video links. Paste a TikTok URL to identify the track and artist. No installation required; Google sign-in is required when recognition runs.',
     path: '/tiktok-song-finder',
     indexable: tuneClueFlags.tiktok,
     applicationCategory: 'UtilitiesApplication',
@@ -27,13 +27,13 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
     eyebrow: 'TikTok Song Finder',
     title: 'Find the Song in a TikTok',
     description:
-      'Free online TikTok song finder for public video links. Paste a TikTok URL to identify the track and artist. No installation or signup required.',
+      'Free online TikTok song finder for public video links. Paste a TikTok URL and sign in with Google when you are ready to run recognition.',
   },
   experience: {
     free: true,
     online: true,
     installationRequired: false,
-    signupRequired: false,
+    signupRequired: true,
     processing: 'server',
   },
   constraints: {

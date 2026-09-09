@@ -1,4 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { getCurrentSessionUser } from '@/lib/auth/session.server'
+import {
+  getCreditBalance,
+  refundRecognitionCredit,
+  reserveRecognitionCredit,
+} from '@/lib/credits/server'
+import { DatabaseConfigurationError } from '@/lib/db.server'
 import { AudDConfigurationError, recognizeWithAudD } from '@/lib/recognition/audd.server'
 import {
   RecognitionRequestBodyTooLargeError,
@@ -24,11 +31,7 @@ export const Route = createFileRoute('/api/recognize')({
         const headerError = validateRecognitionRequestHeaders(request)
         if (headerError) {
           return json(
-            {
-              ok: false,
-              code: headerError.code,
-              message: headerError.message,
-            },
+            { ok: false, code: headerError.code, message: headerError.message },
             { status: headerError.status },
           )
         }
@@ -50,6 +53,34 @@ export const Route = createFileRoute('/api/recognize')({
                 'x-ratelimit-remaining': '0',
               },
             },
+          )
+        }
+
+        let session: Awaited<ReturnType<typeof getCurrentSessionUser>>
+        try {
+          session = await getCurrentSessionUser(request)
+        } catch (error) {
+          if (error instanceof DatabaseConfigurationError) {
+            return json(
+              {
+                ok: false,
+                code: 'auth-unavailable',
+                message: 'Free recognition login is not configured yet.',
+              },
+              { status: 503 },
+            )
+          }
+          throw error
+        }
+
+        if (!session) {
+          return json(
+            {
+              ok: false,
+              code: 'auth-required',
+              message: 'Sign in with Google to unlock free song recognition.',
+            },
+            { status: 401 },
           )
         }
 
@@ -96,7 +127,6 @@ export const Route = createFileRoute('/api/recognize')({
         })
         const form = await boundedRequest.formData().catch(() => null)
         const sample = form?.get('sample')
-
         if (!(sample instanceof File)) {
           return json(
             { ok: false, code: 'invalid-request', message: 'Send an audio sample in "sample".' },
@@ -107,26 +137,33 @@ export const Route = createFileRoute('/api/recognize')({
         const sampleError = await validateRecognitionSample(sample)
         if (sampleError) {
           return json(
+            { ok: false, code: sampleError.code, message: sampleError.message },
+            { status: sampleError.status },
+          )
+        }
+
+        const attemptId = crypto.randomUUID()
+        const reserved = await reserveRecognitionCredit(session.id, attemptId)
+        if (!reserved) {
+          return json(
             {
               ok: false,
-              code: sampleError.code,
-              message: sampleError.message,
+              code: 'insufficient-credits',
+              message: 'No free song searches remain. Earn free credits to continue.',
             },
-            { status: sampleError.status },
+            { status: 402 },
           )
         }
 
         try {
           const result = await recognizeWithAudD(sample)
+          const remainingCredits = await getCreditBalance(session.id)
           return json(
-            { ok: true, result },
-            {
-              headers: {
-                'x-ratelimit-remaining': String(rateLimit.remaining),
-              },
-            },
+            { ok: true, result, remainingCredits },
+            { headers: { 'x-ratelimit-remaining': String(rateLimit.remaining) } },
           )
         } catch (error) {
+          await refundRecognitionCredit(session.id, attemptId).catch(() => undefined)
           if (error instanceof AudDConfigurationError) {
             return json(
               {

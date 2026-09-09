@@ -85,6 +85,22 @@ test('local upload reaches the identify workbench with the pending file', async 
   await expect(page.getByText('Choose the source again')).toHaveCount(0)
 })
 
+test('auth and credit pages fail closed before Google and D1 are configured', async ({ page }) => {
+  const sessionResponse = await page.request.get('/api/auth/session')
+  expect(sessionResponse.ok()).toBe(true)
+  expect(await sessionResponse.json()).toEqual({ available: false, authenticated: false })
+
+  await page.goto('/account')
+  await expect(page.getByRole('heading', { level: 1, name: 'Account' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Continue with Google' })).toHaveCount(0)
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow')
+
+  await page.goto('/earn-credits')
+  await expect(page.getByRole('heading', { level: 1, name: 'Earn free credits' })).toBeVisible()
+  await expect(page.getByText(/not configured in this environment yet/i)).toBeVisible()
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow')
+})
+
 for (const fixture of fixtures) {
   for (const viewport of viewports) {
     test(`${fixture.name} tool first viewport contract at ${viewport.name}`, async ({ page }) => {

@@ -20,7 +20,7 @@ describe('legal page contracts', () => {
 
   it('keeps the checked-in profile structurally valid and reports its launch state', () => {
     expect(validateLegalProfile(legalProfile)).toEqual([])
-    expect(legalProfile.templateKind).toBe('free-local-tool')
+    expect(legalProfile.templateKind).toBe('account-tool-starter')
     const releaseIssues = validateLegalProfile(legalProfile, { requireReviewed: true })
     expect(isLegalProfileLaunchReady(legalProfile)).toBe(releaseIssues.length === 0)
     if (legalProfile.reviewStatus === 'starter') {
@@ -80,6 +80,9 @@ describe('legal page contracts', () => {
       'governing-law',
       'changes-contact',
     ])
+    expect(JSON.stringify(privacy)).toContain('uploads a short audio sample')
+    expect(JSON.stringify(terms)).toContain('account-backed song-recognition tool')
+    expect(JSON.stringify(terms)).not.toContain('account-free tool')
   })
 
   it('keeps optional analytics fully disclosed without adding SaaS sections', () => {

@@ -17,7 +17,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     primaryKeyword: 'song finder by video',
     title: 'Song Finder by Video – Identify Music from a Clip',
     description:
-      'Free online song finder by video. Upload a local clip, choose the clearest music point, and identify the track and artist. No installation or signup required.',
+      'Free online song finder by video. Upload a local clip, choose the clearest music point, and identify the track and artist. No installation required.',
     path: '/',
     indexable: true,
     applicationCategory: 'UtilitiesApplication',
@@ -26,13 +26,13 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     eyebrow: 'Video Song Finder',
     title: 'Find the Song From a Video',
     description:
-      'Free online song finder for local video and audio clips. Upload a clip, pick the clearest music moment, and TuneClue prepares a short sample for recognition. No installation or signup required.',
+      'Free online song finder for local video and audio clips. Upload a clip, pick the clearest music moment, and TuneClue prepares a short sample in your browser. Sign in with Google when you are ready to run your free song search.',
   },
   experience: {
     free: true,
     online: true,
     installationRequired: false,
-    signupRequired: false,
+    signupRequired: true,
     processing: 'hybrid',
   },
   constraints: {
@@ -49,7 +49,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
       'Choose the exact moment where the song is clearest',
       'Send only a short audio sample instead of the full local file',
       'Get title, artist, album, artwork, and available listening links',
-      'Retry another position when a clip has voice-over or noise',
+      'Earn optional free searches through one-time sharing rewards',
     ],
   },
   capabilities: {
@@ -101,9 +101,9 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
           'For the local-file flow, TuneClue prepares a short audio sample in your browser and sends that sample for song identification. The original local file is not uploaded in full.',
       },
       {
-        question: 'Why can a video fail to decode in my browser?',
+        question: 'Do I need an account?',
         answer:
-          'Video containers can use different audio codecs. V1 relies on browser decoding first, so support depends on the codec your browser exposes to the Web Audio decoder.',
+          'You can upload and preview a local clip before signing in. Google sign-in is required when you run a song recognition so free and paid usage can be attached to a recoverable account.',
       },
       {
         question: 'What happens if no song is found?',
@@ -112,9 +112,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
       },
     ],
   },
-  structuredData: {
-    enableFaq: true,
-  },
+  structuredData: { enableFaq: true },
 }
 
 export function TuneClueHome() {

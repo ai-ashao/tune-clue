@@ -1,6 +1,7 @@
 export const legalTemplateVersion = '0.1' as const
 
 export type LegalReviewStatus = 'starter' | 'reviewed'
+export type LegalTemplateKind = 'free-local-tool' | 'account-tool-starter'
 
 export type LegalProvider = {
   name: string
@@ -27,7 +28,7 @@ export type LegalFeatureProfile = {
 
 export type LegalProfile = {
   templateVersion: typeof legalTemplateVersion
-  templateKind: 'free-local-tool'
+  templateKind: LegalTemplateKind
   reviewStatus: LegalReviewStatus
   productName: string
   operatorName: string
@@ -205,6 +206,7 @@ export function isLegalProfileLaunchReady(profile: LegalProfile): boolean {
 }
 
 function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
+  const usesAccounts = profile.templateKind === 'account-tool-starter'
   const analyticsParagraph = profile.features.analytics
     ? `${profile.features.analytics.name} is used only after the visitor grants analytics consent. It processes ${profile.features.analytics.data} for ${profile.features.analytics.purpose}, relies on ${profile.features.analytics.legalBasis}, and retains that information for ${profile.features.analytics.retention}.`
     : 'The Service does not currently use optional analytics.'
@@ -223,7 +225,9 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         title: '1. Scope and operator',
         paragraphs: [
           `${profile.operatorName} operates ${profile.productName} at ${profile.siteUrl}. This policy applies to the website and product experiences that link to it.`,
-          'Supported tool inputs are processed in the browser. The local tool workflow does not intentionally upload or persist those inputs on the operator’s servers.',
+          usesAccounts
+            ? 'Original local media files are processed in the browser and are not uploaded in full. When a user requests recognition, the Service uploads a short audio sample to its recognition provider and stores the account, session, credit, and reward records described below.'
+            : 'Supported tool inputs are processed in the browser. The local tool workflow does not intentionally upload or persist those inputs on the operator’s servers.',
         ],
       },
       {
@@ -256,7 +260,9 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         id: 'retention',
         title: '5. Retention',
         paragraphs: [
-          'Retention is stated for each processing activity above. Browser-local tool inputs are not intentionally retained by the operator.',
+          usesAccounts
+            ? 'Retention is stated for each processing activity above. Original local media files are not intentionally retained by the operator; short audio samples and account-related records follow the disclosed retention rules.'
+            : 'Retention is stated for each processing activity above. Browser-local tool inputs are not intentionally retained by the operator.',
         ],
       },
       {
@@ -270,7 +276,9 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         id: 'children',
         title: '7. Children',
         paragraphs: [
-          `${profile.productName} is intended for a general audience and is not directed to children. The operator does not knowingly collect children’s personal information through the local tool workflow.`,
+          usesAccounts
+            ? `${profile.productName} is intended for a general audience and is not directed to children. The operator does not knowingly create accounts for or collect personal information from children.`
+            : `${profile.productName} is intended for a general audience and is not directed to children. The operator does not knowingly collect children’s personal information through the local tool workflow.`,
         ],
       },
       {
@@ -286,6 +294,11 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
 }
 
 function buildTermsDocument(profile: LegalProfile): LegalDocument {
+  const serviceDescription =
+    profile.templateKind === 'account-tool-starter'
+      ? `${profile.operatorName} provides ${profile.productName} as a free, account-backed song-recognition tool at ${profile.siteUrl}. Original local media is processed in the browser and is not uploaded in full. Recognition uploads only a short audio sample, and the Service stores account, session, credit, and reward records as described in the Privacy Policy.`
+      : `${profile.operatorName} provides ${profile.productName} as a free, account-free tool at ${profile.siteUrl}. Supported tool inputs are processed locally in the browser and are not intentionally uploaded or stored by the operator.`
+
   return {
     kind: 'terms',
     title: 'Terms of Service',
@@ -301,9 +314,7 @@ function buildTermsDocument(profile: LegalProfile): LegalDocument {
       {
         id: 'service',
         title: '2. The service',
-        paragraphs: [
-          `${profile.operatorName} provides ${profile.productName} as a free, account-free tool at ${profile.siteUrl}. Supported tool inputs are processed locally in the browser and are not intentionally uploaded or stored by the operator.`,
-        ],
+        paragraphs: [serviceDescription],
       },
       {
         id: 'acceptable-use',

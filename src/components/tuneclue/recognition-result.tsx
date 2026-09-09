@@ -1,6 +1,9 @@
 import type { RecognitionResult as Result } from '@/lib/recognition/types'
 
-export function RecognitionResult({ result }: Readonly<{ result: Result }>) {
+export function RecognitionResult({
+  result,
+  remainingCredits,
+}: Readonly<{ result: Result; remainingCredits: number }>) {
   if (result.status === 'no-match') {
     return (
       <div className="rounded-xl border bg-card p-5">
@@ -8,6 +11,7 @@ export function RecognitionResult({ result }: Readonly<{ result: Result }>) {
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           Try a different point in the clip where the music is clearer.
         </p>
+        <CreditFooter remainingCredits={remainingCredits} />
       </div>
     )
   }
@@ -67,6 +71,25 @@ export function RecognitionResult({ result }: Readonly<{ result: Result }>) {
       >
         Copy song and artist
       </button>
+
+      <CreditFooter remainingCredits={remainingCredits} />
     </section>
+  )
+}
+
+function CreditFooter({ remainingCredits }: Readonly<{ remainingCredits: number }>) {
+  return (
+    <div className="mt-5 border-t pt-4">
+      <p className="text-xs text-muted-foreground">
+        {remainingCredits} {remainingCredits === 1 ? 'free search' : 'free searches'} remaining.
+      </p>
+      <p className="mt-2 text-sm">
+        Want more free searches?{' '}
+        <a className="font-medium underline underline-offset-4" href="/earn-credits">
+          Open share composers to earn up to 3 free credits
+        </a>
+        .
+      </p>
+    </div>
   )
 }

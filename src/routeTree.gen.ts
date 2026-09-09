@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EarnCreditsRouteImport } from './routes/earn-credits'
 import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -27,7 +29,12 @@ import { Route as ApiHealthRouteImport } from './routes/api.health'
 import { Route as ApiRecognizeRouteImport } from './routes/api.recognize'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
+import { Route as ApiAuthGoogleRouteImport } from './routes/api.auth.google'
+import { Route as ApiAuthLogoutRouteImport } from './routes/api.auth.logout'
+import { Route as ApiAuthSessionRouteImport } from './routes/api.auth.session'
+import { Route as ApiRewardsShareRouteImport } from './routes/api.rewards.share'
 import { Route as ApiSandboxSessionRouteImport } from './routes/api.sandbox.session'
+import { Route as ApiAuthGoogleCallbackRouteImport } from './routes/api.auth.google.callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,6 +46,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -47,6 +59,11 @@ const ContactRoute = ContactRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EarnCreditsRoute = EarnCreditsRouteImport.update({
+  id: '/earn-credits',
+  path: '/earn-credits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IdentifyRoute = IdentifyRouteImport.update({
@@ -119,17 +136,44 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   path: '/guides/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthGoogleRoute = ApiAuthGoogleRouteImport.update({
+  id: '/api/auth/google',
+  path: '/api/auth/google',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
+  id: '/api/auth/logout',
+  path: '/api/auth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
+  id: '/api/auth/session',
+  path: '/api/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRewardsShareRoute = ApiRewardsShareRouteImport.update({
+  id: '/api/rewards/share',
+  path: '/api/rewards/share',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSandboxSessionRoute = ApiSandboxSessionRouteImport.update({
   id: '/api/sandbox/session',
   path: '/api/sandbox/session',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthGoogleCallbackRoute = ApiAuthGoogleCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => ApiAuthGoogleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/earn-credits': typeof EarnCreditsRoute
   '/identify': typeof IdentifyRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
@@ -144,13 +188,20 @@ export interface FileRoutesByFullPath {
   '/api/recognize': typeof ApiRecognizeRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides/': typeof GuidesIndexRoute
+  '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
+  '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/earn-credits': typeof EarnCreditsRoute
   '/identify': typeof IdentifyRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
@@ -165,14 +216,21 @@ export interface FileRoutesByTo {
   '/api/recognize': typeof ApiRecognizeRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides': typeof GuidesIndexRoute
+  '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
+  '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/earn-credits': typeof EarnCreditsRoute
   '/identify': typeof IdentifyRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
@@ -187,15 +245,22 @@ export interface FileRoutesById {
   '/api/recognize': typeof ApiRecognizeRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides/': typeof GuidesIndexRoute
+  '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
+  '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/dashboard'
+    | '/earn-credits'
     | '/identify'
     | '/login'
     | '/pricing'
@@ -210,13 +275,20 @@ export interface FileRouteTypes {
     | '/api/recognize'
     | '/guides/$slug'
     | '/guides/'
+    | '/api/auth/google'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/rewards/share'
     | '/api/sandbox/session'
+    | '/api/auth/google/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/dashboard'
+    | '/earn-credits'
     | '/identify'
     | '/login'
     | '/pricing'
@@ -231,13 +303,20 @@ export interface FileRouteTypes {
     | '/api/recognize'
     | '/guides/$slug'
     | '/guides'
+    | '/api/auth/google'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/rewards/share'
     | '/api/sandbox/session'
+    | '/api/auth/google/callback'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/dashboard'
+    | '/earn-credits'
     | '/identify'
     | '/login'
     | '/pricing'
@@ -252,14 +331,21 @@ export interface FileRouteTypes {
     | '/api/recognize'
     | '/guides/$slug'
     | '/guides/'
+    | '/api/auth/google'
+    | '/api/auth/logout'
+    | '/api/auth/session'
+    | '/api/rewards/share'
     | '/api/sandbox/session'
+    | '/api/auth/google/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  EarnCreditsRoute: typeof EarnCreditsRoute
   IdentifyRoute: typeof IdentifyRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
@@ -274,6 +360,10 @@ export interface RootRouteChildren {
   ApiRecognizeRoute: typeof ApiRecognizeRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  ApiAuthGoogleRoute: typeof ApiAuthGoogleRouteWithChildren
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
+  ApiAuthSessionRoute: typeof ApiAuthSessionRoute
+  ApiRewardsShareRoute: typeof ApiRewardsShareRoute
   ApiSandboxSessionRoute: typeof ApiSandboxSessionRoute
 }
 
@@ -293,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -305,6 +402,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/earn-credits': {
+      id: '/earn-credits'
+      path: '/earn-credits'
+      fullPath: '/earn-credits'
+      preLoaderRoute: typeof EarnCreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/identify': {
@@ -405,6 +509,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/google': {
+      id: '/api/auth/google'
+      path: '/api/auth/google'
+      fullPath: '/api/auth/google'
+      preLoaderRoute: typeof ApiAuthGoogleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/logout': {
+      id: '/api/auth/logout'
+      path: '/api/auth/logout'
+      fullPath: '/api/auth/logout'
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/session': {
+      id: '/api/auth/session'
+      path: '/api/auth/session'
+      fullPath: '/api/auth/session'
+      preLoaderRoute: typeof ApiAuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/rewards/share': {
+      id: '/api/rewards/share'
+      path: '/api/rewards/share'
+      fullPath: '/api/rewards/share'
+      preLoaderRoute: typeof ApiRewardsShareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/sandbox/session': {
       id: '/api/sandbox/session'
       path: '/api/sandbox/session'
@@ -412,14 +544,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSandboxSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/google/callback': {
+      id: '/api/auth/google/callback'
+      path: '/callback'
+      fullPath: '/api/auth/google/callback'
+      preLoaderRoute: typeof ApiAuthGoogleCallbackRouteImport
+      parentRoute: typeof ApiAuthGoogleRoute
+    }
   }
 }
+
+interface ApiAuthGoogleRouteChildren {
+  ApiAuthGoogleCallbackRoute: typeof ApiAuthGoogleCallbackRoute
+}
+
+const ApiAuthGoogleRouteChildren: ApiAuthGoogleRouteChildren = {
+  ApiAuthGoogleCallbackRoute: ApiAuthGoogleCallbackRoute,
+}
+
+const ApiAuthGoogleRouteWithChildren = ApiAuthGoogleRoute._addFileChildren(
+  ApiAuthGoogleRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  EarnCreditsRoute: EarnCreditsRoute,
   IdentifyRoute: IdentifyRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
@@ -434,6 +587,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiRecognizeRoute: ApiRecognizeRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  ApiAuthGoogleRoute: ApiAuthGoogleRouteWithChildren,
+  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
+  ApiAuthSessionRoute: ApiAuthSessionRoute,
+  ApiRewardsShareRoute: ApiRewardsShareRoute,
   ApiSandboxSessionRoute: ApiSandboxSessionRoute,
 }
 export const routeTree = rootRouteImport

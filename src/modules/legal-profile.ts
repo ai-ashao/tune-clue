@@ -16,20 +16,16 @@ const analytics = publicEnv.ga4Id
 
 export const legalProfile = defineLegalProfile({
   templateVersion: legalTemplateVersion,
-  templateKind: 'free-local-tool',
+  templateKind: 'account-tool-starter',
   reviewStatus: 'starter',
   productName: site.name,
   operatorName,
   siteUrl: site.url,
-  contactEmail: defaultSupportEmailForSite(site.url, {
-    fallbackSiteUrl: starterFallbackSiteUrl,
-  }),
+  contactEmail: defaultSupportEmailForSite(site.url, { fallbackSiteUrl: starterFallbackSiteUrl }),
   effectiveDate: '2026-09-03',
-  lastUpdated: '2026-09-08',
+  lastUpdated: '2026-09-09',
   governingLaw: 'the laws applicable where the product operator is established',
-  features: {
-    analytics,
-  },
+  features: { analytics },
   privacy: {
     processingActivities: [
       {
@@ -40,6 +36,25 @@ export const legalProfile = defineLegalProfile({
         retention:
           'only as long as needed for delivery, security, abuse prevention, or applicable legal obligations.',
         recipients: ['Cloudflare'],
+      },
+      {
+        data: 'Google account identifier, email address, and basic profile name returned during Google sign-in.',
+        purpose:
+          'create a recoverable TuneClue account, keep the user signed in, and attach credits and rewards to that account.',
+        legalBasis: 'providing the account and song-recognition service requested by the user.',
+        retention:
+          'for as long as the account is active or as needed for security, accounting, and applicable legal obligations.',
+        recipients: ['Google', 'Cloudflare'],
+      },
+      {
+        data: 'Credit ledger entries and one-time social sharing reward claims.',
+        purpose:
+          'track free recognition access, recognition usage, refunds, and optional share-intent rewards.',
+        legalBasis:
+          'providing the requested Service and the operator’s legitimate interests in preventing duplicate rewards and abuse, where permitted.',
+        retention:
+          'for as long as needed to maintain account balances, prevent duplicate rewards, and meet applicable legal obligations.',
+        recipients: [operatorName, 'Cloudflare'],
       },
       {
         data: 'Support messages and contact details that a user chooses to provide.',
@@ -70,12 +85,17 @@ export const legalProfile = defineLegalProfile({
           ]
         : []),
     ],
-    browserStorage: ['An analytics consent preference stored in local browser storage.'],
+    browserStorage: [
+      'An analytics consent preference stored in local browser storage.',
+      'A short-lived locally prepared recognition sample may be stored in IndexedDB only while completing a Google sign-in redirect, then removed when the song search resumes.',
+    ],
     serviceProviders: [
       {
         name: 'Cloudflare',
-        purpose: 'website hosting, request delivery, security, and operational infrastructure',
+        purpose:
+          'website hosting, request delivery, security, operational infrastructure, and D1 account/credit storage',
       },
+      { name: 'Google', purpose: 'Google account authentication' },
       {
         name: 'AudD',
         purpose: 'music recognition for the short audio sample submitted by the user',

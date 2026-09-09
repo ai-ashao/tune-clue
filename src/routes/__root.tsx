@@ -8,6 +8,7 @@ import {
 import { ChevronDown, Globe2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { SiteFooter } from '@/components/site-footer'
+import { AuthHeaderControls } from '@/components/tuneclue/auth-header-controls'
 import { Button } from '@/components/ui/button'
 import { type Locale, localeConfig, localeFromPathname } from '@/i18n/config'
 import { shellMessages } from '@/i18n/messages'
@@ -50,7 +51,6 @@ function RootComponent() {
 
   const nav = navigation.header.links.flatMap((linkId) => {
     if (linkId === 'guides' && navigation.guidesPlacement !== 'header') return []
-
     const resolved = resolveHeaderLink(linkId, locale, navigation)
     return resolved ? [resolved] : []
   })
@@ -95,6 +95,7 @@ function RootComponent() {
                 </a>
               ))}
             </nav>
+            {surfaceMode === 'tool' ? <AuthHeaderControls /> : null}
             {headerCta?.label && headerCta.href ? (
               <Button asChild size="sm" data-header-cta>
                 <a href={headerCta.href}>{headerCta.label}</a>
@@ -114,7 +115,6 @@ function RootComponent() {
       <main>
         <Outlet />
       </main>
-
       <SiteFooter locale={locale} navigation={navigation} />
     </div>
   )
@@ -134,11 +134,7 @@ function resolveHeaderLink(
     case 'workflow':
       return { id: linkId, label: copy.nav.workflow, href: `${homePath}#workflow` }
     case 'guides':
-      return {
-        id: linkId,
-        label: copy.nav.guides,
-        href: localizedPathOrDefault('guides', locale),
-      }
+      return { id: linkId, label: copy.nav.guides, href: localizedPathOrDefault('guides', locale) }
     case 'pricing':
       return {
         id: linkId,

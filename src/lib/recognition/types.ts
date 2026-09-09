@@ -18,15 +18,10 @@ export type RecognitionResult =
       timecode?: string
       links: RecognitionLinks
     }
-  | {
-      status: 'no-match'
-    }
+  | { status: 'no-match' }
 
 export type RecognitionApiResponse =
-  | {
-      ok: true
-      result: RecognitionResult
-    }
+  | { ok: true; result: RecognitionResult; remainingCredits: number }
   | {
       ok: false
       code:
@@ -35,5 +30,8 @@ export type RecognitionApiResponse =
         | 'provider-not-configured'
         | 'provider-error'
         | 'rate-limited'
+        | 'auth-required'
+        | 'auth-unavailable'
+        | 'insufficient-credits'
       message: string
     }

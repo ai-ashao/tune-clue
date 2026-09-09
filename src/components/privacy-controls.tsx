@@ -34,7 +34,7 @@ export function PrivacyControls({ locale = 'en' }: Readonly<{ locale?: Locale }>
     script.async = true
     script.dataset.shipleanGa4 = 'true'
     script.src = `https://www.googletagmanager.com/gtag/js?id=${publicEnv.ga4Id}`
-    document.head.append(script)
+    document.head.appendChild(script)
     window.gtag('js', new Date())
     window.gtag('config', publicEnv.ga4Id, { anonymize_ip: true })
   }, [granted])

@@ -1,6 +1,6 @@
-# Free local tool legal page template
+# Tool legal page templates
 
-ShipLean currently provides one legal template for a free, account-free tool whose primary inputs are processed locally in the browser. It renders Privacy Policy and Terms of Service from one typed product profile. Product routes must stay thin wrappers around the shared renderer instead of becoming independent prose pages.
+ShipLean renders Privacy Policy and Terms of Service from one typed product profile. It supports a `free-local-tool` starter for account-free browser-local tools and an `account-tool-starter` for free tools that use accounts, usage credits, and disclosed provider processing. Product routes must stay thin wrappers around the shared renderer instead of becoming independent prose pages.
 
 This is a structured starting point, not legal advice or a universal agreement. The product operator remains responsible for the accuracy of every fact, the jurisdictions served, and appropriate legal review.
 
@@ -30,9 +30,9 @@ Two validation levels are available:
 
 ## Supported product boundary
 
-This template assumes the product is free, has no production accounts, does not accept payment, does not publish user content, and does not upload or persist the primary tool inputs. Optional consent-gated analytics is the only conditional integration currently represented.
+The `free-local-tool` template assumes the product is free, has no production accounts, does not accept payment, does not publish user content, and does not upload or persist the primary tool inputs. The `account-tool-starter` may describe Google authentication, append-only usage credits, temporary browser resume storage, and a short sample sent to a recognition provider. Neither template represents payments, subscriptions, published user content, or general cloud file storage.
 
-Do not mark this profile as reviewed for a subscription SaaS product. Accounts, subscriptions, refunds, user content, cloud storage, AI-provider processing, and SaaS-specific consumer terms require a separate legal template that is intentionally deferred to a later phase.
+Do not mark either profile as reviewed for a subscription SaaS product. Subscriptions, paid credits, payment refunds, user content, cloud file storage, and SaaS-specific consumer terms require a separate legal template that is intentionally deferred to a later phase.
 
 ## Localization
 
