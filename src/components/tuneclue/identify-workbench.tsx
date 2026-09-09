@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   DEFAULT_SAMPLE_SECONDS,
@@ -27,17 +27,15 @@ export function IdentifyWorkbench() {
     | { status: 'error'; message: string }
   >({ status: 'idle' })
 
-  const previewUrl = useMemo(
-    () => (source?.kind === 'local-file' ? URL.createObjectURL(source.file) : undefined),
-    [source],
-  )
+  const [previewUrl, setPreviewUrl] = useState<string>()
 
-  useEffect(
-    () => () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl)
-    },
-    [previewUrl],
-  )
+  useEffect(() => {
+    if (source?.kind !== 'local-file') return
+
+    const url = URL.createObjectURL(source.file)
+    setPreviewUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [source])
 
   if (!source) {
     return (
