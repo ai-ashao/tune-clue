@@ -3,28 +3,24 @@ import { defaultSupportEmailForSite, defineLegalProfile, legalTemplateVersion } 
 import { site } from '@/lib/site'
 
 const starterFallbackSiteUrl = 'https://starter.invalid'
-const operatorName = site.name
 const analytics = publicEnv.ga4Id
   ? {
       name: 'Google Analytics 4',
       data: 'consent-based device and product usage information',
       purpose: 'aggregated product usage measurement',
       legalBasis: 'the visitor’s consent',
-      retention: 'the period configured by the operator in Google Analytics',
+      retention: 'the period configured for TuneClue in Google Analytics',
     }
   : false
 
 export const legalProfile = defineLegalProfile({
   templateVersion: legalTemplateVersion,
-  templateKind: 'account-tool-starter',
-  reviewStatus: 'starter',
+  templateKind: 'account-tool',
   productName: site.name,
-  operatorName,
   siteUrl: site.url,
   contactEmail: defaultSupportEmailForSite(site.url, { fallbackSiteUrl: starterFallbackSiteUrl }),
   effectiveDate: '2026-09-03',
   lastUpdated: '2026-09-09',
-  governingLaw: 'the laws applicable where the product operator is established',
   features: { analytics },
   privacy: {
     processingActivities: [
@@ -32,7 +28,7 @@ export const legalProfile = defineLegalProfile({
         data: 'Technical request information, such as IP address, user agent, timestamps, and requested URLs.',
         purpose: 'deliver pages, maintain security, diagnose failures, and prevent abuse.',
         legalBasis:
-          'providing the requested Service and the operator’s legitimate interests in security and reliability, where permitted.',
+          'providing the requested Service and TuneClue’s legitimate interests in security and reliability, where permitted.',
         retention:
           'only as long as needed for delivery, security, abuse prevention, or applicable legal obligations.',
         recipients: ['Cloudflare'],
@@ -51,26 +47,26 @@ export const legalProfile = defineLegalProfile({
         purpose:
           'track free recognition access, recognition usage, refunds, and optional share-intent rewards.',
         legalBasis:
-          'providing the requested Service and the operator’s legitimate interests in preventing duplicate rewards and abuse, where permitted.',
+          'providing the requested Service and TuneClue’s legitimate interests in preventing duplicate rewards and abuse, where permitted.',
         retention:
           'for as long as needed to maintain account balances, prevent duplicate rewards, and meet applicable legal obligations.',
-        recipients: [operatorName, 'Cloudflare'],
+        recipients: [site.name, 'Cloudflare'],
       },
       {
         data: 'Support messages and contact details that a user chooses to provide.',
         purpose: 'respond to support and privacy requests.',
         legalBasis:
-          'responding to the user’s request and the operator’s legitimate interests in supporting the Service, where permitted.',
+          'responding to the user’s request and TuneClue’s legitimate interests in supporting the Service, where permitted.',
         retention:
           'only as long as needed to resolve the request and meet applicable legal obligations.',
-        recipients: [operatorName],
+        recipients: [site.name],
       },
       {
         data: 'A short audio sample created from the point the user selects in a local media file.',
         purpose: 'identify the song and return available track metadata and listening links.',
         legalBasis: 'providing the song-recognition request initiated by the user.',
         retention:
-          'subject to the recognition provider terms and the operator configuration; this must be verified before launch.',
+          'TuneClue does not intentionally retain the short sample after the request completes. AudD processes the sample under its own applicable terms and privacy practices.',
         recipients: ['AudD'],
       },
       ...(analytics
@@ -102,6 +98,6 @@ export const legalProfile = defineLegalProfile({
       },
     ],
     internationalTransfers:
-      'These providers may process information in countries other than the user’s country. The operator will use the safeguards required by applicable law for those transfers.',
+      'These providers may process information in countries other than the user’s country. Appropriate safeguards required by applicable law will be used for those transfers.',
   },
 })

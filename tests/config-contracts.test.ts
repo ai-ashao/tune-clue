@@ -4,6 +4,7 @@ import { isPublicPageIndexable } from '@/i18n/routes'
 import { validateLegalProfile } from '@/lib/legal'
 import { productConfig, productSurfaceEnabled, validateProductConfig } from '@/lib/product-config'
 import { validateSeoFirstProductState } from '@/lib/seo-first-validation'
+import { siteIndexingEnabled } from '@/lib/site-indexing'
 import {
   saasSiteNavigation,
   siteNavigation,
@@ -28,8 +29,12 @@ describe('real configuration contracts', () => {
   })
 
   it('keeps public surface indexability aligned with product configuration', () => {
-    expect(isPublicPageIndexable('pricing')).toBe(productSurfaceEnabled('pricing'))
-    expect(isPublicPageIndexable('guides')).toBe(productSurfaceEnabled('guides'))
+    expect(isPublicPageIndexable('pricing')).toBe(
+      siteIndexingEnabled && productSurfaceEnabled('pricing'),
+    )
+    expect(isPublicPageIndexable('guides')).toBe(
+      siteIndexingEnabled && productSurfaceEnabled('guides'),
+    )
   })
 
   it('keeps the checked-in legal profile structurally valid', () => {

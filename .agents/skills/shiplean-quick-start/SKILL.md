@@ -71,7 +71,7 @@ A Tool Mode repository with no ready SEO brief must fail the SEO-first contract.
 4. Register localized public routes under a stable identity. For public tools, use the stable Tool Registry id and its localized routes as the route source of truth for language switching, hreflang, sitemap, Related Tools, and Footer discovery.
 5. Never fabricate a locale equivalent that does not exist.
 6. Keep user-facing copy typed and structurally complete across shipped locales.
-7. For a free, account-free tool whose primary inputs stay in the browser, configure Privacy Policy and Terms of Service through the shared `free-local-tool` profile in `src/modules/legal-profile.ts`. Derive the default contact as `support@<public-domain>` and require the reviewed-profile validator before production launch. For subscription SaaS, keep the legal profile in `starter` and report that the dedicated SaaS legal module is not implemented yet.
+7. Configure Privacy Policy and Terms of Service through the shared typed profile in `src/modules/legal-profile.ts`, using the template that matches the real product behavior. Derive the default contact as `support@<public-domain>`. Legal pages follow the ordinary validation, indexing, and deployment flow rather than a separate review-status state machine.
 8. Follow `docs/ui-control-spacing.md`: use shared fields and controls, preserve label-to-control spacing, and reserve explicit space between dropdown text, arrows, and adjacent actions.
 
 ### SaaS mode
@@ -149,6 +149,5 @@ Treat Better Auth, PostgreSQL/Drizzle, Stripe, Resend, R2, and account-backed Cl
 9. Confirm every sitemap URL passes SSR metadata acceptance.
 10. Confirm the internal-link graph has no broken links, indexable orphans, or pages unreachable from the homepage.
 11. Keep starter/noindex routes outside the sitemap.
-12. Before production deployment, run `pnpm legal:check`.
-13. Recheck Git status, branch, remotes, and target repository before commit/push.
-14. Report changed files, verification evidence, viewport results, SEO-brief status, and any remaining production boundary.
+12. Recheck Git status, branch, remotes, and target repository before commit/push or deployment.
+13. Report changed files, verification evidence, viewport results, SEO-brief status, and any remaining production boundary.

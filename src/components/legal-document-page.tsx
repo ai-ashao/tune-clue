@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { buildLegalDocument, type LegalDocument, type LegalProfile } from '@/lib/legal'
 
 export function LegalDocumentPage({
@@ -14,15 +13,7 @@ export function LegalDocumentPage({
       data-legal-document={kind}
     >
       <header className="max-w-3xl">
-        {profile.reviewStatus === 'starter' ? (
-          <Badge
-            variant="outline"
-            className="border-[#dce8d4] bg-[#f4f8f1] font-mono text-[10px] uppercase tracking-widest text-[#5d9229]"
-          >
-            Legal / {profile.templateVersion}
-          </Badge>
-        ) : null}
-        <h1 className="mt-5 text-balance text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
+        <h1 className="text-balance text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
           {document.title}
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
@@ -41,20 +32,6 @@ export function LegalDocumentPage({
           />
         </dl>
       </header>
-
-      {profile.reviewStatus === 'starter' ? (
-        <aside
-          className="mt-8 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
-          data-legal-review-status="starter"
-          role="note"
-        >
-          <strong>Starter legal template — not launch-ready.</strong> Update the product facts in
-          <code className="mx-1 rounded bg-amber-100 px-1 py-0.5">
-            src/modules/legal-profile.ts
-          </code>
-          and obtain appropriate legal review before changing the status to reviewed.
-        </aside>
-      ) : null}
 
       <nav className="mt-10 rounded-xl border p-5" aria-label={`${document.title} sections`}>
         <h2 className="text-sm font-semibold">Contents</h2>
@@ -96,13 +73,6 @@ export function LegalDocumentPage({
           </section>
         ))}
       </article>
-
-      {profile.reviewStatus === 'starter' ? (
-        <p className="mt-12 border-t pt-6 text-xs leading-6 text-muted-foreground">
-          This structured template is not legal advice. Product operators remain responsible for
-          adapting it to their actual practices, users, contracts, and jurisdictions.
-        </p>
-      ) : null}
     </section>
   )
 }

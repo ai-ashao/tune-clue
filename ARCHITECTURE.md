@@ -40,7 +40,7 @@ ShipLean Core
     └── Tool first-viewport QA
 ```
 
-Mode affects page composition and shell behavior. It does not fork the framework, SEO, i18n, legal-review, UI primitive, security, or verification infrastructure.
+Mode affects page composition and shell behavior. It does not fork the framework, SEO, i18n, legal templates, UI primitive, security, or verification infrastructure.
 
 Tool QA routes explicitly resolve to the Tool shell even when the checked-in starter defaults to SaaS, so both contracts remain testable in one repository.
 
@@ -58,7 +58,7 @@ Tool QA routes explicitly resolve to the Tool shell even when the checked-in sta
 - `src/components/ui`: local shadcn/ui primitives owned by the downloaded project;
 - `components.json` and `src/styles.css`: shadcn aliases, Tailwind entrypoint, and neutral design tokens;
 - `src/lib/auth`: visibly local identity boundary;
-- `src/lib/legal.ts` and `src/modules/legal-profile.ts`: current free/local/account-free Tool Privacy/Terms structure and launch-review validation;
+- `src/lib/legal.ts` and `src/modules/legal-profile.ts`: shared Privacy/Terms structure and product-fact validation;
 - `src/lib/seo.ts` and `src/lib/seo-validation.ts`: shared public metadata generation plus structured blocking and advisory diagnostics;
 - `src/modules/manifests.ts`: machine-readable module ownership and acceptance;
 - `src/start.ts`: global security headers;
@@ -78,7 +78,7 @@ Localized public pages are matched by stable page identity rather than by rewrit
 
 ## Legal boundary
 
-The current `free-local-tool` legal module remains intentionally limited to free tools without production accounts, payments, user-content publishing, or server-side persistence of primary tool inputs. The scaffold keeps the profile in `starter` review status, visibly marks it as not launch-ready, emits `noindex`, and excludes it from the sitemap.
+The legal module renders ordinary Privacy and Terms pages from one truthful typed profile. It supports browser-local tools and account-backed free-credit tools without a separate review-status state machine. Site-wide crawl and index behavior is controlled independently in `src/lib/site-indexing.ts`.
 
 Subscription-SaaS legal modules remain deferred. SaaS Product Mode does not imply that production SaaS legal terms, billing, auth, or data processing have been implemented.
 

@@ -16,7 +16,7 @@ Variables prefixed with `VITE_` can be exposed to browser code. Never store secr
 
 | Variable | Default or example | Effect |
 | --- | --- | --- |
-| `VITE_SITE_URL` | `https://shiplean.dev` in code; `http://localhost:3000` in `.env.example` | Absolute public origin used for canonical URLs, hreflang, robots, and sitemap output. Must be an HTTP(S) URL. |
+| `VITE_SITE_URL` | `https://tuneclue.com` in code; `http://localhost:3000` in `.env.example` | Absolute public origin used for canonical URLs, hreflang, robots, and sitemap output. Must be an HTTP(S) URL. |
 | `VITE_GA4_ID` | empty | Optional Google Analytics measurement ID. When present, it must match `G-...`. |
 | `VITE_GOOGLE_SITE_VERIFICATION` | empty | Optional Google site verification token added to public metadata. |
 | `VITE_ENABLE_SANDBOX` | disabled unless development or explicitly `true` | Controls whether local demo entry points are visible in the built UI. |
@@ -63,7 +63,7 @@ wrangler secret put SECRET_NAME
 
 Do not infer deployment success from `pnpm build`. Read [Cloudflare deployment boundary](./deployment.md) for the production verification steps.
 
-`VITE_SITE_URL` also supplies the public URL in the shared Privacy / Terms profile and derives the default `support@<domain>` contact. Localhost development uses the ShipLean starter address as a non-production fallback; production release still requires an HTTPS public URL and a reviewed legal profile.
+`VITE_SITE_URL` also supplies the public URL in the shared Privacy / Terms profile and derives the default `support@<domain>` contact. Localhost development uses the ShipLean starter address as a non-production fallback; production still requires an HTTPS public URL and a structurally valid legal profile.
 
 ## Related source
 

@@ -5,7 +5,7 @@ export type PublicEnv = {
 }
 
 export function parsePublicEnv(source: Record<string, string | undefined>): PublicEnv {
-  const rawSiteUrl = source.VITE_SITE_URL?.trim() || 'https://shiplean.dev'
+  const rawSiteUrl = source.VITE_SITE_URL?.trim() || 'https://tuneclue.com'
   let siteUrl: string
   try {
     const url = new URL(rawSiteUrl)

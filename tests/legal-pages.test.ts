@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest'
 import {
   buildLegalDocument,
   defaultSupportEmailForSite,
-  isLegalProfileLaunchReady,
   type LegalProfile,
   validateLegalProfile,
 } from '@/lib/legal'
@@ -18,21 +17,16 @@ describe('legal page contracts', () => {
     expect(() => defaultSupportEmailForSite('http://localhost:3000')).toThrow(/public domain/)
   })
 
-  it('keeps the checked-in profile structurally valid and reports its launch state', () => {
+  it('keeps the checked-in profile structurally valid', () => {
     expect(validateLegalProfile(legalProfile)).toEqual([])
-    expect(legalProfile.templateKind).toBe('account-tool-starter')
-    const releaseIssues = validateLegalProfile(legalProfile, { requireReviewed: true })
-    expect(isLegalProfileLaunchReady(legalProfile)).toBe(releaseIssues.length === 0)
-    if (legalProfile.reviewStatus === 'starter') {
-      expect(releaseIssues).toContain('Legal profile must be reviewed before production launch.')
-    }
+    expect(legalProfile.templateKind).toBe('account-tool')
     expect(legalProfile.siteUrl).toBe(site.url)
   })
 
   it('rejects placeholders, invalid dates, empty disclosures, and incomplete providers', () => {
     const invalid = {
       ...legalProfile,
-      operatorName: 'Your Company',
+      productName: 'Your Product',
       effectiveDate: '2026-02-30',
       privacy: {
         ...legalProfile.privacy,
@@ -46,7 +40,7 @@ describe('legal page contracts', () => {
 
     expect(validateLegalProfile(invalid)).toEqual(
       expect.arrayContaining([
-        'Legal profile operatorName still contains placeholder copy.',
+        'Legal profile productName still contains placeholder copy.',
         'Legal profile effectiveDate must use a valid YYYY-MM-DD date.',
         'Legal profile processingActivities must not be empty.',
         'Every declared legal provider requires a name and purpose.',
@@ -72,17 +66,24 @@ describe('legal page contracts', () => {
     expect(terms.sections.map((section) => section.id)).toEqual([
       'acceptance',
       'service',
+      'eligibility',
+      'accounts',
+      'credits-rewards',
       'acceptable-use',
       'inputs-results',
+      'third-parties',
       'intellectual-property',
       'availability',
+      'termination',
       'disclaimers-liability',
-      'governing-law',
       'changes-contact',
     ])
     expect(JSON.stringify(privacy)).toContain('uploads a short audio sample')
     expect(JSON.stringify(terms)).toContain('account-backed song-recognition tool')
     expect(JSON.stringify(terms)).not.toContain('account-free tool')
+    expect(JSON.stringify(terms)).toContain('whether the recognition provider finds a match')
+    expect(JSON.stringify(terms)).toContain('cannot verify whether the user publishes the post')
+    expect(JSON.stringify(terms)).toContain('does not currently sell credits')
   })
 
   it('keeps optional analytics fully disclosed without adding SaaS sections', () => {
@@ -105,9 +106,7 @@ describe('legal page contracts', () => {
     const terms = buildLegalDocument('terms', configured)
     expect(privacyCopy).toContain('Analytics Provider')
     expect(privacyCopy).toContain('the visitor’s consent')
-    expect(terms.sections.map((section) => section.id)).not.toEqual(
-      expect.arrayContaining(['accounts', 'payments', 'content']),
-    )
+    expect(terms.sections.map((section) => section.id)).not.toContain('payments')
   })
 
   it('keeps route files as thin wrappers around the shared legal renderer', () => {
@@ -120,33 +119,24 @@ describe('legal page contracts', () => {
     expect(termsRoute).not.toContain('InformationPage')
   })
 
-  it('keeps implementation instructions out of reviewed public documents', () => {
-    const reviewed = {
-      ...legalProfile,
-      reviewStatus: 'reviewed',
-      governingLaw: 'the laws of the State of Delaware, United States',
-    } satisfies LegalProfile
-
+  it('keeps implementation instructions out of public documents', () => {
     const publicCopy = JSON.stringify([
-      buildLegalDocument('privacy', reviewed),
-      buildLegalDocument('terms', reviewed),
+      buildLegalDocument('privacy', legalProfile),
+      buildLegalDocument('terms', legalProfile),
     ])
 
     expect(publicCopy).not.toMatch(/current product configuration/i)
     expect(publicCopy).not.toMatch(/must be added before/i)
     expect(publicCopy).not.toMatch(/sandbox|paid plans|production user accounts/i)
-    expect(isLegalProfileLaunchReady(reviewed)).toBe(true)
+    expect(publicCopy).not.toMatch(/operator is established|governing law/i)
   })
 
-  it('wires the strict legal check into the deployment command', () => {
+  it('keeps legal pages in the ordinary deployment and indexing flow', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts: Record<string, string>
     }
-    const releaseTest = readFileSync('tests/legal-release.test.ts', 'utf8')
 
-    expect(packageJson.scripts.deploy).toMatch(/^pnpm legal:check &&/)
-    expect(packageJson.scripts.test).toContain('--exclude tests/legal-release.test.ts')
-    expect(packageJson.scripts['legal:check']).toContain('--mode production')
-    expect(releaseTest).toContain('requireReviewed: true')
+    expect(packageJson.scripts.deploy).toBe('pnpm build && wrangler deploy')
+    expect(packageJson.scripts['legal:check']).toBeUndefined()
   })
 })

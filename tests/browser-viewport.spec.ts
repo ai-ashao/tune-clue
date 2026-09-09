@@ -179,14 +179,7 @@ for (const legalFixture of legalDocuments) {
       await expect(legalDocument.getByRole('heading', { level: 1 })).toHaveText(
         legalFixture.heading,
       )
-      const starterNotice = page.locator('[data-legal-review-status="starter"]')
-      const isNoindex =
-        (await page.locator('meta[name="robots"][content="noindex,nofollow"]').count()) > 0
-      if (isNoindex) {
-        await expect(starterNotice).toBeVisible()
-      } else {
-        await expect(starterNotice).toHaveCount(0)
-      }
+      await expect(page.locator('meta[name="robots"][content="noindex,nofollow"]')).toHaveCount(1)
       await expect(legalDocument.getByRole('navigation')).toBeVisible()
 
       const supportLink = legalDocument.locator('a[href^="mailto:"]')

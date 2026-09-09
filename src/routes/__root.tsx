@@ -16,6 +16,7 @@ import { localeAlternatesForPath, localizedPathOrDefault } from '@/i18n/routes'
 import { publicEnv } from '@/lib/config/env'
 import { productConfig, surfaceModeForPath } from '@/lib/product-config'
 import { site } from '@/lib/site'
+import { siteIndexingEnabled } from '@/lib/site-indexing'
 import {
   type HeaderLinkId,
   localizedNavigationValue,
@@ -30,6 +31,7 @@ export const Route = createRootRoute({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: site.name },
+      ...(!siteIndexingEnabled ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
       ...(publicEnv.googleSiteVerification
         ? [{ name: 'google-site-verification', content: publicEnv.googleSiteVerification }]
         : []),

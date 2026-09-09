@@ -15,6 +15,7 @@ import { moduleManifests } from '../src/modules/manifests'
 
 describe('platform contracts', () => {
   it('validates public environment values early', () => {
+    expect(parsePublicEnv({}).siteUrl).toBe('https://tuneclue.com')
     expect(parsePublicEnv({ VITE_SITE_URL: 'http://localhost:3000/' }).siteUrl).toBe(
       'http://localhost:3000',
     )

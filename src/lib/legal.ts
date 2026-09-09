@@ -1,7 +1,6 @@
 export const legalTemplateVersion = '0.1' as const
 
-export type LegalReviewStatus = 'starter' | 'reviewed'
-export type LegalTemplateKind = 'free-local-tool' | 'account-tool-starter'
+export type LegalTemplateKind = 'free-local-tool' | 'account-tool'
 
 export type LegalProvider = {
   name: string
@@ -29,14 +28,11 @@ export type LegalFeatureProfile = {
 export type LegalProfile = {
   templateVersion: typeof legalTemplateVersion
   templateKind: LegalTemplateKind
-  reviewStatus: LegalReviewStatus
   productName: string
-  operatorName: string
   siteUrl: string
   contactEmail: string
   effectiveDate: string
   lastUpdated: string
-  governingLaw: string
   features: LegalFeatureProfile
   privacy: {
     processingActivities: ReadonlyArray<LegalProcessingActivity>
@@ -89,17 +85,12 @@ function supportEmailForPublicSite(siteUrl: string): string {
   return `support@${hostname}`
 }
 
-export function validateLegalProfile(
-  profile: LegalProfile,
-  options: Readonly<{ requireReviewed?: boolean }> = {},
-): ReadonlyArray<string> {
+export function validateLegalProfile(profile: LegalProfile): ReadonlyArray<string> {
   const issues: string[] = []
   const requiredFields = {
     productName: profile.productName,
-    operatorName: profile.operatorName,
     siteUrl: profile.siteUrl,
     contactEmail: profile.contactEmail,
-    governingLaw: profile.governingLaw,
     internationalTransfers: profile.privacy.internationalTransfers,
   }
 
@@ -113,9 +104,6 @@ export function validateLegalProfile(
   try {
     const url = new URL(profile.siteUrl)
     if (!['http:', 'https:'].includes(url.protocol)) throw new Error('unsupported protocol')
-    if (options.requireReviewed && url.protocol !== 'https:') {
-      issues.push('Reviewed legal profiles require an HTTPS siteUrl.')
-    }
   } catch {
     issues.push('Legal profile siteUrl must be an absolute HTTP(S) URL.')
   }
@@ -181,16 +169,6 @@ export function validateLegalProfile(
     }
   }
 
-  if (options.requireReviewed && profile.reviewStatus !== 'reviewed') {
-    issues.push('Legal profile must be reviewed before production launch.')
-  }
-  if (
-    options.requireReviewed &&
-    /\b(?:applicable|operator is established|operator's location)\b/i.test(profile.governingLaw)
-  ) {
-    issues.push('Reviewed legal profiles require a specific governingLaw jurisdiction.')
-  }
-
   return Array.from(new Set(issues))
 }
 
@@ -201,12 +179,8 @@ export function buildLegalDocument(
   return kind === 'privacy' ? buildPrivacyDocument(profile) : buildTermsDocument(profile)
 }
 
-export function isLegalProfileLaunchReady(profile: LegalProfile): boolean {
-  return validateLegalProfile(profile, { requireReviewed: true }).length === 0
-}
-
 function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
-  const usesAccounts = profile.templateKind === 'account-tool-starter'
+  const usesAccounts = profile.templateKind === 'account-tool'
   const analyticsParagraph = profile.features.analytics
     ? `${profile.features.analytics.name} is used only after the visitor grants analytics consent. It processes ${profile.features.analytics.data} for ${profile.features.analytics.purpose}, relies on ${profile.features.analytics.legalBasis}, and retains that information for ${profile.features.analytics.retention}.`
     : 'The Service does not currently use optional analytics.'
@@ -222,12 +196,12 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
     sections: [
       {
         id: 'scope',
-        title: '1. Scope and operator',
+        title: '1. Scope',
         paragraphs: [
-          `${profile.operatorName} operates ${profile.productName} at ${profile.siteUrl}. This policy applies to the website and product experiences that link to it.`,
+          `${profile.productName} is available at ${profile.siteUrl}. This policy applies to the website and product experiences that link to it.`,
           usesAccounts
             ? 'Original local media files are processed in the browser and are not uploaded in full. When a user requests recognition, the Service uploads a short audio sample to its recognition provider and stores the account, session, credit, and reward records described below.'
-            : 'Supported tool inputs are processed in the browser. The local tool workflow does not intentionally upload or persist those inputs on the operator’s servers.',
+            : 'Supported tool inputs are processed in the browser. The local tool workflow does not intentionally upload or persist those inputs on TuneClue servers.',
         ],
       },
       {
@@ -251,7 +225,7 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         id: 'providers',
         title: '4. Service providers and international processing',
         paragraphs: [
-          'Service providers may process limited information on behalf of the operator. The Service does not sell personal information or share it for cross-context behavioral advertising.',
+          'Service providers may process limited information to deliver the Service. The Service does not sell personal information or share it for cross-context behavioral advertising.',
           profile.privacy.internationalTransfers,
         ],
         items: providers.map((provider) => `${provider.name}: ${provider.purpose}`),
@@ -261,8 +235,8 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         title: '5. Retention',
         paragraphs: [
           usesAccounts
-            ? 'Retention is stated for each processing activity above. Original local media files are not intentionally retained by the operator; short audio samples and account-related records follow the disclosed retention rules.'
-            : 'Retention is stated for each processing activity above. Browser-local tool inputs are not intentionally retained by the operator.',
+            ? 'Retention is stated for each processing activity above. Original local media files are not intentionally retained by TuneClue; short audio samples and account-related records follow the disclosed retention rules.'
+            : 'Retention is stated for each processing activity above. Browser-local tool inputs are not intentionally retained by TuneClue.',
         ],
       },
       {
@@ -277,8 +251,8 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         title: '7. Children',
         paragraphs: [
           usesAccounts
-            ? `${profile.productName} is intended for a general audience and is not directed to children. The operator does not knowingly create accounts for or collect personal information from children.`
-            : `${profile.productName} is intended for a general audience and is not directed to children. The operator does not knowingly collect children’s personal information through the local tool workflow.`,
+            ? `${profile.productName} is intended for a general audience and is not directed to children. TuneClue does not knowingly create accounts for or collect personal information from children.`
+            : `${profile.productName} is intended for a general audience and is not directed to children. TuneClue does not knowingly collect children’s personal information through the local tool workflow.`,
         ],
       },
       {
@@ -286,7 +260,7 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
         title: '8. Changes and contact',
         paragraphs: [
           'Material changes will be reflected on this page by updating the date above. We will provide additional notice when required by the change or applicable law.',
-          `For privacy questions or requests, contact ${profile.operatorName} at ${profile.contactEmail}.`,
+          `For privacy questions or requests, contact ${profile.productName} at ${profile.contactEmail}.`,
         ],
       },
     ],
@@ -294,10 +268,9 @@ function buildPrivacyDocument(profile: LegalProfile): LegalDocument {
 }
 
 function buildTermsDocument(profile: LegalProfile): LegalDocument {
-  const serviceDescription =
-    profile.templateKind === 'account-tool-starter'
-      ? `${profile.operatorName} provides ${profile.productName} as a free, account-backed song-recognition tool at ${profile.siteUrl}. Original local media is processed in the browser and is not uploaded in full. Recognition uploads only a short audio sample, and the Service stores account, session, credit, and reward records as described in the Privacy Policy.`
-      : `${profile.operatorName} provides ${profile.productName} as a free, account-free tool at ${profile.siteUrl}. Supported tool inputs are processed locally in the browser and are not intentionally uploaded or stored by the operator.`
+  if (profile.templateKind === 'account-tool') {
+    return buildAccountToolTermsDocument(profile)
+  }
 
   return {
     kind: 'terms',
@@ -314,7 +287,9 @@ function buildTermsDocument(profile: LegalProfile): LegalDocument {
       {
         id: 'service',
         title: '2. The service',
-        paragraphs: [serviceDescription],
+        paragraphs: [
+          `${profile.productName} is provided as a free, account-free tool at ${profile.siteUrl}. Supported tool inputs are processed locally in the browser and are not intentionally uploaded or stored by the service.`,
+        ],
       },
       {
         id: 'acceptable-use',
@@ -324,7 +299,7 @@ function buildTermsDocument(profile: LegalProfile): LegalDocument {
           'break applicable law or violate another person’s rights;',
           'probe, disrupt, overload, or bypass security or usage controls;',
           'introduce malware or use the service to distribute harmful material;',
-          'misrepresent affiliation with the operator or use the service for deceptive activity.',
+          'misrepresent affiliation with the Service or use it for deceptive activity.',
         ],
       },
       {
@@ -338,14 +313,14 @@ function buildTermsDocument(profile: LegalProfile): LegalDocument {
         id: 'intellectual-property',
         title: '5. Intellectual property',
         paragraphs: [
-          `${profile.productName}, its software, branding, and original content remain the property of ${profile.operatorName} or its licensors. These terms grant only a limited right to use the service as provided.`,
+          `${profile.productName}, its software, branding, and original content remain protected by applicable intellectual-property rights. These terms grant only a limited right to use the service as provided.`,
         ],
       },
       {
         id: 'availability',
         title: '6. Availability and changes',
         paragraphs: [
-          'The Service may be changed, suspended, restricted to prevent misuse, or discontinued. The operator will use reasonable care but does not promise uninterrupted or error-free availability.',
+          'The Service may be changed, suspended, restricted to prevent misuse, or discontinued. TuneClue will use reasonable care but does not promise uninterrupted or error-free availability.',
         ],
       },
       {
@@ -353,22 +328,130 @@ function buildTermsDocument(profile: LegalProfile): LegalDocument {
         title: '7. Disclaimers and limitation of liability',
         paragraphs: [
           'The Service is provided on an “as available” basis to the extent permitted by law. It is not professional, legal, financial, medical, or compliance advice, and results should be reviewed for their intended use.',
-          'To the maximum extent permitted by applicable law, the operator is not liable for indirect, incidental, special, consequential, or punitive damages arising from use of the service. Rights that cannot lawfully be limited remain unaffected.',
-        ],
-      },
-      {
-        id: 'governing-law',
-        title: '8. Governing law',
-        paragraphs: [
-          `These terms are governed by ${profile.governingLaw}, without overriding consumer protections that cannot be waived in your location.`,
+          'To the maximum extent permitted by applicable law, TuneClue is not liable for indirect, incidental, special, consequential, or punitive damages arising from use of the service. Rights that cannot lawfully be limited remain unaffected.',
         ],
       },
       {
         id: 'changes-contact',
-        title: '9. Changes and contact',
+        title: '8. Changes and contact',
         paragraphs: [
           'The updated date above identifies the current version. We will provide additional notice for material changes where appropriate, and continued use after the effective date means the revised terms apply.',
           `Questions about these terms may be sent to ${profile.contactEmail}.`,
+        ],
+      },
+    ],
+  }
+}
+
+function buildAccountToolTermsDocument(profile: LegalProfile): LegalDocument {
+  return {
+    kind: 'terms',
+    title: 'Terms of Service',
+    description: `These terms govern access to ${profile.productName}, including its account, song-recognition, and free-credit features.`,
+    sections: [
+      {
+        id: 'acceptance',
+        title: '1. Acceptance',
+        paragraphs: [
+          `By accessing or using ${profile.productName}, you agree to these terms and the Privacy Policy and confirm that you can legally accept them. If you do not agree, do not use the Service.`,
+        ],
+      },
+      {
+        id: 'service',
+        title: '2. The service',
+        paragraphs: [
+          `${profile.productName} is provided as an account-backed song-recognition tool at ${profile.siteUrl}. You may select a local audio or video file and choose a point to analyse. The browser prepares a short WAV sample; the original local file is not uploaded in full. The short sample is sent to a third-party recognition provider, and the Service returns available song metadata and listening links.`,
+          'The Service does not provide video, audio, or song downloads and does not host, mirror, or redistribute the source media.',
+        ],
+      },
+      {
+        id: 'eligibility',
+        title: '3. Eligibility',
+        paragraphs: [
+          'You must be legally able to accept these terms. If applicable law requires a parent or legal guardian to act for you, that person must review and accept these terms before you use an account or submit a recognition request.',
+        ],
+      },
+      {
+        id: 'accounts',
+        title: '4. Accounts and security',
+        paragraphs: [
+          'Google sign-in is required when you run a song recognition. You are responsible for keeping access to your Google account secure and for activity performed through your TuneClue account. Contact TuneClue promptly if you believe the account has been used without permission.',
+          `Revoking Google access prevents future Google sign-in but does not by itself delete records already stored by ${profile.productName}. To request account deletion or exercise an applicable privacy right, contact ${profile.contactEmail}.`,
+        ],
+      },
+      {
+        id: 'credits-rewards',
+        title: '5. Free credits and rewards',
+        paragraphs: [
+          'A new eligible Google account receives one welcome credit. Each recognition request consumes one credit after the request passes validation, whether the recognition provider finds a match or returns no match. When the provider cannot run because of a provider or configuration failure, TuneClue attempts to return the consumed credit through a separate refund entry.',
+          'An authenticated user may receive one additional credit for opening TuneClue’s share composer for each supported platform. The reward is granted when the composer opens; TuneClue cannot verify whether the user publishes the post. Each supported platform reward may be claimed only once per account, for a current maximum of three share-intent credits.',
+          'Free credits have no cash value, cannot be transferred or sold, and may not be obtained through duplicate accounts, automation, deception, or attempts to bypass usage controls. TuneClue does not currently sell credits or offer a subscription. Any future paid offering will require separate terms before it becomes available.',
+        ],
+      },
+      {
+        id: 'acceptable-use',
+        title: '6. Acceptable use',
+        paragraphs: ['You may not misuse the Service. In particular, you must not:'],
+        items: [
+          'submit media that you have no right to access or process;',
+          'use the Service to infringe copyright or other rights or to redistribute protected media unlawfully;',
+          'probe, disrupt, overload, scrape, or reverse engineer the Service;',
+          'bypass authentication, rate limits, credit rules, security controls, or anti-abuse measures;',
+          'automate recognition or create multiple accounts to obtain additional free credits;',
+          'introduce malware, impersonate another person, or use the Service for unlawful, fraudulent, harmful, or deceptive activity.',
+        ],
+      },
+      {
+        id: 'inputs-results',
+        title: '7. Your inputs and recognition results',
+        paragraphs: [
+          'You retain any rights you hold in the media you select and are responsible for having permission to process it. TuneClue does not claim ownership of song recordings, recognition metadata, artwork, or external listening links; those materials remain subject to the rights of their respective owners.',
+          'Recognition results may be incomplete, inaccurate, or unavailable, especially for short, noisy, modified, unpublished, or uncommon audio. You are responsible for reviewing a result before relying on or distributing it.',
+        ],
+      },
+      {
+        id: 'third-parties',
+        title: '8. Third-party services',
+        paragraphs: [
+          'The Service relies on third parties including Google for authentication, AudD for music recognition, and Cloudflare for hosting, security, and account and credit infrastructure. Those providers may process limited information as described in the Privacy Policy and under their own applicable terms.',
+          'Recognition results may include links to services such as Spotify, Apple Music, and Deezer. TuneClue does not control or guarantee the availability, content, pricing, or accuracy of any third-party service.',
+        ],
+      },
+      {
+        id: 'intellectual-property',
+        title: '9. TuneClue intellectual property',
+        paragraphs: [
+          `${profile.productName}, its software, branding, interface, and original site content remain protected by applicable intellectual-property rights. These terms grant only a limited right to use the Service as provided; they do not grant a right to copy, resell, sublicense, or misrepresent the source of the Service.`,
+        ],
+      },
+      {
+        id: 'availability',
+        title: '10. Availability and changes',
+        paragraphs: [
+          'The Service, its recognition providers, and its supported features may change, become unavailable, contain errors, or be suspended. TuneClue may apply reasonable limits or change free-credit rules prospectively to protect the Service, prevent abuse, or respond to provider constraints. Material changes will be communicated where appropriate.',
+        ],
+      },
+      {
+        id: 'termination',
+        title: '11. Suspension, termination, and deletion',
+        paragraphs: [
+          'TuneClue may restrict or suspend access when reasonably necessary to investigate abuse, protect users or infrastructure, comply with law, or enforce these terms. You may stop using the Service at any time and may request account deletion through the contact address below. Deleting an account ends access to its remaining free credits.',
+        ],
+      },
+      {
+        id: 'disclaimers-liability',
+        title: '12. Disclaimers and limitation of liability',
+        paragraphs: [
+          'The Service is provided on an “as available” basis to the extent permitted by law. TuneClue does not promise that recognition results will be accurate, complete, uninterrupted, secure, or suitable for a particular purpose.',
+          'To the maximum extent permitted by applicable law, TuneClue is not liable for indirect, incidental, special, consequential, or punitive damages arising from use of or inability to use the Service, third-party services, or recognition results. Rights and responsibilities that cannot lawfully be limited remain unaffected.',
+        ],
+      },
+      {
+        id: 'changes-contact',
+        title: '13. Changes and contact',
+        paragraphs: [
+          'The updated date above identifies the current version. We will provide additional notice for material changes where appropriate. Continued use after a change takes effect means the revised terms apply.',
+          `Questions, account deletion requests, and legal notices may be sent to ${profile.contactEmail}.`,
         ],
       },
     ],

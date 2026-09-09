@@ -10,8 +10,7 @@ import {
   resolvePublicPage,
   sitemapPaths,
 } from '../src/i18n/routes'
-import { isLegalProfileLaunchReady } from '../src/lib/legal'
-import { legalProfile } from '../src/modules/legal-profile'
+import { siteIndexingEnabled } from '../src/lib/site-indexing'
 
 describe('locale-aware route registry', () => {
   it('detects only exact locale path prefixes', () => {
@@ -58,14 +57,14 @@ describe('locale-aware route registry', () => {
         : [],
     )
 
-    expect(sitemapPaths()).toEqual(expected)
+    expect(sitemapPaths()).toEqual(siteIndexingEnabled ? expected : [])
     expect(new Set(sitemapPaths()).size).toBe(sitemapPaths().length)
 
-    const legalIndexable = isLegalProfileLaunchReady(legalProfile)
-    expect(publicPageRoutes.find((page) => page.id === 'privacy')?.indexable).toBe(legalIndexable)
-    expect(publicPageRoutes.find((page) => page.id === 'terms')?.indexable).toBe(legalIndexable)
-    expect(sitemapPaths().includes('/privacy-policy')).toBe(legalIndexable)
-    expect(sitemapPaths().includes('/terms-of-service')).toBe(legalIndexable)
+    expect(publicPageRoutes.find((page) => page.id === 'privacy')?.indexable).toBe(true)
+    expect(publicPageRoutes.find((page) => page.id === 'terms')?.indexable).toBe(true)
+    expect(siteIndexingEnabled).toBe(false)
+    expect(sitemapPaths()).not.toContain('/privacy-policy')
+    expect(sitemapPaths()).not.toContain('/terms-of-service')
   })
 
   it('ships structurally complete message dictionaries for every supported locale', () => {

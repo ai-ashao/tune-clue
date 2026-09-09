@@ -1,8 +1,7 @@
 import { type GuideSlug, guides } from '@/lib/guides'
-import { isLegalProfileLaunchReady } from '@/lib/legal'
 import { productSurfaceEnabled } from '@/lib/product-config'
+import { siteIndexingEnabled } from '@/lib/site-indexing'
 import { toolLocaleAlternatesForPath, toolSitemapPaths } from '@/lib/tool-registry'
-import { legalProfile } from '@/modules/legal-profile'
 import { toolRegistry } from '@/modules/tool-registry'
 import { defaultLocale, type Locale, localeConfig, supportedLocales } from './config'
 
@@ -23,7 +22,6 @@ export type PublicPageRoute = {
   paths: LocalizedPaths
 }
 
-const legalPagesIndexable = isLegalProfileLaunchReady(legalProfile)
 const pricingIndexable = productSurfaceEnabled('pricing')
 const guidesIndexable = productSurfaceEnabled('guides')
 
@@ -33,8 +31,8 @@ const staticPages: PublicPageRoute[] = [
   { id: 'guides', indexable: guidesIndexable, paths: { en: '/guides' } },
   { id: 'about', indexable: true, paths: { en: '/about' } },
   { id: 'contact', indexable: true, paths: { en: '/contact' } },
-  { id: 'privacy', indexable: legalPagesIndexable, paths: { en: '/privacy-policy' } },
-  { id: 'terms', indexable: legalPagesIndexable, paths: { en: '/terms-of-service' } },
+  { id: 'privacy', indexable: true, paths: { en: '/privacy-policy' } },
+  { id: 'terms', indexable: true, paths: { en: '/terms-of-service' } },
 ]
 
 const guidePages: PublicPageRoute[] = guides.map((guide) => ({
@@ -63,7 +61,7 @@ export function localizedPath(pageId: PublicPageId, locale: Locale): string | un
 export function isPublicPageIndexable(pageId: PublicPageId): boolean {
   const page = publicPageRoutes.find((candidate) => candidate.id === pageId)
   if (!page) throw new Error(`Unknown public page: ${pageId}`)
-  return page.indexable
+  return siteIndexingEnabled && page.indexable
 }
 
 export function localizedPathOrDefault(pageId: PublicPageId, locale: Locale): string {
@@ -127,6 +125,8 @@ export function hreflangAlternates(pageId: PublicPageId): Array<{
 }
 
 export function sitemapPaths(): string[] {
+  if (!siteIndexingEnabled) return []
+
   return Array.from(
     new Set([
       ...publicPageRoutes.flatMap((page) =>
