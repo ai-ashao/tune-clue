@@ -11,6 +11,7 @@ const securityHeaders = createMiddleware({ type: 'request' }).server(async ({ ne
       "form-action 'self'",
       "frame-ancestors 'none'",
       "img-src 'self' data: https://i.scdn.co https://mzstatic.com https://*.mzstatic.com https://e-cdns-images.dzcdn.net",
+      "media-src 'self' blob:",
       "style-src 'self' 'unsafe-inline'",
       "font-src 'self'",
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
