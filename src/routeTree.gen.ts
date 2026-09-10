@@ -34,6 +34,7 @@ import { Route as ApiAuthLogoutRouteImport } from './routes/api.auth.logout'
 import { Route as ApiAuthSessionRouteImport } from './routes/api.auth.session'
 import { Route as ApiRewardsShareRouteImport } from './routes/api.rewards.share'
 import { Route as ApiSandboxSessionRouteImport } from './routes/api.sandbox.session'
+import { Route as ApiTiktokPocRouteImport } from './routes/api.tiktok.poc'
 import { Route as ApiAuthGoogleCallbackRouteImport } from './routes/api.auth.google.callback'
 
 const IndexRoute = IndexRouteImport.update({
@@ -161,6 +162,11 @@ const ApiSandboxSessionRoute = ApiSandboxSessionRouteImport.update({
   path: '/api/sandbox/session',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTiktokPocRoute = ApiTiktokPocRouteImport.update({
+  id: '/api/tiktok/poc',
+  path: '/api/tiktok/poc',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthGoogleCallbackRoute = ApiAuthGoogleCallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
+  '/api/tiktok/poc': typeof ApiTiktokPocRoute
   '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRoutesByTo {
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
+  '/api/tiktok/poc': typeof ApiTiktokPocRoute
   '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRoutesById {
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
+  '/api/tiktok/poc': typeof ApiTiktokPocRoute
   '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRouteTypes {
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/api/auth/session'
     | '/api/rewards/share'
     | '/api/sandbox/session'
+    | '/api/tiktok/poc'
     | '/api/auth/google/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/api/auth/session'
     | '/api/rewards/share'
     | '/api/sandbox/session'
+    | '/api/tiktok/poc'
     | '/api/auth/google/callback'
   id:
     | '__root__'
@@ -336,6 +347,7 @@ export interface FileRouteTypes {
     | '/api/auth/session'
     | '/api/rewards/share'
     | '/api/sandbox/session'
+    | '/api/tiktok/poc'
     | '/api/auth/google/callback'
   fileRoutesById: FileRoutesById
 }
@@ -365,6 +377,7 @@ export interface RootRouteChildren {
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
   ApiRewardsShareRoute: typeof ApiRewardsShareRoute
   ApiSandboxSessionRoute: typeof ApiSandboxSessionRoute
+  ApiTiktokPocRoute: typeof ApiTiktokPocRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -544,6 +557,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSandboxSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tiktok/poc': {
+      id: '/api/tiktok/poc'
+      path: '/api/tiktok/poc'
+      fullPath: '/api/tiktok/poc'
+      preLoaderRoute: typeof ApiTiktokPocRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/google/callback': {
       id: '/api/auth/google/callback'
       path: '/callback'
@@ -592,6 +612,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSessionRoute: ApiAuthSessionRoute,
   ApiRewardsShareRoute: ApiRewardsShareRoute,
   ApiSandboxSessionRoute: ApiSandboxSessionRoute,
+  ApiTiktokPocRoute: ApiTiktokPocRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
