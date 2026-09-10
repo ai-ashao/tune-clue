@@ -40,7 +40,6 @@ export function IdentifyWorkbench() {
 
   useEffect(() => {
     if (source?.kind !== 'local-file') return
-
     const url = URL.createObjectURL(source.file)
     setPreviewUrl(url)
     return () => URL.revokeObjectURL(url)
@@ -182,6 +181,28 @@ export function IdentifyWorkbench() {
     window.dispatchEvent(new Event('tuneclue:credits-changed'))
   }
 
+  async function continueWithGoogle(sample?: File) {
+    if (!sample && source?.kind === 'tiktok-url') {
+      setPendingRecognitionSource(source)
+      window.location.assign(googleSignInUrl('/identify'))
+      return
+    }
+
+    try {
+      if (!sample) throw new Error('The recognition source is no longer available.')
+      await saveResumeSample(sample)
+      window.location.assign(googleSignInUrl('/identify?resume=1'))
+    } catch (error) {
+      setState({
+        status: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'TuneClue could not save this song search before sign-in.',
+      })
+    }
+  }
+
   if (!source && checkingResume) {
     return (
       <section className="tc-page">
@@ -207,6 +228,13 @@ export function IdentifyWorkbench() {
     )
   }
 
+  const sampleLength = duration > 0 ? Math.min(DEFAULT_SAMPLE_SECONDS, duration) : 0
+  const maxStart = Math.max(0, duration - sampleLength)
+  const safePosition = Math.min(position, maxStart)
+  const sampleEnd = safePosition + sampleLength
+  const selectionLeft = duration > 0 ? (safePosition / duration) * 100 : 0
+  const selectionWidth = duration > 0 ? Math.max((sampleLength / duration) * 100, 1.5) : 100
+
   return (
     <main className="tc-page">
       <a className="tc-back" href="/">
@@ -216,157 +244,209 @@ export function IdentifyWorkbench() {
       <p className="tc-page-kicker mt-5">Recognition workspace</p>
       <h1 className="tc-page-title">Choose the clearest music moment</h1>
       <p className="tc-page-lede">
-        Move the selector past dialogue or silence. TuneClue uses about {DEFAULT_SAMPLE_SECONDS}{' '}
-        seconds from the point you choose.
+        Move the selector past dialogue or silence. TuneClue uses a fixed{' '}
+        {`${DEFAULT_SAMPLE_SECONDS}-second`} sample from the point you choose.
       </p>
 
-      {source?.kind === 'local-file' ? (
-        <section className="tc-workbench">
-          <div className="tc-media-stage">
-            {source.file.type.startsWith('video/') ? (
-              // biome-ignore lint/a11y/useMediaCaption: local user-selected preview.
-              <video
-                controls
-                onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
-                src={previewUrl}
-              />
-            ) : (
-              // biome-ignore lint/a11y/useMediaCaption: local user-selected preview.
-              <audio
-                controls
-                onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
-                src={previewUrl}
-              />
-            )}
+      <section className="tc-workspace-shell" aria-live="polite">
+        {state.status === 'idle' && source?.kind === 'local-file' ? (
+          <div className="tc-selected-grid">
+            <section className="tc-preview-card">
+              <div className="tc-workspace-card-head">
+                <strong>Your clip</strong>
+                <a href="/">Change file</a>
+              </div>
+              <div className="tc-media-stage">
+                {source.file.type.startsWith('video/') ? (
+                  // biome-ignore lint/a11y/useMediaCaption: local user-selected preview.
+                  <video
+                    controls
+                    onLoadedMetadata={(event) => {
+                      const nextDuration = event.currentTarget.duration || 0
+                      setDuration(nextDuration)
+                      setPosition(preferredStart(nextDuration))
+                    }}
+                    src={previewUrl}
+                  />
+                ) : (
+                  // biome-ignore lint/a11y/useMediaCaption: local user-selected preview.
+                  <audio
+                    controls
+                    onLoadedMetadata={(event) => {
+                      const nextDuration = event.currentTarget.duration || 0
+                      setDuration(nextDuration)
+                      setPosition(preferredStart(nextDuration))
+                    }}
+                    src={previewUrl}
+                  />
+                )}
+              </div>
+              <div className="tc-file-strip">
+                <span>
+                  <strong>{source.file.name}</strong>
+                  <small>{formatBytes(source.file.size)} · local preview</small>
+                </span>
+                <a href="/">Remove</a>
+              </div>
+            </section>
+
+            <section className="tc-selection-card">
+              <div className="tc-workspace-card-head">
+                <strong>Choose the clearest moment</strong>
+                <span>
+                  {formatTime(safePosition)} — {formatTime(sampleEnd)}
+                </span>
+              </div>
+              <div className="tc-selection-body">
+                <p className="tc-selection-copy">
+                  Choose where the recognition sample should start. If less than{' '}
+                  {DEFAULT_SAMPLE_SECONDS} seconds remain, TuneClue uses the rest of the clip.
+                </p>
+                <div className="tc-wave" aria-hidden="true">
+                  <span
+                    className="tc-selection-window"
+                    style={{ left: `${selectionLeft}%`, width: `${selectionWidth}%` }}
+                  />
+                </div>
+                <input
+                  aria-label="Recognition sample start"
+                  className="tc-range"
+                  id={positionId}
+                  max={maxStart}
+                  min={0}
+                  onChange={(event) => setPosition(Number(event.target.value))}
+                  step={1}
+                  type="range"
+                  value={safePosition}
+                />
+                <div className="tc-range-labels">
+                  <span>00:00</span>
+                  <strong>{DEFAULT_SAMPLE_SECONDS}-second sample</strong>
+                  <span>{formatTime(duration)}</span>
+                </div>
+                <div className="tc-selected-action">
+                  <p className="tc-selected-note">
+                    <LockKeyhole aria-hidden="true" className="tc-selected-note-icon" size={13} />
+                    Only the short audio sample leaves your browser.
+                  </p>
+                  <Button
+                    className="tc-primary-action tc-workspace-action"
+                    onClick={() => runLocalRecognition(source.file)}
+                    type="button"
+                  >
+                    Find song →
+                  </Button>
+                </div>
+              </div>
+            </section>
           </div>
+        ) : null}
 
-          <div className="tc-controls">
-            <div className="flex items-center justify-between gap-4">
-              <label className="text-sm font-semibold" htmlFor={positionId}>
-                Sample starts at
-              </label>
-              <span className="font-mono text-xs font-semibold text-primary">
-                {formatTime(position)}
-              </span>
-            </div>
-            <input
-              className="tc-range mt-3"
-              id={positionId}
-              max={Math.max(0, duration - 1)}
-              min={0}
-              onChange={(event) => setPosition(Number(event.target.value))}
-              step={1}
-              type="range"
-              value={Math.min(position, Math.max(0, duration - 1))}
-            />
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-              <p className="tc-trust-note">
-                <LockKeyhole aria-hidden="true" size={13} />
-                Only the short recognition sample leaves the browser.
-              </p>
-              <Button
-                className="tc-primary-action"
-                disabled={state.status === 'working'}
-                onClick={() => runLocalRecognition(source.file)}
-                type="button"
-              >
-                {state.status === 'working' ? 'Working…' : 'Identify song'}
-              </Button>
-            </div>
+        {state.status === 'idle' && source?.kind === 'tiktok-url' ? (
+          <div className="tc-workspace-center tc-link-ready">
+            <p className="tc-page-kicker">TikTok link</p>
+            <h2 className="tc-workspace-title">Ready to identify this video</h2>
+            <p className="tc-workspace-copy break-all">{source.url}</p>
+            <Button
+              className="tc-primary-action tc-workspace-action"
+              onClick={() => runTikTokRecognition(source.url)}
+              type="button"
+            >
+              Identify song →
+            </Button>
           </div>
-        </section>
-      ) : source?.kind === 'tiktok-url' ? (
-        <section className="tc-state-card tc-state-card-highlight">
-          <p className="tc-page-kicker">TikTok link</p>
-          <p className="mt-2 break-all text-sm text-muted-foreground">{source.url}</p>
-          <Button
-            className="tc-primary-action mt-4"
-            disabled={state.status === 'working'}
-            onClick={() => runTikTokRecognition(source.url)}
-            type="button"
-          >
-            {state.status === 'working' ? 'Working…' : 'Identify song'}
-          </Button>
-        </section>
-      ) : null}
+        ) : null}
 
-      {state.status === 'working' ? (
-        <p className="tc-inline-status" aria-live="polite">
-          {state.message}
-        </p>
-      ) : null}
+        {state.status === 'working' ? (
+          <div className="tc-workspace-center tc-processing">
+            <span className="tc-loader-ring" aria-hidden="true" />
+            <h2 className="tc-workspace-title">Identifying the song…</h2>
+            <p className="tc-workspace-copy">{state.message}</p>
+            <span className="tc-progress-track" aria-hidden="true">
+              <i />
+            </span>
+          </div>
+        ) : null}
 
-      {state.status === 'auth-required' ? (
-        <section className="tc-state-card tc-state-card-highlight">
-          <p className="tc-page-kicker">Free recognition</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight">
-            Unlock your free song search
-          </h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            Continue with Google to identify this song for free. No card required.
-          </p>
-          <Button
-            className="tc-primary-action mt-4"
-            onClick={async () => {
-              if (!state.sample && source?.kind === 'tiktok-url') {
-                setPendingRecognitionSource(source)
-                window.location.assign(googleSignInUrl('/identify'))
-                return
-              }
+        {state.status === 'auth-required' ? (
+          <div className="tc-workspace-center tc-auth-gate">
+            <span className="tc-gate-icon">
+              <LockKeyhole aria-hidden="true" size={28} />
+            </span>
+            <h2 className="tc-workspace-title">Sign in to continue</h2>
+            <p className="tc-workspace-copy">
+              Sign in to get a free song search and continue identifying. No card required.
+            </p>
+            <Button
+              className="tc-google-action tc-workspace-action"
+              onClick={() => continueWithGoogle(state.sample)}
+              type="button"
+            >
+              <span aria-hidden="true">G</span>
+              Continue with Google
+            </Button>
+            <button
+              className="tc-workspace-back"
+              onClick={() => setState({ status: 'idle' })}
+              type="button"
+            >
+              ← Back
+            </button>
+          </div>
+        ) : null}
 
-              try {
-                if (!state.sample) throw new Error('The recognition source is no longer available.')
-                await saveResumeSample(state.sample)
-                window.location.assign(googleSignInUrl('/identify?resume=1'))
-              } catch (error) {
-                setState({
-                  status: 'error',
-                  message:
-                    error instanceof Error
-                      ? error.message
-                      : 'TuneClue could not save this song search before sign-in.',
-                })
-              }
-            }}
-            type="button"
-          >
-            Continue with Google
-          </Button>
-        </section>
-      ) : null}
+        {state.status === 'insufficient-credits' ? (
+          <div className="tc-workspace-center tc-auth-gate">
+            <span className="tc-gate-icon">
+              <Sparkles aria-hidden="true" size={28} />
+            </span>
+            <h2 className="tc-workspace-title">Need another song search?</h2>
+            <p className="tc-workspace-copy">
+              Earn up to three free credits by opening TuneClue’s share composer once on WhatsApp,
+              Telegram, and X.
+            </p>
+            <a className="tc-primary-action tc-workspace-action" href="/earn-credits">
+              <Sparkles aria-hidden="true" size={14} />
+              Earn Free Credits
+            </a>
+          </div>
+        ) : null}
 
-      {state.status === 'insufficient-credits' ? (
-        <section className="tc-state-card tc-state-card-highlight">
-          <p className="tc-page-kicker">Free credits</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight">Need another song search?</h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Earn up to three free credits by opening TuneClue’s share composer once on WhatsApp,
-            Telegram, and X.
-          </p>
-          <a className="tc-header-signin mt-4" href="/earn-credits">
-            <Sparkles aria-hidden="true" size={14} />
-            Earn Free Credits
-          </a>
-        </section>
-      ) : null}
+        {state.status === 'error' ? (
+          <div className="tc-workspace-center tc-auth-gate">
+            <span className="tc-gate-icon tc-gate-icon-error">!</span>
+            <h2 className="tc-workspace-title">Recognition could not finish</h2>
+            <p className="tc-workspace-copy">{state.message}</p>
+            <button
+              className="tc-workspace-back"
+              onClick={() => setState({ status: 'idle' })}
+              type="button"
+            >
+              ← Back to source
+            </button>
+          </div>
+        ) : null}
 
-      {state.status === 'error' ? (
-        <div className="tc-state-card border-destructive/30">
-          <p className="text-sm font-semibold">Recognition could not finish</p>
-          <p className="mt-1 text-sm text-muted-foreground">{state.message}</p>
-        </div>
-      ) : null}
-
-      {state.status === 'done' ? (
-        <div className="mt-5">
-          <RecognitionResult remainingCredits={state.remainingCredits} result={state.result} />
-        </div>
-      ) : null}
+        {state.status === 'done' ? (
+          <div className="tc-workspace-result">
+            <RecognitionResult remainingCredits={state.remainingCredits} result={state.result} />
+          </div>
+        ) : null}
+      </section>
     </main>
   )
+}
+
+function preferredStart(duration: number) {
+  return Math.min(18, Math.max(0, duration - Math.min(DEFAULT_SAMPLE_SECONDS, duration)))
 }
 
 function formatTime(seconds: number) {
   const safe = Math.max(0, Math.floor(seconds))
   return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, '0')}`
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }

@@ -85,6 +85,12 @@ export function ToolLandingPage({
             data-tool-title
           >
             {config.hero.title}
+            {config.hero.accentText ? (
+              <>
+                {' '}
+                <span data-tool-title-accent>{config.hero.accentText}</span>
+              </>
+            ) : null}
           </h1>
 
           <p

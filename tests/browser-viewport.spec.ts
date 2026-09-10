@@ -87,7 +87,6 @@ test('local upload reaches the identify workbench with the pending file', async 
     mimeType: 'audio/wav',
     buffer: Buffer.from('RIFF0000WAVEfmt '),
   })
-  await page.getByRole('button', { name: 'Find song' }).click()
 
   await expect(page).toHaveURL(/\/identify$/)
   await expect(

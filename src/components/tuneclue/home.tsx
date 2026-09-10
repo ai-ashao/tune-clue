@@ -24,7 +24,8 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
   },
   hero: {
     eyebrow: 'Video Song Finder',
-    title: 'Find the Song From a Video',
+    title: 'Find Song',
+    accentText: 'From a Video',
     description:
       'Use this free online song finder: paste a public TikTok URL or upload a local video or audio clip, then identify the song in one focused workspace.',
   },

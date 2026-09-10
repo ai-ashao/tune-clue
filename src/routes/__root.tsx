@@ -38,6 +38,7 @@ export const Route = createRootRoute({
         : []),
     ],
     links: [
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       { rel: 'stylesheet', href: styles },
       { rel: 'stylesheet', href: tuneClueTheme },
     ],
@@ -75,7 +76,7 @@ function RootComponent() {
     : undefined
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <header className="ship-header" data-site-header data-product-surface-mode={surfaceMode}>
         <div className="ship-header-inner">
           <Brand locale={locale} />
@@ -175,7 +176,11 @@ function Brand({ locale }: Readonly<{ locale: Locale }>) {
       aria-label={`${site.name} ${copy.nav.home}`}
     >
       <span className="ship-brand-mark">
-        {productConfig.brand.mark}
+        {productConfig.brand.name === 'TuneClue' ? (
+          <img alt="" height="36" src="/brand/tuneclue-mark-dark.svg" width="36" />
+        ) : (
+          productConfig.brand.mark
+        )}
         <i />
       </span>
       <span>{site.name}</span>

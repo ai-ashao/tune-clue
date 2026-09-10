@@ -137,6 +137,7 @@ export type ToolLandingConfig = {
   hero: {
     eyebrow?: string
     title: string
+    accentText?: string
     description: string
   }
   experience: ToolExperience

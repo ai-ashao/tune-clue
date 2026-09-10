@@ -6,6 +6,7 @@ import { setPendingRecognitionSource } from '@/lib/recognition/pending-source'
 import { tuneClueFlags } from '@/lib/tuneclue-flags'
 
 type SourceMode = 'upload' | 'tiktok'
+const MAX_FILE_BYTES = 40 * 1024 * 1024
 
 export function TuneClueSourceTool() {
   const navigate = useNavigate()
@@ -15,6 +16,7 @@ export function TuneClueSourceTool() {
   const [file, setFile] = useState<File>()
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string>()
+  const [dragging, setDragging] = useState(false)
   const [mounted, setMounted] = useState(false)
   const tiktokAvailable = tuneClueFlags.tiktok
 
@@ -23,6 +25,20 @@ export function TuneClueSourceTool() {
   function chooseMode(next: SourceMode) {
     setMode(next)
     setError(undefined)
+  }
+
+  function acceptFile(nextFile?: File) {
+    setDragging(false)
+    setError(undefined)
+    if (!nextFile) return
+    if (nextFile.size > MAX_FILE_BYTES) {
+      setFile(undefined)
+      setError('Choose a file smaller than 40 MB.')
+      return
+    }
+    setFile(nextFile)
+    setPendingRecognitionSource({ kind: 'local-file', file: nextFile })
+    void navigate({ to: '/identify' })
   }
 
   async function continueToIdentify() {
@@ -88,18 +104,42 @@ export function TuneClueSourceTool() {
             accept="audio/*,video/mp4,video/webm"
             className="sr-only"
             id={inputId}
-            onChange={(event) => setFile(event.currentTarget.files?.[0])}
+            onChange={(event) => acceptFile(event.currentTarget.files?.[0])}
             type="file"
           />
-          <label className="tc-dropzone" htmlFor={inputId}>
+          <label
+            className={`tc-dropzone${dragging ? ' is-dragging' : ''}`}
+            htmlFor={inputId}
+            onDragEnter={(event) => {
+              event.preventDefault()
+              setDragging(true)
+            }}
+            onDragLeave={(event) => {
+              event.preventDefault()
+              if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                setDragging(false)
+              }
+            }}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={(event) => {
+              event.preventDefault()
+              acceptFile(event.dataTransfer.files[0])
+            }}
+          >
             <span>
               <span className="tc-dropzone-icon">
                 <UploadCloud aria-hidden="true" size={21} strokeWidth={1.8} />
               </span>
               <span className="tc-dropzone-title">
-                {file ? 'Choose a different clip' : 'Choose a video or audio clip'}
+                {file ? 'Choose a different clip' : 'Upload a video or audio clip'}
               </span>
-              <span className="tc-dropzone-copy">MP3, WAV, M4A, MP4 or WebM · up to 40 MB</span>
+              <span className="tc-dropzone-copy">
+                Drop a file here, or choose one from your device.
+              </span>
+              <span className="tc-choose-file">Choose file</span>
+              <span className="tc-file-rules">
+                MP3, WAV, M4A, MP4 or WebM · Max file size 40 MB
+              </span>
             </span>
           </label>
 
@@ -113,36 +153,38 @@ export function TuneClueSourceTool() {
         </div>
       ) : (
         <div className="tc-link-panel">
-          <span className="tc-link-icon">
-            <Link2 aria-hidden="true" size={23} />
-          </span>
-          <h2 className="tc-link-title">Paste a TikTok video link</h2>
-          <p className="tc-link-copy">
-            Use a public TikTok URL and TuneClue will identify the music from it.
-          </p>
-          <div className="tc-link-field">
-            <label className="sr-only" htmlFor={urlId}>
-              TikTok video link
-            </label>
-            <Link2 aria-hidden="true" size={16} />
-            <input
-              id={urlId}
-              onChange={(event) => setUrl(event.target.value)}
-              placeholder="https://www.tiktok.com/@creator/video/..."
-              type="url"
-              value={url}
-            />
-            <Button
-              className="tc-link-action"
-              data-tool-primary-action
-              onClick={continueToIdentify}
-              type="button"
-            >
-              Find song
-              <ArrowRight aria-hidden="true" size={15} />
-            </Button>
+          <div className="tc-link-inner">
+            <span className="tc-link-icon">
+              <Link2 aria-hidden="true" size={23} />
+            </span>
+            <h2 className="tc-link-title">Paste a TikTok video link</h2>
+            <p className="tc-link-copy">
+              Use a public TikTok URL and TuneClue will identify the music from it.
+            </p>
+            <div className="tc-link-field">
+              <label className="sr-only" htmlFor={urlId}>
+                TikTok video link
+              </label>
+              <Link2 aria-hidden="true" size={16} />
+              <input
+                id={urlId}
+                onChange={(event) => setUrl(event.target.value)}
+                placeholder="https://www.tiktok.com/@creator/video/..."
+                type="url"
+                value={url}
+              />
+              <Button
+                className="tc-link-action"
+                data-tool-primary-action
+                onClick={continueToIdentify}
+                type="button"
+              >
+                Find song
+                <ArrowRight aria-hidden="true" size={15} />
+              </Button>
+            </div>
+            <p className="tc-link-hint">Public TikTok links only.</p>
           </div>
-          <p className="tc-link-hint">Public TikTok links only.</p>
         </div>
       )}
 

@@ -1,34 +1,52 @@
-# TuneClue homepage reference pattern
+# TuneClue Stateful Workspace — Scheme C
 
-## Visual policy
+## Evidence
 
-- Mode: target-native migration.
-- Preserve TuneClue identity, purple/blue/mint tokens, routes, recognition behavior, TanStack Start, and Cloudflare boundaries.
-- Reconstruct the supplied prototype's hierarchy, section rhythm, card density, and responsive sequence.
-- Do not ship placeholder Blog links or static-demo recognition behavior as production features.
+- Reference: `/Users/wxj/Downloads/tuneclue-stateful-workspace-prototype-v12-scheme-c.html`
+- Desktop evidence captured at 1280 × 720.
+- Responsive rules inspected at 900 px and 560 px breakpoints.
+- Reference assets are limited to inline geometry and generic interface icons; no external assets are reused.
 
-## Page silhouette
+## Execution mode
 
-1. Sticky 68px header with brand, four compact navigation links, and a strong Sign in action.
-2. Centered hero with eyebrow, large gradient H1, concise description, and a 900px recognition workspace.
-3. One compact trust row directly beneath the workspace.
-4. Full-width soft band for three numbered How it works cards.
-5. Plain band for three capability cards with icon badges.
-6. Soft band containing one elevated FAQ panel with stacked accordions.
-7. Dark gradient closing CTA inside the main container.
-8. Existing product footer and real legal/tool links.
+Target-native migration using the approved TuneClue Scheme C prototype as the visual source. The
+TanStack Start routes, Cloudflare runtime, real TikTok/local-file recognition, Google sign-in,
+credits, privacy behavior, and SEO registry remain authoritative.
 
-## Geometry and responsive behavior
+## Pattern specification
 
-- Desktop content width: 1120px; primary workspace: 900px; FAQ: 840px.
-- Section spacing: approximately 48–52px vertically with borders between soft bands.
-- Cards: three columns, 14px gaps, 18px radius, restrained elevation.
-- Mobile: single-column cards, compact hero, URL action below the input, hidden desktop navigation, no horizontal overflow.
-- The local-file flow still navigates to the separate `/identify` workbench after selection.
+- Sticky 68 px header with a compact dark music mark, four low-emphasis navigation links, and one
+  dark sign-in action.
+- Centered hero with a small ruled eyebrow, 44–70 px headline, cyan-to-pink accent text, and a
+  single short explanatory paragraph.
+- Primary workspace capped near 900 px, with a white 26 px-radius shell, two equal mode tabs, and a
+  minimum 270 px task surface.
+- Active controls are near-black. Cyan indicates selection and progress; pink is decorative only.
+- URL state centers an icon, title, explanation, single-line field, primary action, and support note.
+- Upload state uses the same geometry with a dashed drop target and explicit file constraints.
+- Selected local-file state uses a 1:1 preview/selection grid, a fixed 10-second window, one start
+  selector, privacy copy, and one primary action.
+- Auth, processing, errors, credits, and results replace the work area instead of accumulating as
+  unrelated cards.
+- Supporting content carries a low-opacity cyan/pink gradient rhythm through alternating soft bands,
+  three-card grids, the compact FAQ panel, state surfaces, and footer. The dark closing CTA remains
+  the strongest non-hero gradient so the page still has a clear visual endpoint.
+- Below 900 px, grids stack. Below 560 px, URL input/action stack, actions become full width, and
+  content side padding becomes 12 px.
 
-## Product truth and deliberate deviations
+## Product-truth deviations
 
-- Public TikTok URL and local upload are real entry modes.
-- Local-file recognition uses a fixed sample of about 10 seconds; URL audio duration depends on the public source.
-- Blog is omitted because no real TuneClue editorial routes have been built. The header uses the real TikTok Finder route instead.
-- Google OAuth remains a production dependency; unavailable auth is disclosed rather than simulated.
+- A valid local file continues to `/identify`; the editor is not embedded on the indexable landing
+  page, per the repository's file-tool contract.
+- Only public TikTok URLs are accepted; the prototype's generic video-URL wording is narrowed.
+- Recognition, auth, credits, and result data use real application services. Demo matches, fake
+  progress percentages, and placeholder listening actions are not implemented.
+- Starter guide content remains disabled. Recognition tips occupy the reference's additional
+  editorial-density role without presenting a fake blog.
+
+## QA gate
+
+- Verify desktop 1440 × 900, tablet 900 × 900, and mobile 390 × 844.
+- Verify URL validation, upload transition, selected-file workbench, fixed sample window, auth/error
+  state, focus visibility, reduced motion, and zero horizontal overflow.
+- Run `pnpm verify`.
