@@ -139,7 +139,10 @@ export function ToolLandingPage({
       <HelpfulGuidance blocks={config.helpfulGuidance} />
 
       {config.faq?.items.length ? (
-        <section className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
+        <section
+          className="mx-auto w-full max-w-3xl scroll-mt-20 px-4 py-10 sm:px-6"
+          id={config.toolId === 'video-song-finder' ? 'faq' : undefined}
+        >
           <h2 className="text-2xl font-semibold tracking-tight">{config.faq.title}</h2>
           <div className="mt-5 divide-y rounded-xl border">
             {config.faq.items.map((item) => (

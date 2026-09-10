@@ -55,11 +55,17 @@ function RootComponent() {
   const surfaceMode = surfaceModeForPath(pathname)
   const navigation = siteNavigationForMode(surfaceMode)
 
-  const nav = navigation.header.links.flatMap((linkId) => {
+  const standardNav = navigation.header.links.flatMap((linkId) => {
     if (linkId === 'guides' && navigation.guidesPlacement !== 'header') return []
     const resolved = resolveHeaderLink(linkId, locale, navigation)
     return resolved ? [resolved] : []
   })
+  const customNav = (navigation.header.customLinks ?? []).flatMap((link) => {
+    const label = localizedNavigationValue(link.label, locale)
+    const href = localizedNavigationValue(link.href, locale)
+    return label && href ? [{ id: link.id, label, href }] : []
+  })
+  const nav = [...standardNav, ...customNav]
 
   const headerCta = navigation.header.cta
     ? {
@@ -81,26 +87,30 @@ function RootComponent() {
             ))}
           </nav>
           <div className="ship-header-actions">
-            <nav className="ship-language-menu" aria-label={copy.languageSwitcher}>
-              <Globe2 aria-hidden="true" />
-              <span className="ship-language-current">{localeConfig[locale].label}</span>
-              {localeAlternates.length > 0 && <ChevronDown aria-hidden="true" />}
-              {localeAlternates.map((alternate) => (
-                <a
-                  aria-label={
-                    locale === 'zh-CN' ? `切换到${alternate.label}` : `Switch to ${alternate.label}`
-                  }
-                  className="locale-switch"
-                  data-locale-switch
-                  href={alternate.path}
-                  hrefLang={alternate.locale}
-                  key={alternate.locale}
-                  lang={alternate.locale}
-                >
-                  {alternate.shortLabel}
-                </a>
-              ))}
-            </nav>
+            {localeAlternates.length > 0 ? (
+              <nav className="ship-language-menu" aria-label={copy.languageSwitcher}>
+                <Globe2 aria-hidden="true" />
+                <span className="ship-language-current">{localeConfig[locale].label}</span>
+                <ChevronDown aria-hidden="true" />
+                {localeAlternates.map((alternate) => (
+                  <a
+                    aria-label={
+                      locale === 'zh-CN'
+                        ? `切换到${alternate.label}`
+                        : `Switch to ${alternate.label}`
+                    }
+                    className="locale-switch"
+                    data-locale-switch
+                    href={alternate.path}
+                    hrefLang={alternate.locale}
+                    key={alternate.locale}
+                    lang={alternate.locale}
+                  >
+                    {alternate.shortLabel}
+                  </a>
+                ))}
+              </nav>
+            ) : null}
             {surfaceMode === 'tool' ? <AuthHeaderControls /> : null}
             {headerCta?.label && headerCta.href ? (
               <Button asChild size="sm" data-header-cta>

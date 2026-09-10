@@ -59,6 +59,14 @@ for (const viewport of viewports) {
       await expectInsideViewport(page.locator('[data-tool-completion]'), viewport.height)
       await expect(page.locator('[data-site-header] [data-header-cta]')).toHaveCount(0)
 
+      if (viewport.name === 'desktop') {
+        await expect(page.locator('[data-site-header]')).toContainText('How it works')
+        await expect(page.locator('[data-site-header]')).toContainText('FAQ')
+        await expect(page.locator('[data-site-header]')).toContainText('About')
+        await expect(page.locator('[data-site-header]')).toContainText('TikTok Finder')
+      }
+      await expect(page.locator('[data-site-header]')).toContainText('Sign in')
+
       const primaryAction = page.locator('[data-tool-primary-action]')
       await expect(primaryAction).toBeVisible()
       await expect(primaryAction).toBeEnabled()

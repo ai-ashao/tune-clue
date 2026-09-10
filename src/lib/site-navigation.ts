@@ -35,11 +35,18 @@ export type HeaderCtaConfig = {
   href: LocalizedValue
 }
 
+export type HeaderCustomLink = {
+  id: string
+  label: LocalizedValue
+  href: LocalizedValue
+}
+
 export type SiteNavigationConfig = {
   guidesPlacement: GuidesPlacement
   header: {
     links: ReadonlyArray<HeaderLinkId>
     toolsHref?: LocalizedValue
+    customLinks?: ReadonlyArray<HeaderCustomLink>
     cta?: HeaderCtaConfig
   }
   footer: {
@@ -91,14 +98,37 @@ export function siteNavigationForMode(
   const guidesEnabled = productSurfaceEnabled('guides', resolvedConfig)
 
   if (mode === 'tool') {
+    const tuneClueHeader =
+      resolvedConfig.brand.name === 'TuneClue'
+        ? {
+            links: [] as ReadonlyArray<HeaderLinkId>,
+            customLinks: [
+              {
+                id: 'how-it-works',
+                label: { en: 'How it works' },
+                href: { en: '/#workflow' },
+              },
+              { id: 'faq', label: { en: 'FAQ' }, href: { en: '/#faq' } },
+              { id: 'about', label: { en: 'About' }, href: { en: '/about' } },
+              {
+                id: 'tiktok-finder',
+                label: { en: 'TikTok Finder' },
+                href: { en: '/tiktok-song-finder' },
+              },
+            ] satisfies ReadonlyArray<HeaderCustomLink>,
+          }
+        : undefined
+
     return {
       ...toolSiteNavigation,
       guidesPlacement: guidesEnabled ? toolSiteNavigation.guidesPlacement : 'none',
       header: {
         ...toolSiteNavigation.header,
-        links: toolSiteNavigation.header.links.filter(
-          (linkId) => linkId !== 'guides' || guidesEnabled,
-        ),
+        ...(tuneClueHeader ?? {
+          links: toolSiteNavigation.header.links.filter(
+            (linkId) => linkId !== 'guides' || guidesEnabled,
+          ),
+        }),
       },
     }
   }
@@ -206,6 +236,16 @@ export function validateSiteNavigation(
   }
   if (config.header.links.includes('tools') && !config.header.toolsHref) {
     issues.push('Header includes tools but no toolsHref is configured.')
+  }
+
+  for (const link of config.header.customLinks ?? []) {
+    if (!link.id.trim()) issues.push('Header custom links require an id.')
+    if (!Object.values(link.label).some(Boolean)) {
+      issues.push(`Header custom link ${link.id || '(missing id)'} requires a label.`)
+    }
+    if (!Object.values(link.href).some(Boolean)) {
+      issues.push(`Header custom link ${link.id || '(missing id)'} requires an href.`)
+    }
   }
 
   if (config.header.cta) {

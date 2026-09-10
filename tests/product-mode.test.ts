@@ -78,7 +78,13 @@ describe('product modes', () => {
       ...productConfig,
       mode: 'tool',
     })
-    expect(navigation.header.links).toEqual(['tools'])
+    expect(navigation.header.links).toEqual([])
+    expect(navigation.header.customLinks?.map((link) => link.id)).toEqual([
+      'how-it-works',
+      'faq',
+      'about',
+      'tiktok-finder',
+    ])
     expect(navigation.guidesPlacement).toBe('none')
   })
 

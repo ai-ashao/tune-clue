@@ -20,7 +20,13 @@ export function AuthHeaderControls() {
     }
   }, [])
 
-  if (!session?.available) return null
+  if (!session?.available) {
+    return (
+      <a className="tc-header-signin" href="/login">
+        Sign in
+      </a>
+    )
+  }
 
   if (!session.authenticated) {
     return (

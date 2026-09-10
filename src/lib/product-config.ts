@@ -18,7 +18,7 @@ export const productConfig: ProductConfig = {
   mode: 'tool',
   brand: {
     name: 'TuneClue',
-    mark: 'TC',
+    mark: '♫',
     description: 'Find the song playing in a video or supported social-video link.',
   },
   starter: {
