@@ -4,7 +4,7 @@
   "compatibility_date": "2026-08-06",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
-  "workers_dev": true,
+  "workers_dev": false,
   "routes": [
     { "pattern": "tuneclue.com", "custom_domain": true },
     { "pattern": "www.tuneclue.com", "custom_domain": true }
@@ -13,15 +13,15 @@
     "SHIPLEAN_SANDBOX": "false"
   }
 
-  // Google auth + credits require D1.
-  // Create the database first:
-  //   pnpm exec wrangler d1 create tune-clue
-  // Then add the generated database_id and uncomment:
+  // IMPORTANT:
+  // Commit the real D1 binding after copying the database_id from Cloudflare.
+  // Do not leave production dependent only on a Dashboard-side binding.
+  //
   // ,"d1_databases": [
   //   {
   //     "binding": "TUNECLUE_DB",
   //     "database_name": "tune-clue",
-  //     "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+  //     "database_id": "REPLACE_WITH_REAL_DATABASE_ID",
   //     "migrations_dir": "migrations"
   //   }
   // ]

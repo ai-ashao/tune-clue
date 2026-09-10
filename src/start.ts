@@ -1,5 +1,17 @@
 import { createMiddleware, createStart } from '@tanstack/react-start'
 
+const canonicalHost = createMiddleware({ type: 'request' }).server(async ({ request, next }) => {
+  const url = new URL(request.url)
+
+  if (url.hostname === 'www.tuneclue.com') {
+    url.hostname = 'tuneclue.com'
+    url.port = ''
+    return Response.redirect(url.toString(), 308)
+  }
+
+  return next()
+})
+
 const securityHeaders = createMiddleware({ type: 'request' }).server(async ({ next }) => {
   const result = await next()
   const headers = new Headers(result.response.headers)
@@ -34,5 +46,5 @@ const securityHeaders = createMiddleware({ type: 'request' }).server(async ({ ne
 })
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [securityHeaders],
+  requestMiddleware: [canonicalHost, securityHeaders],
 }))

@@ -1,3 +1,4 @@
+import { Copy, Sparkles } from 'lucide-react'
 import type { RecognitionResult as Result } from '@/lib/recognition/types'
 
 export function RecognitionResult({
@@ -6,10 +7,11 @@ export function RecognitionResult({
 }: Readonly<{ result: Result; remainingCredits: number }>) {
   if (result.status === 'no-match') {
     return (
-      <div className="rounded-xl border bg-card p-5">
-        <h2 className="font-semibold">No song match found</h2>
+      <div className="tc-result-card">
+        <p className="tc-result-label">No match</p>
+        <h2 className="mt-2 text-xl font-semibold tracking-tight">No song match found</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Try a different point in the clip where the music is clearer.
+          Try another point in the clip where the music is clearer.
         </p>
         <CreditFooter remainingCredits={remainingCredits} />
       </div>
@@ -24,24 +26,17 @@ export function RecognitionResult({
   ].filter((item): item is [string, string] => Boolean(item[1]))
 
   return (
-    <section className="rounded-2xl border bg-card p-5 shadow-sm" aria-live="polite">
+    <section className="tc-result-card" aria-live="polite">
       <div className="flex items-start gap-4">
         {result.artworkUrl ? (
-          <img
-            alt=""
-            className="h-20 w-20 rounded-xl border object-cover"
-            height={80}
-            loading="lazy"
-            src={result.artworkUrl}
-            width={80}
-          />
+          <div className="tc-result-art">
+            <img alt="" height={86} loading="lazy" src={result.artworkUrl} width={86} />
+          </div>
         ) : null}
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-            Song found
-          </p>
-          <h2 className="mt-1 truncate text-xl font-semibold">{result.title}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{result.artist}</p>
+          <p className="tc-result-label">Song found</p>
+          <h2 className="mt-1 truncate text-2xl font-semibold tracking-tight">{result.title}</h2>
+          <p className="mt-1 text-sm font-medium text-muted-foreground">{result.artist}</p>
           {result.album ? (
             <p className="mt-1 text-xs text-muted-foreground">{result.album}</p>
           ) : null}
@@ -52,7 +47,7 @@ export function RecognitionResult({
         <div className="mt-5 flex flex-wrap gap-2">
           {links.map(([label, href]) => (
             <a
-              className="inline-flex min-h-9 items-center rounded-lg border px-3 text-sm font-medium hover:bg-muted/40"
+              className="tc-service-link"
               href={href}
               key={label}
               rel="noopener noreferrer"
@@ -65,10 +60,11 @@ export function RecognitionResult({
       ) : null}
 
       <button
-        className="mt-4 text-sm font-medium underline underline-offset-4"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
         onClick={() => navigator.clipboard?.writeText(`${result.title} — ${result.artist}`)}
         type="button"
       >
+        <Copy aria-hidden="true" size={14} />
         Copy song and artist
       </button>
 
@@ -79,17 +75,17 @@ export function RecognitionResult({
 
 function CreditFooter({ remainingCredits }: Readonly<{ remainingCredits: number }>) {
   return (
-    <div className="mt-5 border-t pt-4">
+    <div className="tc-credit-footer">
       <p className="text-xs text-muted-foreground">
-        {remainingCredits} {remainingCredits === 1 ? 'free search' : 'free searches'} remaining.
+        {remainingCredits} {remainingCredits === 1 ? 'free search' : 'free searches'} remaining
       </p>
-      <p className="mt-2 text-sm">
-        Want more free searches?{' '}
-        <a className="font-medium underline underline-offset-4" href="/earn-credits">
-          Open share composers to earn up to 3 free credits
-        </a>
-        .
-      </p>
+      <a
+        className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        href="/earn-credits"
+      >
+        <Sparkles aria-hidden="true" size={13} />
+        Earn up to 3 free credits
+      </a>
     </div>
   )
 }

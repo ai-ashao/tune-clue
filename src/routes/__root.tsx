@@ -24,6 +24,7 @@ import {
   siteNavigationForMode,
 } from '@/lib/site-navigation'
 import styles from '@/styles.css?url'
+import tuneClueTheme from '@/tuneclue-theme.css?url'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -36,7 +37,10 @@ export const Route = createRootRoute({
         ? [{ name: 'google-site-verification', content: publicEnv.googleSiteVerification }]
         : []),
     ],
-    links: [{ rel: 'stylesheet', href: styles }],
+    links: [
+      { rel: 'stylesheet', href: styles },
+      { rel: 'stylesheet', href: tuneClueTheme },
+    ],
   }),
   component: RootComponent,
   shellComponent: RootDocument,

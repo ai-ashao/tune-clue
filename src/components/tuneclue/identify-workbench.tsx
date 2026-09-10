@@ -1,3 +1,4 @@
+import { ArrowLeft, LockKeyhole, Sparkles } from 'lucide-react'
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { fetchAuthSession, googleSignInUrl } from '@/lib/auth/client'
@@ -140,21 +141,23 @@ export function IdentifyWorkbench() {
 
   if (!source && checkingResume) {
     return (
-      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <p className="text-sm text-muted-foreground">Restoring your song search…</p>
+      <section className="tc-page">
+        <p className="tc-inline-status">Restoring your song search…</p>
       </section>
     )
   }
 
   if (!source && state.status === 'idle') {
     return (
-      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Choose the source again</h1>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+      <section className="tc-page">
+        <p className="tc-page-kicker">Video Song Finder</p>
+        <h1 className="tc-page-title">Choose the source again</h1>
+        <p className="tc-page-lede">
           TuneClue keeps local files only in temporary browser memory. Refreshing this workbench
           clears that file.
         </p>
-        <a className="mt-5 inline-flex text-sm font-medium underline underline-offset-4" href="/">
+        <a className="tc-back mt-5" href="/">
+          <ArrowLeft aria-hidden="true" size={14} />
           Back to Video Song Finder
         </a>
       </section>
@@ -162,38 +165,49 @@ export function IdentifyWorkbench() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
-      <a className="text-sm text-muted-foreground hover:text-foreground" href="/">
-        ← Back
+    <main className="tc-page">
+      <a className="tc-back" href="/">
+        <ArrowLeft aria-hidden="true" size={14} />
+        Back
       </a>
-      <h1 className="mt-4 text-3xl font-semibold tracking-tight">Identify this song</h1>
+      <p className="tc-page-kicker mt-5">Recognition workspace</p>
+      <h1 className="tc-page-title">Choose the clearest music moment</h1>
+      <p className="tc-page-lede">
+        Move the selector past dialogue or silence. TuneClue uses about {DEFAULT_SAMPLE_SECONDS}{' '}
+        seconds from the point you choose.
+      </p>
 
       {source?.kind === 'local-file' ? (
-        <section className="mt-6 rounded-2xl border bg-card p-4">
-          {source.file.type.startsWith('video/') ? (
-            // biome-ignore lint/a11y/useMediaCaption: This previews user-selected local media; TuneClue does not provide or publish its content.
-            <video
-              className="max-h-72 w-full rounded-xl bg-black"
-              controls
-              onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
-              src={previewUrl}
-            />
-          ) : (
-            // biome-ignore lint/a11y/useMediaCaption: This previews user-selected local media; TuneClue does not provide or publish its content.
-            <audio
-              className="w-full"
-              controls
-              onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
-              src={previewUrl}
-            />
-          )}
+        <section className="tc-workbench">
+          <div className="tc-media-stage">
+            {source.file.type.startsWith('video/') ? (
+              // biome-ignore lint/a11y/useMediaCaption: local user-selected preview.
+              <video
+                controls
+                onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
+                src={previewUrl}
+              />
+            ) : (
+              // biome-ignore lint/a11y/useMediaCaption: local user-selected preview.
+              <audio
+                controls
+                onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
+                src={previewUrl}
+              />
+            )}
+          </div>
 
-          <div className="mt-5">
-            <label className="text-sm font-medium" htmlFor={positionId}>
-              Where does the clearest music start? {formatTime(position)}
-            </label>
+          <div className="tc-controls">
+            <div className="flex items-center justify-between gap-4">
+              <label className="text-sm font-semibold" htmlFor={positionId}>
+                Sample starts at
+              </label>
+              <span className="font-mono text-xs font-semibold text-primary">
+                {formatTime(position)}
+              </span>
+            </div>
             <input
-              className="mt-2 w-full"
+              className="tc-range mt-3"
               id={positionId}
               max={Math.max(0, duration - 1)}
               min={0}
@@ -202,46 +216,49 @@ export function IdentifyWorkbench() {
               type="range"
               value={Math.min(position, Math.max(0, duration - 1))}
             />
-            <p className="mt-1 text-xs text-muted-foreground">
-              TuneClue will locally decode about {DEFAULT_SAMPLE_SECONDS} seconds from this point,
-              convert it to a small WAV sample, and send only that sample for recognition.
-            </p>
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <Button
-              disabled={state.status === 'working'}
-              onClick={() => runLocalRecognition(source.file)}
-              type="button"
-            >
-              {state.status === 'working' ? 'Working…' : 'Find song'}
-            </Button>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <p className="tc-trust-note">
+                <LockKeyhole aria-hidden="true" size={13} />
+                Only the short recognition sample leaves the browser.
+              </p>
+              <Button
+                className="tc-primary-action"
+                disabled={state.status === 'working'}
+                onClick={() => runLocalRecognition(source.file)}
+                type="button"
+              >
+                {state.status === 'working' ? 'Working…' : 'Identify song'}
+              </Button>
+            </div>
           </div>
         </section>
       ) : source?.kind === 'tiktok-url' ? (
-        <section className="mt-6 rounded-2xl border bg-card p-5">
-          <p className="text-sm font-medium">TikTok link</p>
+        <section className="tc-state-card">
+          <p className="text-sm font-semibold">TikTok link</p>
           <p className="mt-2 break-all text-sm text-muted-foreground">{source.url}</p>
           <p className="mt-4 text-sm leading-6 text-muted-foreground">
-            This TikTok request cannot run until TikTok link recognition is enabled.
+            TikTok link recognition is not available until the extractor production gate passes.
           </p>
         </section>
       ) : null}
 
       {state.status === 'working' ? (
-        <p className="mt-5 text-sm text-muted-foreground" aria-live="polite">
+        <p className="tc-inline-status" aria-live="polite">
           {state.message}
         </p>
       ) : null}
 
       {state.status === 'auth-required' ? (
-        <section className="mt-5 rounded-2xl border bg-card p-5 shadow-sm">
-          <h2 className="text-lg font-semibold">Unlock free song recognition</h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Sign in with Google to identify this song for free. No card required.
+        <section className="tc-state-card tc-state-card-highlight">
+          <p className="tc-page-kicker">Free recognition</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight">
+            Unlock your free song search
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
+            Continue with Google to identify this song for free. No card required.
           </p>
           <Button
-            className="mt-4"
+            className="tc-primary-action mt-4"
             onClick={async () => {
               try {
                 await saveResumeSample(state.sample)
@@ -264,24 +281,23 @@ export function IdentifyWorkbench() {
       ) : null}
 
       {state.status === 'insufficient-credits' ? (
-        <section className="mt-5 rounded-2xl border bg-card p-5">
-          <h2 className="text-lg font-semibold">No free song searches left</h2>
+        <section className="tc-state-card tc-state-card-highlight">
+          <p className="tc-page-kicker">Free credits</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight">Need another song search?</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Earn up to 3 free credits by opening TuneClue’s share composer once for WhatsApp,
+            Earn up to three free credits by opening TuneClue’s share composer once on WhatsApp,
             Telegram, and X.
           </p>
-          <a
-            className="mt-4 inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground"
-            href="/earn-credits"
-          >
+          <a className="tc-header-signin mt-4" href="/earn-credits">
+            <Sparkles aria-hidden="true" size={14} />
             Earn Free Credits
           </a>
         </section>
       ) : null}
 
       {state.status === 'error' ? (
-        <div className="mt-5 rounded-xl border border-destructive/30 bg-destructive/5 p-4">
-          <p className="text-sm font-medium">Recognition could not finish</p>
+        <div className="tc-state-card border-destructive/30">
+          <p className="text-sm font-semibold">Recognition could not finish</p>
           <p className="mt-1 text-sm text-muted-foreground">{state.message}</p>
         </div>
       ) : null}

@@ -26,7 +26,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     eyebrow: 'Video Song Finder',
     title: 'Find the Song From a Video',
     description:
-      'Free online song finder for local video and audio clips. Upload a clip, pick the clearest music moment, and TuneClue prepares a short sample in your browser. Sign in with Google when you are ready to run your free song search.',
+      'Use this free online song finder with a local video or audio clip, choose the clearest music moment, and identify the track in seconds. The full original file stays in your browser.',
   },
   experience: {
     free: true,
@@ -53,19 +53,19 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     ],
   },
   capabilities: {
-    title: 'What TuneClue does',
+    title: 'Built around the moment you heard',
     items: [
       {
         id: 'local-sample',
-        title: 'Local sample preparation',
+        title: 'Local-first sample',
         description:
-          'TuneClue decodes a short section in your browser and sends the recognition sample, not the full original local file.',
+          'TuneClue prepares a short audio sample in your browser and sends that sample, not the full original local file.',
       },
       {
         id: 'position',
-        title: 'Choose the music position',
+        title: 'Pick the cleanest moment',
         description:
-          'Skip intros, talking, and silence by selecting where the clearest part of the song starts.',
+          'Skip talking, intros, and silence by choosing where the clearest part of the song starts.',
       },
       {
         id: 'metadata',
@@ -77,17 +77,17 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
   },
   helpfulGuidance: [
     {
-      heading: 'For the best song match',
+      heading: 'For the best match',
       items: [
         {
-          title: 'Pick a clean music section',
+          title: 'Choose music over dialogue',
           description:
-            'Choose a point with several seconds of audible music and less talking, sound effects, or silence.',
+            'Pick a point with several seconds of audible music and less talking, sound effects, or silence.',
         },
         {
-          title: 'Try another point after no match',
+          title: 'Move the sample window',
           description:
-            'Short-form videos often change audio levels. Moving the sample window can produce a cleaner fingerprint.',
+            'If the first attempt misses, try another point where the background music is louder or cleaner.',
         },
       ],
     },
@@ -98,17 +98,17 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
       {
         question: 'Does TuneClue upload my whole video?',
         answer:
-          'For the local-file flow, TuneClue prepares a short audio sample in your browser and sends that sample for song identification. The original local file is not uploaded in full.',
+          'No. For the local-file flow, TuneClue prepares a short audio sample in your browser and sends that sample for song identification. The original local file is not uploaded in full.',
       },
       {
         question: 'Do I need an account?',
         answer:
-          'You can upload and preview a local clip before signing in. Google sign-in is required when you run a song recognition so free and paid usage can be attached to a recoverable account.',
+          'You can upload and preview a local clip before signing in. Google sign-in is required when you run recognition so free and paid usage can be attached to a recoverable account.',
       },
       {
         question: 'What happens if no song is found?',
         answer:
-          'A no-match result is different from a system error. Try selecting another section where the background music is clearer.',
+          'A no-match result is different from a system error. Try another section where the music is clearer.',
       },
     ],
   },
@@ -118,7 +118,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
 export function TuneClueHome() {
   const structured = buildToolStructuredData(tuneClueHomeConfig, site)
   return (
-    <div data-product-mode-home="tool">
+    <div className="tuneclue-shell" data-product-mode-home="tool">
       <ToolStructuredData items={structured} />
       <ToolLandingPage
         config={tuneClueHomeConfig}

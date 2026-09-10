@@ -1,3 +1,4 @@
+import { Check, Sparkles } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { fetchAuthSession, googleSignInUrl } from '@/lib/auth/client'
 import type { AuthSessionResponse } from '@/lib/auth/types'
@@ -7,6 +8,12 @@ import {
   sharePlatforms,
   shareTaskMeta,
 } from '@/lib/credits/share-tasks'
+
+const platformMarks: Record<SharePlatform, string> = {
+  whatsapp: 'WA',
+  telegram: 'TG',
+  x: 'X',
+}
 
 export function EarnCreditsPage() {
   const [session, setSession] = useState<AuthSessionResponse>()
@@ -23,14 +30,15 @@ export function EarnCreditsPage() {
   )
 
   if (!session) {
-    return <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">Loading…</main>
+    return <main className="tc-page">Loading…</main>
   }
 
   if (!session.available) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Earn free credits</h1>
-        <p className="mt-3 text-sm text-muted-foreground">
+      <main className="tc-page">
+        <p className="tc-page-kicker">Free recognition</p>
+        <h1 className="tc-page-title">Earn free credits</h1>
+        <p className="tc-page-lede">
           Google sign-in and credits are not configured in this environment yet.
         </p>
       </main>
@@ -39,16 +47,14 @@ export function EarnCreditsPage() {
 
   if (!session.authenticated) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Earn free credits</h1>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Sign in with Google first. New accounts unlock a free song recognition, and opening each
-          platform’s share composer can earn more credits.
+      <main className="tc-page">
+        <p className="tc-page-kicker">Optional rewards</p>
+        <h1 className="tc-page-title">Earn free song searches</h1>
+        <p className="tc-page-lede">
+          Sign in with Google first. New accounts unlock a free recognition, then each one-time
+          share action can earn another credit.
         </p>
-        <a
-          className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground"
-          href={googleSignInUrl('/earn-credits')}
-        >
+        <a className="tc-header-signin mt-5" href={googleSignInUrl('/earn-credits')}>
           Continue with Google
         </a>
       </main>
@@ -78,6 +84,7 @@ export function EarnCreditsPage() {
         | { ok: true; granted: boolean; credits: number; shareRewards: SharePlatform[] }
         | { ok: false; message: string }
         | null
+
       if (!payload) throw new Error('TuneClue could not read the reward response.')
       if (!payload.ok) throw new Error(payload.message)
 
@@ -100,57 +107,67 @@ export function EarnCreditsPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        Optional rewards
-      </p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight">Earn free credits</h1>
-      <p className="mt-3 text-sm leading-6 text-muted-foreground">
-        Open TuneClue’s share composer for each platform once. The one-time reward is granted when
-        the composer opens; TuneClue cannot verify whether you publish the post. You can earn up to
-        3 credits total.
+    <main className="tc-page">
+      <p className="tc-page-kicker">Optional rewards</p>
+      <h1 className="tc-page-title">Earn free credits</h1>
+      <p className="tc-page-lede">
+        Open TuneClue’s share composer once on each platform. Each task is optional and worth one
+        credit. You can claim up to three share credits total.
       </p>
 
-      <div className="mt-6 rounded-2xl border bg-card">
+      <div className="tc-dashboard-card">
         {sharePlatforms.map((platform) => {
           const meta = shareTaskMeta[platform]
           const claimed = completed.has(platform)
+
           return (
-            <div
-              className="flex items-center justify-between gap-4 border-b p-4 last:border-b-0"
-              key={platform}
-            >
-              <div>
-                <p className="font-medium">{meta.label}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  One-time share-intent reward · +1 credit
-                </p>
+            <div className="tc-task-row" key={platform}>
+              <div className="tc-platform">
+                <span className="tc-platform-mark">{platformMarks[platform]}</span>
+                <div>
+                  <p className="m-0 text-sm font-semibold">{meta.label}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">One-time reward · +1 credit</p>
+                </div>
               </div>
               <button
-                className="inline-flex min-h-9 items-center rounded-lg border px-3 text-sm font-medium disabled:cursor-default disabled:opacity-60"
+                className="tc-task-button"
                 disabled={claimed || Boolean(working)}
                 onClick={() => share(platform)}
                 type="button"
               >
-                {claimed ? 'Claimed' : working === platform ? 'Opening…' : 'Open & claim +1'}
+                {claimed ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Check aria-hidden="true" size={13} />
+                    Claimed
+                  </span>
+                ) : working === platform ? (
+                  'Opening…'
+                ) : (
+                  'Share +1'
+                )}
               </button>
             </div>
           )
         })}
       </div>
 
-      <div className="mt-5 flex items-center justify-between gap-4 rounded-xl bg-muted/50 p-4">
+      <div className="tc-balance-card">
         <div>
-          <p className="text-sm font-medium">
-            {completed.size} / {sharePlatforms.length} claimed
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Current balance: {session.credits} {session.credits === 1 ? 'credit' : 'credits'}
+          <p className="tc-page-kicker">Current balance</p>
+          <p className="tc-balance-number mt-2">{session.credits}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {session.credits === 1 ? 'song search' : 'song searches'} available
           </p>
         </div>
-        <a className="text-sm font-medium underline underline-offset-4" href="/">
-          Find a song
-        </a>
+        <div className="text-right">
+          <p className="inline-flex items-center gap-1.5 text-sm font-semibold">
+            <Sparkles aria-hidden="true" size={14} />
+            {completed.size} / {sharePlatforms.length} claimed
+          </p>
+          <a className="mt-2 block text-sm font-medium text-primary hover:underline" href="/">
+            Find a song →
+          </a>
+        </div>
       </div>
 
       {message ? (
@@ -158,6 +175,11 @@ export function EarnCreditsPage() {
           {message}
         </p>
       ) : null}
+
+      <p className="mt-6 max-w-2xl text-xs leading-5 text-muted-foreground">
+        TuneClue grants the reward when the platform share composer opens. The site cannot verify
+        whether a final post or message is published.
+      </p>
     </main>
   )
 }

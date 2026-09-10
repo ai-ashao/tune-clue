@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
+import { ArrowRight, FileAudio2, LockKeyhole, UploadCloud } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Field, FieldControl, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { setPendingRecognitionSource } from '@/lib/recognition/pending-source'
 import { tuneClueFlags } from '@/lib/tuneclue-flags'
 
@@ -51,19 +51,17 @@ export function TuneClueSourceTool() {
   const effectiveMode: SourceMode = tiktokAvailable ? mode : 'upload'
 
   return (
-    // biome-ignore lint/correctness/useUniqueElementIds: This page-level landmark is the stable target of the global Tools navigation link.
+    // biome-ignore lint/correctness/useUniqueElementIds: stable global Tools anchor.
     <section
-      className="mx-auto max-w-3xl rounded-2xl border bg-card p-4 shadow-sm"
+      className="tc-source-card mx-auto max-w-3xl"
       data-mounted={mounted ? 'true' : 'false'}
       id="tool"
     >
       {tiktokAvailable ? (
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1" role="tablist">
+        <div className="tc-mode-tabs" role="tablist">
           <button
             aria-selected={effectiveMode === 'upload'}
-            className={`rounded-lg px-3 py-2 text-sm font-medium ${
-              effectiveMode === 'upload' ? 'bg-background shadow-sm' : 'text-muted-foreground'
-            }`}
+            className="tc-mode-tab"
             onClick={() => chooseMode('upload')}
             role="tab"
             type="button"
@@ -72,9 +70,7 @@ export function TuneClueSourceTool() {
           </button>
           <button
             aria-selected={effectiveMode === 'tiktok'}
-            className={`rounded-lg px-3 py-2 text-sm font-medium ${
-              effectiveMode === 'tiktok' ? 'bg-background shadow-sm' : 'text-muted-foreground'
-            }`}
+            className="tc-mode-tab"
             onClick={() => chooseMode('tiktok')}
             role="tab"
             type="button"
@@ -85,44 +81,65 @@ export function TuneClueSourceTool() {
       ) : null}
 
       {effectiveMode === 'upload' ? (
-        <Field className={tiktokAvailable ? 'mt-4' : undefined}>
-          <FieldLabel htmlFor={inputId}>Audio or video clip</FieldLabel>
-          <FieldControl>
-            <input
-              accept="audio/*,video/mp4,video/webm"
-              className="block w-full rounded-lg border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1.5 file:text-sm file:font-medium"
-              id={inputId}
-              onChange={(event) => setFile(event.currentTarget.files?.[0])}
-              type="file"
-            />
-            <FieldDescription>
-              The original file stays in your browser. TuneClue sends only a short audio sample for
-              recognition.
-            </FieldDescription>
-          </FieldControl>
-        </Field>
+        <div className={tiktokAvailable ? 'mt-3' : undefined}>
+          <input
+            accept="audio/*,video/mp4,video/webm"
+            className="sr-only"
+            id={inputId}
+            onChange={(event) => setFile(event.currentTarget.files?.[0])}
+            type="file"
+          />
+          <label className="tc-dropzone" htmlFor={inputId}>
+            <span>
+              <span className="tc-dropzone-icon">
+                <UploadCloud aria-hidden="true" size={21} strokeWidth={1.8} />
+              </span>
+              <span className="tc-dropzone-title">
+                {file ? 'Choose a different clip' : 'Choose a video or audio clip'}
+              </span>
+              <span className="tc-dropzone-copy">MP3, WAV, M4A, MP4 or WebM · up to 40 MB</span>
+            </span>
+          </label>
+
+          {file ? (
+            <div className="tc-file-chip">
+              <FileAudio2 aria-hidden="true" size={15} />
+              <span className="min-w-0 flex-1 truncate">{file.name}</span>
+              <span>{formatBytes(file.size)}</span>
+            </div>
+          ) : null}
+        </div>
       ) : (
-        <Field className="mt-4">
-          <FieldLabel htmlFor={urlId}>TikTok video link</FieldLabel>
-          <FieldControl>
-            <input
-              className="min-h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              id={urlId}
-              onChange={(event) => setUrl(event.target.value)}
-              placeholder="https://www.tiktok.com/@creator/video/..."
-              type="url"
-              value={url}
-            />
-            <FieldDescription>Public TikTok videos only.</FieldDescription>
-          </FieldControl>
-        </Field>
+        <div className="mt-3">
+          <label className="sr-only" htmlFor={urlId}>
+            TikTok video link
+          </label>
+          <input
+            className="min-h-12 w-full rounded-xl border bg-white px-4 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring"
+            id={urlId}
+            onChange={(event) => setUrl(event.target.value)}
+            placeholder="Paste a public TikTok video link"
+            type="url"
+            value={url}
+          />
+        </div>
       )}
 
       {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}
 
-      <div className="mt-4 flex justify-end">
-        <Button data-tool-primary-action onClick={continueToIdentify} type="button">
+      <div className="tc-source-footer">
+        <p className="tc-trust-note">
+          <LockKeyhole aria-hidden="true" size={13} />
+          Full local files stay in your browser. Recognition sends only a short audio sample.
+        </p>
+        <Button
+          className="tc-primary-action"
+          data-tool-primary-action
+          onClick={continueToIdentify}
+          type="button"
+        >
           Find song
+          <ArrowRight aria-hidden="true" size={15} />
         </Button>
       </div>
     </section>
@@ -144,4 +161,9 @@ function normalizeTikTokUrl(value: string): string | undefined {
   } catch {
     return undefined
   }
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }

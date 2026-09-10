@@ -81,7 +81,9 @@ test('local upload reaches the identify workbench with the pending file', async 
   await page.getByRole('button', { name: 'Find song' }).click()
 
   await expect(page).toHaveURL(/\/identify$/)
-  await expect(page.getByRole('heading', { level: 1, name: 'Identify this song' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Choose the clearest music moment' }),
+  ).toBeVisible()
   await expect(page.getByText('Choose the source again')).toHaveCount(0)
 })
 

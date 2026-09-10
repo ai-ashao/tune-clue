@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { fetchAuthSession } from '@/lib/auth/client'
 import type { AuthSessionResponse } from '@/lib/auth/types'
@@ -20,35 +21,30 @@ export function AuthHeaderControls() {
   }, [])
 
   if (!session?.available) return null
+
   if (!session.authenticated) {
     return (
-      <a
-        className="inline-flex min-h-9 items-center rounded-lg border px-3 text-sm font-medium hover:bg-muted/40"
-        href="/api/auth/google?returnTo=%2F"
-      >
+      <a className="tc-header-signin" href="/api/auth/google?returnTo=%2F">
         Sign in
       </a>
     )
   }
 
   const initial = (session.user.name || session.user.email).trim().charAt(0).toUpperCase() || 'U'
+
   return (
     <div className="flex items-center gap-2" data-auth-header>
       <a
-        className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline"
+        className="tc-header-link hidden font-medium text-muted-foreground hover:text-foreground sm:inline"
         href="/earn-credits"
       >
         Earn Credits
       </a>
-      <span className="whitespace-nowrap text-xs font-medium text-muted-foreground">
-        {session.credits} {session.credits === 1 ? 'Credit' : 'Credits'}
+      <span className="tc-credit-pill">
+        <Sparkles aria-hidden="true" size={12} />
+        {session.credits}
       </span>
-      <a
-        aria-label="Open account"
-        className="grid h-8 w-8 place-items-center rounded-full border bg-muted text-xs font-semibold"
-        href="/account"
-        title={session.user.email}
-      >
+      <a aria-label="Open account" className="tc-avatar" href="/account" title={session.user.email}>
         {initial}
       </a>
     </div>
