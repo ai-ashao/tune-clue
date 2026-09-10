@@ -41,7 +41,11 @@ export function ToolLandingPage({
       : undefined)
 
   return (
-    <article className="pb-16 sm:pb-20" data-tool-landing-version={config.version}>
+    <article
+      className="pb-16 sm:pb-20"
+      data-tool-id={config.toolId}
+      data-tool-landing-version={config.version}
+    >
       <section
         className="mx-auto w-full max-w-5xl px-4 pb-7 pt-5 sm:px-6 sm:pt-7"
         data-tool-first-viewport
@@ -106,10 +110,12 @@ export function ToolLandingPage({
           labels={config.valueLabels}
         />
 
-        <ToolCompletionSummary
-          ariaLabel={config.a11y?.completionLabel}
-          completion={config.completion}
-        />
+        {config.completionPlacement !== 'after-capabilities' ? (
+          <ToolCompletionSummary
+            ariaLabel={config.a11y?.completionLabel}
+            completion={config.completion}
+          />
+        ) : null}
       </section>
 
       {related.length > 0 && config.relatedTools ? (
@@ -133,17 +139,46 @@ export function ToolLandingPage({
       ) : null}
 
       <ItemSection section={config.benefits} />
+      <ItemSection
+        kind="how-it-works"
+        section={config.howItWorks}
+        itemsKey="steps"
+        numbered
+        sectionId="workflow"
+      />
       <CapabilitySection section={capabilitySection} />
-      <ItemSection section={config.howItWorks} itemsKey="steps" numbered sectionId="workflow" />
+      {config.completionPlacement === 'after-capabilities' && config.completion ? (
+        <section
+          className="mx-auto w-full max-w-5xl px-4 py-9 sm:px-6"
+          data-tool-completion-section
+        >
+          {config.completion.title ? (
+            <h2 className="text-2xl font-semibold tracking-tight">{config.completion.title}</h2>
+          ) : null}
+          {config.completion.description ? (
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {config.completion.description}
+            </p>
+          ) : null}
+          <ToolCompletionSummary
+            ariaLabel={config.a11y?.completionLabel}
+            completion={config.completion}
+          />
+        </section>
+      ) : null}
       <ItemSection section={config.useCases} />
       <HelpfulGuidance blocks={config.helpfulGuidance} />
 
       {config.faq?.items.length ? (
         <section
           className="mx-auto w-full max-w-3xl scroll-mt-20 px-4 py-10 sm:px-6"
+          data-tool-faq
           id={config.toolId === 'video-song-finder' ? 'faq' : undefined}
         >
           <h2 className="text-2xl font-semibold tracking-tight">{config.faq.title}</h2>
+          {config.faq.description ? (
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{config.faq.description}</p>
+          ) : null}
           <div className="mt-5 divide-y rounded-xl border">
             {config.faq.items.map((item) => (
               <details className="group px-4 py-4 sm:px-5" key={item.question}>
@@ -169,7 +204,7 @@ export function ToolLandingPage({
       ))}
 
       {config.bottomAction ? (
-        <section className="mx-auto w-full max-w-5xl px-4 pt-8 sm:px-6">
+        <section className="mx-auto w-full max-w-5xl px-4 pt-8 sm:px-6" data-tool-bottom-action>
           <div className="rounded-2xl border bg-muted/30 px-5 py-7 text-center sm:px-8">
             <h2 className="text-2xl font-semibold tracking-tight">{config.bottomAction.title}</h2>
             {config.bottomAction.description ? (
@@ -195,6 +230,7 @@ function CapabilitySection({
 }: Readonly<{
   section?: {
     title: string
+    description?: string
     items: ReadonlyArray<ToolCapability>
   }
 }>) {
@@ -203,9 +239,19 @@ function CapabilitySection({
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-9 sm:px-6" data-tool-capabilities>
       <h2 className="text-2xl font-semibold tracking-tight">{section.title}</h2>
+      {section.description ? (
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">{section.description}</p>
+      ) : null}
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {section.items.map((item) => (
-          <article className="rounded-xl border bg-card p-4" key={item.id}>
+          <article
+            className="rounded-xl border bg-card p-4"
+            data-capability-id={item.id}
+            key={item.id}
+          >
+            <span aria-hidden="true" className="tc-capability-icon">
+              {capabilityIcon(item.id)}
+            </span>
             <h3 className="font-medium">{item.title}</h3>
             <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
           </article>
@@ -215,18 +261,26 @@ function CapabilitySection({
   )
 }
 
+function capabilityIcon(id: string) {
+  if (id === 'position') return '⌁'
+  if (id === 'metadata') return '≡'
+  return '◎'
+}
+
 function ItemSection({
   section,
   itemsKey = 'items',
   numbered = false,
   sectionId,
+  kind,
 }: Readonly<{
   section?:
-    | { title: string; items: ReadonlyArray<ToolSectionItem> }
-    | { title: string; steps: ReadonlyArray<ToolSectionItem> }
+    | { title: string; description?: string; items: ReadonlyArray<ToolSectionItem> }
+    | { title: string; description?: string; steps: ReadonlyArray<ToolSectionItem> }
   itemsKey?: 'items' | 'steps'
   numbered?: boolean
   sectionId?: string
+  kind?: string
 }>) {
   if (!section) return null
 
@@ -240,13 +294,20 @@ function ItemSection({
   if (items.length === 0) return null
 
   return (
-    <section className="mx-auto w-full max-w-5xl scroll-mt-20 px-4 py-9 sm:px-6" id={sectionId}>
+    <section
+      className="mx-auto w-full max-w-5xl scroll-mt-20 px-4 py-9 sm:px-6"
+      data-section-kind={kind}
+      id={sectionId}
+    >
       <h2 className="text-2xl font-semibold tracking-tight">{section.title}</h2>
+      {section.description ? (
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">{section.description}</p>
+      ) : null}
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item, index) => (
           <div className="rounded-xl border bg-card p-4" key={item.title}>
             {numbered ? (
-              <p className="font-mono text-xs font-semibold text-muted-foreground">
+              <p className="tc-step-number font-mono text-xs font-semibold text-muted-foreground">
                 {String(index + 1).padStart(2, '0')}
               </p>
             ) : null}

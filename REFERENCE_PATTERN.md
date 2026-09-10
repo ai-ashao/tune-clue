@@ -1,35 +1,34 @@
-# Pancake UI pattern adaptation
+# TuneClue homepage reference pattern
 
 ## Visual policy
 
-- Mode: reference-language migration.
-- Preserve ShipLean identity, copy, routes, functionality, TanStack Start, and Cloudflare-first boundary.
-- Reconstruct only general layout, density, palette roles, control geometry, borders, and responsive behavior.
-- Do not reuse Pancake logos, copy, source code, illustrations, feedback widget, or payment-domain data.
+- Mode: target-native migration.
+- Preserve TuneClue identity, purple/blue/mint tokens, routes, recognition behavior, TanStack Start, and Cloudflare boundaries.
+- Reconstruct the supplied prototype's hierarchy, section rhythm, card density, and responsive sequence.
+- Do not ship placeholder Blog links or static-demo recognition behavior as production features.
 
-## Pattern map
+## Page silhouette
 
-| Reference role | ShipLean role |
-| --- | --- |
-| Fixed desktop sidebar | Product, workflow, guides, pricing navigation |
-| Compact top utility bar | Preview status, language switch, demo entry |
-| Test-mode banner | Honest sandbox and unconfigured-services notice |
-| Revenue KPI cards | Runtime, setup, verification, and dependency metrics |
-| Revenue overview | Agent workflow and repository acceptance surface |
-| Customer/transaction empty states | Deferred integrations and scaffold boundaries |
+1. Sticky 68px header with brand, four compact navigation links, and a strong Sign in action.
+2. Centered hero with eyebrow, large gradient H1, concise description, and a 900px recognition workspace.
+3. One compact trust row directly beneath the workspace.
+4. Full-width soft band for three numbered How it works cards.
+5. Plain band for three capability cards with icon badges.
+6. Soft band containing one elevated FAQ panel with stacked accordions.
+7. Dark gradient closing CTA inside the main container.
+8. Existing product footer and real legal/tool links.
 
-## Geometry and behavior
+## Geometry and responsive behavior
 
-- Desktop: 256px fixed sidebar, 64px utility bar, full-width content, 1180px content maximum.
-- Mobile: sidebar hidden; compact brand/utility header; two-column metric cards where space permits.
-- Surfaces: white or warm-white, 1px low-contrast borders, 10–12px radii, almost no elevation.
-- Typography: compact 12–14px supporting copy, strong numeric/status values, restrained headings.
-- Accent: muted green for active/ready states; warm orange only for sandbox and caution states.
-- Focus remains visible, layouts must not overflow at 320px, and motion is optional and reduced-motion safe.
+- Desktop content width: 1120px; primary workspace: 900px; FAQ: 840px.
+- Section spacing: approximately 48–52px vertically with borders between soft bands.
+- Cards: three columns, 14px gaps, 18px radius, restrained elevation.
+- Mobile: single-column cards, compact hero, URL action below the input, hidden desktop navigation, no horizontal overflow.
+- The local-file flow still navigates to the separate `/identify` workbench after selection.
 
-## Product truth
+## Product truth and deliberate deviations
 
-- Local sandbox auth remains the only working auth path.
-- Payment, database, production auth, orders, credits, and entitlements remain absent.
-- Pricing actions remain visibly unavailable until a real sale path exists.
-- `pnpm verify` remains the sole repository completion contract.
+- Public TikTok URL and local upload are real entry modes.
+- Local-file recognition uses a fixed sample of about 10 seconds; URL audio duration depends on the public source.
+- Blog is omitted because no real TuneClue editorial routes have been built. The header uses the real TikTok Finder route instead.
+- Google OAuth remains a production dependency; unavailable auth is disclosed rather than simulated.

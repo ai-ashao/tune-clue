@@ -54,9 +54,9 @@ for (const viewport of viewports) {
       await expectInsideViewport(page.locator('[data-tool-title]'), viewport.height)
       await expectInsideViewport(page.locator('[data-tool-description]'), viewport.height)
       await expectInsideViewport(page.locator('[data-tool-primary-region]'), viewport.height)
-      await expectInsideViewport(page.locator('[data-tool-constraints]'), viewport.height)
       await expectInsideViewport(page.locator('[data-tool-value-signals]'), viewport.height)
-      await expectInsideViewport(page.locator('[data-tool-completion]'), viewport.height)
+      await expect(page.locator('[data-tool-constraints]')).toHaveCount(0)
+      await expect(page.locator('[data-tool-completion-section]')).toBeVisible()
       await expect(page.locator('[data-site-header] [data-header-cta]')).toHaveCount(0)
 
       if (viewport.name === 'desktop') {

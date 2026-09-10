@@ -12,6 +12,7 @@ export const defaultToolValueLabels: ToolValueLabels = {
   browserBased: 'Browser-based',
   localProcessing: 'Files stay on your device',
   noWatermark: 'No watermark',
+  privacyFriendly: 'Privacy-friendly',
 }
 
 export function deriveToolValueSignals(
@@ -40,6 +41,10 @@ export function deriveToolValueSignals(
 
   if (experience.noWatermark) {
     signals.push({ key: 'noWatermark', label: copy.noWatermark })
+  }
+
+  if (experience.privacyFriendly) {
+    signals.push({ key: 'privacyFriendly', label: copy.privacyFriendly })
   }
 
   return signals

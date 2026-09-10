@@ -34,27 +34,21 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
     installationRequired: false,
     signupRequired: true,
     processing: 'hybrid',
+    privacyFriendly: true,
   },
-  constraints: {
-    acceptedFormats: [
-      'Public TikTok video links',
-      'Browser-decodable audio',
-      'MP4/WebM when your browser can decode the audio track',
-    ],
-    maxFileSize: '40 MB',
-    maxFiles: 1,
-    other: ['Local-file recognition uses a fixed sample of about 10 seconds.'],
-  },
+  completionPlacement: 'after-capabilities',
   completion: {
+    title: 'Recognition tips',
+    description: 'Small choices that can make a difficult clip easier to identify.',
     highlights: [
-      'Choose the exact moment where the song is clearest',
-      'Send only a short audio sample instead of the full local file',
-      'Get title, artist, album, artwork, and available listening links',
-      'Earn optional free searches through one-time sharing rewards',
+      'Choose a section with clear music and less dialogue',
+      'Move the fixed 10-second window when the first attempt misses',
+      'Use another public clip when a TikTok sound is heavily edited',
     ],
   },
   capabilities: {
     title: 'What TuneClue does',
+    description: 'A focused song finder for links, local video, and audio clips.',
     items: [
       {
         id: 'link-or-file',
@@ -78,6 +72,7 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
   },
   howItWorks: {
     title: 'How it works',
+    description: 'The entire task stays focused, so you always know what happens next.',
     steps: [
       {
         title: 'Add your video',
@@ -95,25 +90,9 @@ export const tuneClueHomeConfig: ToolLandingConfig = {
       },
     ],
   },
-  helpfulGuidance: [
-    {
-      heading: 'For the best match',
-      items: [
-        {
-          title: 'Choose music over dialogue',
-          description:
-            'Pick a point with several seconds of audible music and less talking, sound effects, or silence.',
-        },
-        {
-          title: 'Move the sample window',
-          description:
-            'If the first attempt misses, try another point where the background music is louder or cleaner.',
-        },
-      ],
-    },
-  ],
   faq: {
-    title: 'Video song finder FAQ',
+    title: 'FAQ',
+    description: 'Short answers about the real upload, link, and recognition flow.',
     items: [
       {
         question: 'Does TuneClue upload my whole video?',

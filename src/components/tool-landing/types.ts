@@ -9,6 +9,7 @@ export type ToolExperience = {
   signupRequired: boolean
   processing: ToolProcessingMode
   noWatermark?: boolean
+  privacyFriendly?: boolean
 }
 
 export type ToolValueSignalKey =
@@ -19,6 +20,7 @@ export type ToolValueSignalKey =
   | 'browserBased'
   | 'localProcessing'
   | 'noWatermark'
+  | 'privacyFriendly'
 
 export type ToolValueSignal = {
   key: ToolValueSignalKey
@@ -34,6 +36,7 @@ export type ToolValueLabels = {
   browserBased: string
   localProcessing: string
   noWatermark: string
+  privacyFriendly: string
 }
 
 export type ToolLandingA11y = {
@@ -77,6 +80,8 @@ export type ToolConstraints = {
 }
 
 export type ToolCompletionConfig = {
+  title?: string
+  description?: string
   highlights: ReadonlyArray<string>
 }
 
@@ -137,8 +142,10 @@ export type ToolLandingConfig = {
   experience: ToolExperience
   constraints?: ToolConstraints
   completion?: ToolCompletionConfig
+  completionPlacement?: 'hero' | 'after-capabilities'
   capabilities?: {
     title: string
+    description?: string
     items: ReadonlyArray<ToolCapability>
   }
   valueLabels?: Partial<ToolValueLabels>
@@ -154,6 +161,7 @@ export type ToolLandingConfig = {
   }
   howItWorks?: {
     title: string
+    description?: string
     steps: ReadonlyArray<ToolSectionItem>
   }
   /** @deprecated Use capabilities for v0.2 tool pages. */
@@ -168,6 +176,7 @@ export type ToolLandingConfig = {
   helpfulGuidance?: ReadonlyArray<HelpfulGuidanceBlock>
   faq?: {
     title: string
+    description?: string
     items: ReadonlyArray<ToolFaqItem>
   }
   seoContent?: ReadonlyArray<ToolSeoContentBlock>

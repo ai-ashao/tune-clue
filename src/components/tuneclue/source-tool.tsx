@@ -132,6 +132,15 @@ export function TuneClueSourceTool() {
               type="url"
               value={url}
             />
+            <Button
+              className="tc-link-action"
+              data-tool-primary-action
+              onClick={continueToIdentify}
+              type="button"
+            >
+              Find song
+              <ArrowRight aria-hidden="true" size={15} />
+            </Button>
           </div>
           <p className="tc-link-hint">Public TikTok links only.</p>
         </div>
@@ -139,23 +148,23 @@ export function TuneClueSourceTool() {
 
       {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}
 
-      <div className="tc-source-footer">
-        <p className="tc-trust-note">
-          <LockKeyhole aria-hidden="true" size={13} />
-          {effectiveMode === 'upload'
-            ? 'Full local files stay in your browser. Only a short audio sample is sent.'
-            : 'TuneClue reads the public video audio only for this recognition attempt.'}
-        </p>
-        <Button
-          className="tc-primary-action"
-          data-tool-primary-action
-          onClick={continueToIdentify}
-          type="button"
-        >
-          Find song
-          <ArrowRight aria-hidden="true" size={15} />
-        </Button>
-      </div>
+      {effectiveMode === 'upload' ? (
+        <div className="tc-source-footer">
+          <p className="tc-trust-note">
+            <LockKeyhole aria-hidden="true" size={13} />
+            Full local files stay in your browser. Only a short audio sample is sent.
+          </p>
+          <Button
+            className="tc-primary-action"
+            data-tool-primary-action
+            onClick={continueToIdentify}
+            type="button"
+          >
+            Find song
+            <ArrowRight aria-hidden="true" size={15} />
+          </Button>
+        </div>
+      ) : null}
     </section>
   )
 }

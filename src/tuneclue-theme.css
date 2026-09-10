@@ -180,6 +180,8 @@ body {
 
 .tuneclue-shell [data-tool-first-viewport] {
   max-width: 1040px;
+  padding-top: 50px;
+  padding-bottom: 34px;
 }
 
 .tuneclue-shell [data-tool-title] {
@@ -188,11 +190,19 @@ body {
   color: transparent;
   font-weight: 760;
   letter-spacing: -0.045em;
+  font-size: clamp(42px, 5.4vw, 64px);
+  line-height: 0.98;
+}
+
+.tuneclue-shell [data-tool-first-viewport] > div:first-of-type {
+  max-width: 940px;
 }
 
 .tuneclue-shell [data-tool-description] {
   max-width: 710px;
   color: #657086;
+  font-size: 16px;
+  line-height: 1.65;
 }
 
 .tuneclue-shell [data-tool-first-viewport] > div:first-of-type > p:first-child {
@@ -205,6 +215,18 @@ body {
   padding: 0 10px;
   color: #544fd2;
   letter-spacing: 0.14em;
+}
+
+.tuneclue-shell [data-tool-first-viewport] > div:first-of-type > p:first-child::before,
+.tuneclue-shell [data-tool-first-viewport] > div:first-of-type > p:first-child::after {
+  content: "";
+  width: 25px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8292aa);
+}
+
+.tuneclue-shell [data-tool-first-viewport] > div:first-of-type > p:first-child::after {
+  background: linear-gradient(90deg, #8292aa, transparent);
 }
 
 .tuneclue-shell [data-tool-primary-region] {
@@ -225,6 +247,24 @@ body {
   box-shadow: 0 7px 25px rgba(35, 43, 69, 0.035);
 }
 
+.tuneclue-shell [data-tool-value-signals] {
+  margin-top: 18px;
+  gap: 12px 22px;
+  color: #48566d;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.tuneclue-shell [data-tool-value-signals] li svg {
+  width: 19px;
+  height: 19px;
+  border: 1px solid #ccefe5;
+  border-radius: 50%;
+  background: #e8faf5;
+  padding: 3px;
+  color: #16896e;
+}
+
 /* --- Primary finder ---------------------------------------------------- */
 
 .tc-source-card {
@@ -233,8 +273,9 @@ body {
   border: 1px solid rgba(203, 210, 224, 0.88);
   border-radius: 22px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 251, 254, 0.96));
-  padding: 14px;
   box-shadow: var(--tc-shadow);
+  max-width: 900px;
+  padding: 18px;
 }
 
 .tc-source-card::before {
@@ -278,14 +319,15 @@ body {
   border: 1px solid rgba(213, 219, 231, 0.95);
   border-radius: 16px;
   background: radial-gradient(circle at 50% 0, rgba(98, 93, 245, 0.07), transparent 58%), #fafbfe;
-  padding: 18px 18px 14px;
+  min-height: 225px;
+  padding: 27px 28px 18px;
   text-align: center;
 }
 
 .tc-link-icon {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 54px;
+  height: 54px;
   place-items: center;
   margin: 0 auto 8px;
   border: 1px solid rgba(98, 93, 245, 0.14);
@@ -297,7 +339,7 @@ body {
 
 .tc-link-title {
   color: var(--tc-ink);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 740;
   letter-spacing: -0.015em;
 }
@@ -305,13 +347,13 @@ body {
 .tc-link-copy {
   margin-top: 3px;
   color: var(--tc-muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
 .tc-link-field {
   display: flex;
-  min-height: 46px;
+  min-height: 54px;
   align-items: center;
   gap: 9px;
   max-width: 620px;
@@ -319,7 +361,7 @@ body {
   border: 1px solid var(--tc-line-strong);
   border-radius: 12px;
   background: #fff;
-  padding: 0 13px;
+  padding: 6px 7px 6px 14px;
   color: #9aa3b3;
   box-shadow: 0 6px 18px rgba(24, 32, 54, 0.05);
 }
@@ -339,10 +381,238 @@ body {
   font-size: 13px;
 }
 
+.tc-link-action {
+  min-height: 40px;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  background: linear-gradient(90deg, #8fe8db, #9fc3ff 48%, #c6a7ff);
+  padding-inline: 14px;
+  color: #111827;
+  font-weight: 780;
+  box-shadow: 0 8px 20px rgba(102, 124, 236, 0.16);
+}
+
+.tc-link-action:hover {
+  background: linear-gradient(90deg, #80e1d3, #91b9ff 48%, #ba98ff);
+}
+
 .tc-link-hint {
   margin-top: 7px;
   color: #8a93a5;
   font-size: 10px;
+}
+
+/* --- Homepage section hierarchy --------------------------------------- */
+
+.tc-capability-icon {
+  display: none;
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"],
+.tuneclue-shell [data-tool-capabilities] {
+  max-width: 1120px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"] {
+  background:
+    radial-gradient(420px 180px at 12% 0%, rgba(65, 214, 163, 0.08), transparent 72%),
+    radial-gradient(440px 180px at 88% 100%, rgba(98, 93, 245, 0.08), transparent 74%),
+    rgba(255, 255, 255, 0.58);
+  box-shadow:
+    0 0 0 100vmax rgba(255, 255, 255, 0.58),
+    inset 0 1px rgba(210, 218, 231, 0.82),
+    inset 0 -1px rgba(210, 218, 231, 0.82);
+  clip-path: inset(0 -100vmax);
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"] > h2,
+.tuneclue-shell [data-tool-capabilities] > h2 {
+  text-align: center;
+  font-size: 29px;
+  font-weight: 770;
+  letter-spacing: -0.035em;
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"] > p,
+.tuneclue-shell [data-tool-capabilities] > p {
+  max-width: 620px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"] > div,
+.tuneclue-shell [data-tool-capabilities] > div {
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"] > div > div,
+.tuneclue-shell [data-tool-capabilities] article {
+  min-height: 174px;
+  border-color: #dfe6ef;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(35, 48, 76, 0.055);
+}
+
+.tuneclue-shell .tc-step-number,
+.tuneclue-shell .tc-capability-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  margin-bottom: 15px;
+  border: 1px solid #dce6f5;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #eef3ff, #effbf9);
+  color: #536ad6;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tuneclue-shell [data-section-kind="how-it-works"] h3,
+.tuneclue-shell [data-tool-capabilities] h3 {
+  font-size: 16px;
+  font-weight: 740;
+  letter-spacing: -0.015em;
+}
+
+.tuneclue-shell [data-tool-faq] {
+  position: relative;
+  max-width: 840px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  border: 1px solid #dfe6ef;
+  border-radius: 20px;
+  background: #fff;
+  padding: 22px;
+  box-shadow: 0 12px 34px rgba(35, 48, 76, 0.065);
+}
+
+.tuneclue-shell [data-tool-completion-section] {
+  max-width: 1120px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.tuneclue-shell [data-tool-completion-section] > h2 {
+  font-size: 29px;
+  font-weight: 770;
+  letter-spacing: -0.035em;
+}
+
+.tuneclue-shell [data-tool-completion-section] > [data-tool-completion] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.tuneclue-shell [data-tool-completion-section] li {
+  min-height: 112px;
+  align-items: flex-start;
+  border: 1px solid #dfe6ef;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 20px;
+  color: #344054;
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: 0 10px 30px rgba(35, 48, 76, 0.05);
+}
+
+.tuneclue-shell [data-tool-completion-section] li svg {
+  color: #4f5bd5;
+}
+
+.tuneclue-shell [data-tool-faq]::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -51px;
+  bottom: -51px;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  border-top: 1px solid rgba(223, 230, 239, 0.82);
+  border-bottom: 1px solid rgba(223, 230, 239, 0.82);
+  background:
+    radial-gradient(420px 180px at 12% 0%, rgba(65, 214, 163, 0.07), transparent 72%),
+    radial-gradient(440px 180px at 88% 100%, rgba(98, 93, 245, 0.07), transparent 74%),
+    rgba(255, 255, 255, 0.5);
+}
+
+.tuneclue-shell [data-tool-faq] > h2 {
+  font-size: 29px;
+  font-weight: 770;
+  letter-spacing: -0.035em;
+}
+
+.tuneclue-shell [data-tool-faq] > div {
+  display: grid;
+  gap: 8px;
+  margin-top: 15px;
+  border: 0;
+}
+
+.tuneclue-shell [data-tool-faq] details {
+  position: relative;
+  border: 1px solid #e1e7ef;
+  border-radius: 13px;
+  background: #fbfdff;
+  padding: 13px 15px;
+  box-shadow: none;
+}
+
+.tuneclue-shell [data-tool-faq] summary {
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.tuneclue-shell [data-tool-faq] summary::after {
+  content: "+";
+  position: absolute;
+  top: 9px;
+  right: 14px;
+  color: #536176;
+  font-size: 20px;
+  font-weight: 400;
+  transition: transform 160ms ease;
+}
+
+.tuneclue-shell [data-tool-faq] details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.tuneclue-shell [data-tool-bottom-action] {
+  padding-top: 8px;
+}
+
+.tuneclue-shell [data-tool-bottom-action] > div {
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(350px 170px at 0% 50%, rgba(65, 214, 163, 0.24), transparent 72%),
+    radial-gradient(350px 170px at 100% 50%, rgba(98, 93, 245, 0.3), transparent 72%),
+    linear-gradient(110deg, #0d1525, #17223a 56%, #1d2848);
+  padding-block: 32px;
+  color: #fff;
+  box-shadow: var(--tc-shadow);
+}
+
+.tuneclue-shell [data-tool-bottom-action] p {
+  color: #bdc7d7;
+}
+
+.tuneclue-shell [data-tool-bottom-action] a {
+  background: #fff;
+  color: #121827;
+  font-weight: 780;
 }
 
 .tc-mode-tab[aria-selected="true"] {
@@ -730,7 +1000,15 @@ body {
   }
 
   .tuneclue-shell [data-tool-first-viewport] {
-    padding-top: 16px;
+    padding-top: 30px;
+  }
+
+  .tuneclue-shell [data-tool-title] {
+    font-size: 40px;
+  }
+
+  .tuneclue-shell [data-tool-description] {
+    font-size: 14px;
   }
 
   .tc-source-card {
@@ -744,6 +1022,7 @@ body {
   }
 
   .tc-link-panel {
+    min-height: auto;
     padding: 12px;
   }
 
@@ -754,7 +1033,37 @@ body {
   }
 
   .tc-link-field {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     margin-top: 9px;
+  }
+
+  .tc-link-action {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .tuneclue-shell [data-section-kind="how-it-works"],
+  .tuneclue-shell [data-tool-capabilities],
+  .tuneclue-shell [data-tool-completion-section] {
+    padding-top: 38px;
+    padding-bottom: 38px;
+  }
+
+  .tuneclue-shell [data-section-kind="how-it-works"] > div > div,
+  .tuneclue-shell [data-tool-capabilities] article {
+    min-height: 0;
+  }
+
+  .tuneclue-shell [data-tool-completion-section] > [data-tool-completion] {
+    grid-template-columns: 1fr;
+  }
+
+  .tuneclue-shell [data-tool-faq] {
+    width: calc(100% - 32px);
+    margin-top: 38px;
+    margin-bottom: 38px;
+    padding: 16px;
   }
 
   .tc-source-footer {
