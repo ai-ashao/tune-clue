@@ -75,7 +75,7 @@ export const toolSiteNavigation: SiteNavigationConfig = {
       {
         id: 'song-finders',
         title: { en: 'Song Finders' },
-        toolIds: ['video-song-finder'],
+        toolIds: ['video-song-finder', 'tiktok-song-finder'],
         maxItems: 4,
       },
     ],

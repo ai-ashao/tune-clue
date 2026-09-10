@@ -10,16 +10,18 @@ import {
 import { recognizeAudioSample } from '@/lib/recognition/client'
 import {
   type PendingRecognitionSource,
+  setPendingRecognitionSource,
   takePendingRecognitionSource,
 } from '@/lib/recognition/pending-source'
 import { saveResumeSample, takeResumeSample } from '@/lib/recognition/resume-sample'
+import { recognizeTikTokUrl } from '@/lib/recognition/tiktok-client'
 import type { RecognitionResult as RecognitionResultType } from '@/lib/recognition/types'
 import { RecognitionResult } from './recognition-result'
 
 type WorkbenchState =
   | { status: 'idle' }
   | { status: 'working'; message: string }
-  | { status: 'auth-required'; sample: File }
+  | { status: 'auth-required'; sample?: File }
   | { status: 'insufficient-credits' }
   | { status: 'done'; result: RecognitionResultType; remainingCredits: number }
   | { status: 'error'; message: string }
@@ -139,6 +141,47 @@ export function IdentifyWorkbench() {
     }
   }
 
+  async function runTikTokRecognition(url: string) {
+    const session = await fetchAuthSession()
+    if (!session.available) {
+      setState({
+        status: 'error',
+        message: 'Google sign-in and free recognition are not configured in this environment yet.',
+      })
+      return
+    }
+    if (!session.authenticated) {
+      setState({ status: 'auth-required' })
+      return
+    }
+    if (session.credits < 1) {
+      setState({ status: 'insufficient-credits' })
+      return
+    }
+
+    setState({ status: 'working', message: 'Reading the public TikTok audio and identifying it…' })
+    const response = await recognizeTikTokUrl(url)
+    if (!response.ok) {
+      if (response.code === 'auth-required') {
+        setState({ status: 'auth-required' })
+        return
+      }
+      if (response.code === 'insufficient-credits') {
+        setState({ status: 'insufficient-credits' })
+        return
+      }
+      setState({ status: 'error', message: response.message })
+      return
+    }
+
+    setState({
+      status: 'done',
+      result: response.result,
+      remainingCredits: response.remainingCredits,
+    })
+    window.dispatchEvent(new Event('tuneclue:credits-changed'))
+  }
+
   if (!source && checkingResume) {
     return (
       <section className="tc-page">
@@ -233,12 +276,17 @@ export function IdentifyWorkbench() {
           </div>
         </section>
       ) : source?.kind === 'tiktok-url' ? (
-        <section className="tc-state-card">
-          <p className="text-sm font-semibold">TikTok link</p>
+        <section className="tc-state-card tc-state-card-highlight">
+          <p className="tc-page-kicker">TikTok link</p>
           <p className="mt-2 break-all text-sm text-muted-foreground">{source.url}</p>
-          <p className="mt-4 text-sm leading-6 text-muted-foreground">
-            TikTok link recognition is not available until the extractor production gate passes.
-          </p>
+          <Button
+            className="tc-primary-action mt-4"
+            disabled={state.status === 'working'}
+            onClick={() => runTikTokRecognition(source.url)}
+            type="button"
+          >
+            {state.status === 'working' ? 'Working…' : 'Identify song'}
+          </Button>
         </section>
       ) : null}
 
@@ -260,7 +308,14 @@ export function IdentifyWorkbench() {
           <Button
             className="tc-primary-action mt-4"
             onClick={async () => {
+              if (!state.sample && source?.kind === 'tiktok-url') {
+                setPendingRecognitionSource(source)
+                window.location.assign(googleSignInUrl('/identify'))
+                return
+              }
+
               try {
+                if (!state.sample) throw new Error('The recognition source is no longer available.')
                 await saveResumeSample(state.sample)
                 window.location.assign(googleSignInUrl('/identify?resume=1'))
               } catch (error) {

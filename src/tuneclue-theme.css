@@ -183,7 +183,9 @@ body {
 }
 
 .tuneclue-shell [data-tool-title] {
-  color: var(--tc-ink);
+  background: linear-gradient(100deg, var(--tc-ink) 15%, var(--tc-signal) 62%, #42b8b2 100%);
+  background-clip: text;
+  color: transparent;
   font-weight: 760;
   letter-spacing: -0.045em;
 }
@@ -257,7 +259,11 @@ body {
 }
 
 .tc-mode-tab {
+  display: inline-flex;
   min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -265,6 +271,78 @@ body {
   font-size: 13px;
   font-weight: 650;
   cursor: pointer;
+}
+
+.tc-link-panel {
+  margin-top: 11px;
+  border: 1px solid rgba(213, 219, 231, 0.95);
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 0, rgba(98, 93, 245, 0.07), transparent 58%), #fafbfe;
+  padding: 18px 18px 14px;
+  text-align: center;
+}
+
+.tc-link-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  margin: 0 auto 8px;
+  border: 1px solid rgba(98, 93, 245, 0.14);
+  border-radius: 13px;
+  background: #fff;
+  color: var(--tc-signal);
+  box-shadow: 0 8px 20px rgba(98, 93, 245, 0.1);
+}
+
+.tc-link-title {
+  color: var(--tc-ink);
+  font-size: 15px;
+  font-weight: 740;
+  letter-spacing: -0.015em;
+}
+
+.tc-link-copy {
+  margin-top: 3px;
+  color: var(--tc-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.tc-link-field {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 9px;
+  max-width: 620px;
+  margin: 12px auto 0;
+  border: 1px solid var(--tc-line-strong);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 13px;
+  color: #9aa3b3;
+  box-shadow: 0 6px 18px rgba(24, 32, 54, 0.05);
+}
+
+.tc-link-field:focus-within {
+  border-color: rgba(98, 93, 245, 0.62);
+  box-shadow: 0 0 0 3px rgba(98, 93, 245, 0.12);
+}
+
+.tc-link-field input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--tc-ink);
+  font-size: 13px;
+}
+
+.tc-link-hint {
+  margin-top: 7px;
+  color: #8a93a5;
+  font-size: 10px;
 }
 
 .tc-mode-tab[aria-selected="true"] {
@@ -663,6 +741,20 @@ body {
   .tc-dropzone {
     min-height: 132px;
     padding: 16px;
+  }
+
+  .tc-link-panel {
+    padding: 12px;
+  }
+
+  .tc-link-icon,
+  .tc-link-copy,
+  .tc-link-hint {
+    display: none;
+  }
+
+  .tc-link-field {
+    margin-top: 9px;
   }
 
   .tc-source-footer {

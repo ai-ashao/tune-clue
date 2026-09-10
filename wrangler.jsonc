@@ -11,18 +11,13 @@
   ],
   "vars": {
     "SHIPLEAN_SANDBOX": "false"
-  }
-
-  // IMPORTANT:
-  // Commit the real D1 binding after copying the database_id from Cloudflare.
-  // Do not leave production dependent only on a Dashboard-side binding.
-  //
-  // ,"d1_databases": [
-  //   {
-  //     "binding": "TUNECLUE_DB",
-  //     "database_name": "tune-clue",
-  //     "database_id": "REPLACE_WITH_REAL_DATABASE_ID",
-  //     "migrations_dir": "migrations"
-  //   }
-  // ]
+  },
+  "d1_databases": [
+    {
+      "binding": "TUNECLUE_DB",
+      "database_name": "tune-clue",
+      "database_id": "1e12d328-3a2a-44f9-b728-1f645fea3af6",
+      "migrations_dir": "migrations"
+    }
+  ]
 }

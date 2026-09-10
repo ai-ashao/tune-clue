@@ -134,7 +134,7 @@ export function ToolLandingPage({
 
       <ItemSection section={config.benefits} />
       <CapabilitySection section={capabilitySection} />
-      <ItemSection section={config.howItWorks} itemsKey="steps" numbered />
+      <ItemSection section={config.howItWorks} itemsKey="steps" numbered sectionId="workflow" />
       <ItemSection section={config.useCases} />
       <HelpfulGuidance blocks={config.helpfulGuidance} />
 
@@ -216,12 +216,14 @@ function ItemSection({
   section,
   itemsKey = 'items',
   numbered = false,
+  sectionId,
 }: Readonly<{
   section?:
     | { title: string; items: ReadonlyArray<ToolSectionItem> }
     | { title: string; steps: ReadonlyArray<ToolSectionItem> }
   itemsKey?: 'items' | 'steps'
   numbered?: boolean
+  sectionId?: string
 }>) {
   if (!section) return null
 
@@ -235,7 +237,7 @@ function ItemSection({
   if (items.length === 0) return null
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 py-9 sm:px-6">
+    <section className="mx-auto w-full max-w-5xl scroll-mt-20 px-4 py-9 sm:px-6" id={sectionId}>
       <h2 className="text-2xl font-semibold tracking-tight">{section.title}</h2>
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item, index) => (

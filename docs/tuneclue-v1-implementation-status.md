@@ -7,10 +7,10 @@ This overlay was authored against `ai-ashao/tune-clue` at initial commit
 
 - Product identity switched from ShipLean starter to **TuneClue Tool Mode**.
 - SEO brief: generic `song finder by video` + TikTok wedge.
-- Tool registry with `video-song-finder` live and TikTok gated.
+- Tool registry with `video-song-finder` and `tiktok-song-finder` live.
 - Tool-site navigation without SaaS CTA, Pricing, Workflow, or Guides.
 - Generic homepage Tool Landing.
-- Separate TikTok Tool Landing, **noindex by default**.
+- Separate TikTok Tool Landing using the same authenticated credit flow.
 - `/identify` noindex workbench.
 - Browser-first local media decode → 16 kHz mono WAV short sample.
 - AudD Standard Recognition server adapter.
@@ -18,14 +18,13 @@ This overlay was authored against `ai-ashao/tune-clue` at initial commit
 - Unit tests for AudD normalization + SEO/product/registry contracts.
 - TuneClue Wrangler/env naming.
 
-## Deliberately not enabled
+## TikTok extractor
 
-### TikTok extractor
+TikTok link recognition is enabled by default. `VITE_ENABLE_TIKTOK=false` remains an emergency kill
+switch. The public endpoint accepts allowlisted public TikTok HTTPS URLs, requires the existing Google
+session and credit ledger, refunds provider/extractor failures, and does not expose direct media URLs.
 
-`VITE_ENABLE_TIKTOK=false` by default.
-
-The URL UI and domain boundary exist, but public TikTok media extraction is not faked. The route stays
-planned/noindex until a real Cloudflare runtime PoC proves a safe extractor path.
+The internal bearer-token PoC endpoint remains separate for extractor diagnostics.
 
 ### Pancake / paid credits
 

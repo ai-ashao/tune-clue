@@ -26,7 +26,9 @@ export type RecognitionApiResponse =
       ok: false
       code:
         | 'invalid-request'
+        | 'invalid-url'
         | 'sample-too-large'
+        | 'source-unavailable'
         | 'provider-not-configured'
         | 'provider-error'
         | 'rate-limited'

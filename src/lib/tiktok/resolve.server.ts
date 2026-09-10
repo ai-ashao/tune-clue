@@ -75,7 +75,7 @@ export async function runTikTokPoc(input: { url: string; action: TikTokPocAction
     }).catch(() => undefined)
   }
 
-  if (parsed.internalVideoUrl) {
+  if (input.action === 'probe' && parsed.internalVideoUrl) {
     videoProbe = await probeTikTokMedia({
       mediaUrl: parsed.internalVideoUrl,
       referer: parsed.canonicalUrl,

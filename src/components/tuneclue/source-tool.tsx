@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { ArrowRight, FileAudio2, LockKeyhole, UploadCloud } from 'lucide-react'
+import { ArrowRight, FileAudio2, Link2, LockKeyhole, UploadCloud } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { setPendingRecognitionSource } from '@/lib/recognition/pending-source'
@@ -11,7 +11,7 @@ export function TuneClueSourceTool() {
   const navigate = useNavigate()
   const inputId = useId()
   const urlId = useId()
-  const [mode, setMode] = useState<SourceMode>('upload')
+  const [mode, setMode] = useState<SourceMode>(tuneClueFlags.tiktok ? 'tiktok' : 'upload')
   const [file, setFile] = useState<File>()
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string>()
@@ -60,22 +60,24 @@ export function TuneClueSourceTool() {
       {tiktokAvailable ? (
         <div className="tc-mode-tabs" role="tablist">
           <button
-            aria-selected={effectiveMode === 'upload'}
-            className="tc-mode-tab"
-            onClick={() => chooseMode('upload')}
-            role="tab"
-            type="button"
-          >
-            Upload file
-          </button>
-          <button
             aria-selected={effectiveMode === 'tiktok'}
             className="tc-mode-tab"
             onClick={() => chooseMode('tiktok')}
             role="tab"
             type="button"
           >
-            TikTok link
+            <Link2 aria-hidden="true" size={15} />
+            Paste link
+          </button>
+          <button
+            aria-selected={effectiveMode === 'upload'}
+            className="tc-mode-tab"
+            onClick={() => chooseMode('upload')}
+            role="tab"
+            type="button"
+          >
+            <UploadCloud aria-hidden="true" size={15} />
+            Upload file
           </button>
         </div>
       ) : null}
@@ -110,18 +112,28 @@ export function TuneClueSourceTool() {
           ) : null}
         </div>
       ) : (
-        <div className="mt-3">
-          <label className="sr-only" htmlFor={urlId}>
-            TikTok video link
-          </label>
-          <input
-            className="min-h-12 w-full rounded-xl border bg-white px-4 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring"
-            id={urlId}
-            onChange={(event) => setUrl(event.target.value)}
-            placeholder="Paste a public TikTok video link"
-            type="url"
-            value={url}
-          />
+        <div className="tc-link-panel">
+          <span className="tc-link-icon">
+            <Link2 aria-hidden="true" size={23} />
+          </span>
+          <h2 className="tc-link-title">Paste a TikTok video link</h2>
+          <p className="tc-link-copy">
+            Use a public TikTok URL and TuneClue will identify the music from it.
+          </p>
+          <div className="tc-link-field">
+            <label className="sr-only" htmlFor={urlId}>
+              TikTok video link
+            </label>
+            <Link2 aria-hidden="true" size={16} />
+            <input
+              id={urlId}
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder="https://www.tiktok.com/@creator/video/..."
+              type="url"
+              value={url}
+            />
+          </div>
+          <p className="tc-link-hint">Public TikTok links only.</p>
         </div>
       )}
 
@@ -130,7 +142,9 @@ export function TuneClueSourceTool() {
       <div className="tc-source-footer">
         <p className="tc-trust-note">
           <LockKeyhole aria-hidden="true" size={13} />
-          Full local files stay in your browser. Recognition sends only a short audio sample.
+          {effectiveMode === 'upload'
+            ? 'Full local files stay in your browser. Only a short audio sample is sent.'
+            : 'TuneClue reads the public video audio only for this recognition attempt.'}
         </p>
         <Button
           className="tc-primary-action"

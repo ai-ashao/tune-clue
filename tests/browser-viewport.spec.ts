@@ -73,6 +73,7 @@ for (const viewport of viewports) {
 test('local upload reaches the identify workbench with the pending file', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('#tool')).toHaveAttribute('data-mounted', 'true')
+  await page.getByRole('tab', { name: 'Upload file' }).click()
   await page.locator('input[type="file"]').setInputFiles({
     name: 'known-song-sample.wav',
     mimeType: 'audio/wav',
@@ -85,6 +86,24 @@ test('local upload reaches the identify workbench with the pending file', async 
     page.getByRole('heading', { level: 1, name: 'Choose the clearest music moment' }),
   ).toBeVisible()
   await expect(page.getByText('Choose the source again')).toHaveCount(0)
+})
+
+test('public TikTok URL reaches the live identify workbench', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('#tool')).toHaveAttribute('data-mounted', 'true')
+  await expect(page.getByRole('tab', { name: 'Paste link' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
+  await page
+    .getByLabel('TikTok video link')
+    .fill('https://www.tiktok.com/@creator/video/7666618479071612168')
+  await page.getByRole('button', { name: 'Find song' }).click()
+
+  await expect(page).toHaveURL(/\/identify$/)
+  await expect(page.getByText('TikTok link', { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Identify song' })).toBeEnabled()
+  await expect(page.getByText(/not available until/i)).toHaveCount(0)
 })
 
 test('auth and credit pages fail closed before Google and D1 are configured', async ({ page }) => {
