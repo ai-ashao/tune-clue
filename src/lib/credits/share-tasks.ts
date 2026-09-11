@@ -1,9 +1,8 @@
-export const sharePlatforms = ['whatsapp', 'telegram', 'x'] as const
+export const sharePlatforms = ['whatsapp', 'x'] as const
 export type SharePlatform = (typeof sharePlatforms)[number]
 
 export const shareTaskMeta: Record<SharePlatform, { label: string; reward: number }> = {
   whatsapp: { label: 'WhatsApp', reward: 1 },
-  telegram: { label: 'Telegram', reward: 1 },
   x: { label: 'X', reward: 1 },
 }
 
@@ -23,13 +22,6 @@ export function buildShareUrl(platform: SharePlatform, origin: string) {
   if (platform === 'whatsapp') {
     const url = new URL('https://wa.me/')
     url.searchParams.set('text', `${text} ${target}`)
-    return url.toString()
-  }
-
-  if (platform === 'telegram') {
-    const url = new URL('https://t.me/share/url')
-    url.searchParams.set('url', target)
-    url.searchParams.set('text', text)
     return url.toString()
   }
 

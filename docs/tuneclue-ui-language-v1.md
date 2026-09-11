@@ -127,11 +127,10 @@ Mint is reserved for success labels, not all buttons.
 
 This is an optional utility, not a gamified dashboard.
 
-Use three rows only:
+Use two rows only:
 
 ```text
 WA  WhatsApp      +1     [Share +1]
-TG  Telegram      +1     [Share +1]
 X   X             +1     [Share +1]
 ```
 

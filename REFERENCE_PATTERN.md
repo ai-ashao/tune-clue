@@ -31,6 +31,9 @@ credits, privacy behavior, and SEO registry remain authoritative.
 - Supporting content carries a low-opacity cyan/pink gradient rhythm through alternating soft bands,
   three-card grids, the compact FAQ panel, state surfaces, and footer. The dark closing CTA remains
   the strongest non-hero gradient so the page still has a clear visual endpoint.
+- Search-intent landing pages such as `/tiktok-song-finder` reuse the same shell, hero treatment,
+  primary finder geometry, section rhythm, guidance cards, FAQ panel, and closing CTA rather than
+  falling back to the neutral starter presentation.
 - Below 900 px, grids stack. Below 560 px, URL input/action stack, actions become full width, and
   content side padding becomes 12 px.
 

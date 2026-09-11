@@ -11,7 +11,6 @@ import {
 
 const platformMarks: Record<SharePlatform, string> = {
   whatsapp: 'WA',
-  telegram: 'TG',
   x: 'X',
 }
 
@@ -112,7 +111,7 @@ export function EarnCreditsPage() {
       <h1 className="tc-page-title">Earn free credits</h1>
       <p className="tc-page-lede">
         Open TuneClue’s share composer once on each platform. Each task is optional and worth one
-        credit. You can claim up to three share credits total.
+        credit. You can claim up to two share credits total.
       </p>
 
       <div className="tc-dashboard-card">

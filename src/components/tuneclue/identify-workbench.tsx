@@ -402,8 +402,8 @@ export function IdentifyWorkbench() {
             </span>
             <h2 className="tc-workspace-title">Need another song search?</h2>
             <p className="tc-workspace-copy">
-              Earn up to three free credits by opening TuneClue’s share composer once on WhatsApp,
-              Telegram, and X.
+              Earn up to two free credits by opening TuneClue’s share composer once on WhatsApp and
+              X.
             </p>
             <a className="tc-primary-action tc-workspace-action" href="/earn-credits">
               <Sparkles aria-hidden="true" size={14} />

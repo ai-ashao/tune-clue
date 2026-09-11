@@ -384,7 +384,7 @@ function buildAccountToolTermsDocument(profile: LegalProfile): LegalDocument {
         title: '5. Free credits and rewards',
         paragraphs: [
           'A new eligible Google account receives one welcome credit. Each recognition request consumes one credit after the request passes validation, whether the recognition provider finds a match or returns no match. When the provider cannot run because of a provider or configuration failure, TuneClue attempts to return the consumed credit through a separate refund entry.',
-          'An authenticated user may receive one additional credit for opening TuneClue’s share composer for each supported platform. The reward is granted when the composer opens; TuneClue cannot verify whether the user publishes the post. Each supported platform reward may be claimed only once per account, for a current maximum of three share-intent credits.',
+          'An authenticated user may receive one additional credit for opening TuneClue’s share composer for each supported platform. The reward is granted when the composer opens; TuneClue cannot verify whether the user publishes the post. Each supported platform reward may be claimed only once per account, for a current maximum of two share-intent credits.',
           'Free credits have no cash value, cannot be transferred or sold, and may not be obtained through duplicate accounts, automation, deception, or attempts to bypass usage controls. TuneClue does not currently sell credits or offer a subscription. Any future paid offering will require separate terms before it becomes available.',
         ],
       },

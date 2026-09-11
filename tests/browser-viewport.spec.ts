@@ -64,6 +64,14 @@ for (const viewport of viewports) {
         await expect(page.locator('[data-site-header]')).toContainText('FAQ')
         await expect(page.locator('[data-site-header]')).toContainText('About')
         await expect(page.locator('[data-site-header]')).toContainText('TikTok Finder')
+
+        const navBox = await page.locator('.ship-main-nav').boundingBox()
+        const actionsBox = await page.locator('.ship-header-actions').boundingBox()
+        expect(navBox).not.toBeNull()
+        expect(actionsBox).not.toBeNull()
+        const navRight = navBox ? navBox.x + navBox.width : 0
+        expect(navRight).toBeLessThan(actionsBox?.x ?? 0)
+        expect((actionsBox?.x ?? Infinity) - navRight).toBeLessThanOrEqual(40)
       }
       await expect(page.locator('[data-site-header]')).toContainText('Sign in')
 
@@ -113,19 +121,52 @@ test('public TikTok URL reaches the live identify workbench', async ({ page }) =
   await expect(page.getByText(/not available until/i)).toHaveCount(0)
 })
 
-test('auth and credit pages fail closed before Google and D1 are configured', async ({ page }) => {
+test('TikTok finder uses the TuneClue landing system and supports form submission', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/tiktok-song-finder')
+
+  await expect(page.locator('.tuneclue-shell[data-tiktok-live="true"]')).toBeVisible()
+  await expect(page.locator('[data-tool-title-accent]')).toHaveText('TikTok Video')
+  await expect(page.locator('.tc-tiktok-source-card')).toHaveAttribute('data-mounted', 'true')
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+
+  await page
+    .getByLabel('TikTok video link')
+    .fill('https://www.tiktok.com/@creator/video/7666618479071612168')
+  await page.getByLabel('TikTok video link').press('Enter')
+
+  await expect(page).toHaveURL(/\/identify$/)
+  await expect(page.getByRole('button', { name: 'Identify song' })).toBeEnabled()
+})
+
+test('auth and credit pages reflect the current Google and D1 configuration', async ({ page }) => {
   const sessionResponse = await page.request.get('/api/auth/session')
   expect(sessionResponse.ok()).toBe(true)
-  expect(await sessionResponse.json()).toEqual({ available: false, authenticated: false })
+  const session = (await sessionResponse.json()) as {
+    available: boolean
+    authenticated: boolean
+  }
+  expect(session.authenticated).toBe(false)
 
   await page.goto('/account')
   await expect(page.getByRole('heading', { level: 1, name: 'Account' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Continue with Google' })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Continue with Google' })).toHaveCount(
+    session.available ? 1 : 0,
+  )
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow')
 
   await page.goto('/earn-credits')
-  await expect(page.getByRole('heading', { level: 1, name: 'Earn free credits' })).toBeVisible()
-  await expect(page.getByText(/not configured in this environment yet/i)).toBeVisible()
+  if (session.available) {
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Earn free song searches' }),
+    ).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Continue with Google' })).toBeVisible()
+  } else {
+    await expect(page.getByRole('heading', { level: 1, name: 'Earn free credits' })).toBeVisible()
+    await expect(page.getByText(/not configured in this environment yet/i)).toBeVisible()
+  }
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow')
 })
 

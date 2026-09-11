@@ -27,14 +27,14 @@ describe('TuneClue Google auth and free-growth contracts', () => {
     expect(url.searchParams.get('scope')).toContain('email')
   })
 
-  it('freezes exactly three optional one-time share platforms', () => {
-    expect(sharePlatforms).toEqual(['whatsapp', 'telegram', 'x'])
+  it('freezes exactly two optional one-time share platforms', () => {
+    expect(sharePlatforms).toEqual(['whatsapp', 'x'])
   })
 
   it('builds zero-API share intents with source tracking', () => {
     for (const platform of sharePlatforms) {
       const shareUrl = new URL(buildShareUrl(platform, 'https://tuneclue.com'))
-      expect(['wa.me', 't.me', 'twitter.com']).toContain(shareUrl.hostname)
+      expect(['wa.me', 'twitter.com']).toContain(shareUrl.hostname)
       const decoded = decodeURIComponent(shareUrl.toString())
       expect(decoded).toContain(`utm_source=${platform}`)
       expect(decoded).toContain('utm_medium=share_reward')

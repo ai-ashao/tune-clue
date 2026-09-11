@@ -1,15 +1,19 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useId, useState } from 'react'
+import { ArrowRight, Link2 } from 'lucide-react'
+import { useEffect, useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Field, FieldControl, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { setPendingRecognitionSource } from '@/lib/recognition/pending-source'
 import { tuneClueFlags } from '@/lib/tuneclue-flags'
 
 export function TikTokUrlForm() {
   const navigate = useNavigate()
   const id = useId()
+  const errorId = `${id}-error`
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string>()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   async function submit() {
     setError(undefined)
@@ -33,26 +37,52 @@ export function TikTokUrlForm() {
 
   return (
     // biome-ignore lint/correctness/useUniqueElementIds: This page-level landmark is the stable target of the global Tools navigation link.
-    <section className="mx-auto max-w-3xl rounded-2xl border bg-card p-4 shadow-sm" id="tool">
-      <Field>
-        <FieldLabel htmlFor={id}>TikTok video link</FieldLabel>
-        <FieldControl>
-          <input
-            className="min-h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            id={id}
-            onChange={(event) => setUrl(event.target.value)}
-            placeholder="https://www.tiktok.com/@creator/video/..."
-            type="url"
-            value={url}
-          />
-          <FieldDescription>Public TikTok links only.</FieldDescription>
-        </FieldControl>
-      </Field>
-      {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}
-      <div className="mt-4 flex justify-end">
-        <Button data-tool-primary-action onClick={submit} type="button">
-          Find song
-        </Button>
+    <section
+      className="tc-source-card tc-tiktok-source-card"
+      data-mounted={mounted ? 'true' : 'false'}
+      id="tool"
+    >
+      <div className="tc-link-panel">
+        <form
+          className="tc-link-inner"
+          onSubmit={(event) => {
+            event.preventDefault()
+            void submit()
+          }}
+        >
+          <span className="tc-link-icon">
+            <Link2 aria-hidden="true" size={23} />
+          </span>
+          <h2 className="tc-link-title">Paste a TikTok video link</h2>
+          <p className="tc-link-copy">
+            Use a public TikTok URL and TuneClue will identify the music from it.
+          </p>
+          <div className="tc-link-field">
+            <label className="sr-only" htmlFor={id}>
+              TikTok video link
+            </label>
+            <Link2 aria-hidden="true" size={16} />
+            <input
+              aria-describedby={error ? errorId : undefined}
+              aria-invalid={error ? true : undefined}
+              id={id}
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder="https://www.tiktok.com/@creator/video/..."
+              type="url"
+              value={url}
+            />
+            <Button className="tc-link-action" data-tool-primary-action type="submit">
+              Find song
+              <ArrowRight aria-hidden="true" size={15} />
+            </Button>
+          </div>
+          <p className="tc-link-hint">Public TikTok links only.</p>
+          {error ? (
+            <p className="tc-link-error" id={errorId} role="alert">
+              {error}
+            </p>
+          ) : null}
+        </form>
       </div>
     </section>
   )

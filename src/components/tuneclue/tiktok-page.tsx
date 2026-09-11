@@ -25,7 +25,8 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
   },
   hero: {
     eyebrow: 'TikTok Song Finder',
-    title: 'Find the Song in a TikTok',
+    title: 'Find Song From a',
+    accentText: 'TikTok Video',
     description:
       'Free online TikTok song finder for public video links. Paste a TikTok URL and sign in with Google when you are ready to run recognition.',
   },
@@ -43,11 +44,31 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
     ],
   },
   completion: {
+    title: 'Recognition tips',
+    description: 'Small choices that can make a difficult TikTok easier to identify.',
     highlights: [
-      'Paste a TikTok video link instead of using a microphone',
-      'Identify a track even when the post context is unclear',
-      'Get the song title and artist in one result',
-      'Open available listening links after a successful match',
+      'Use the public video URL instead of a profile or sound-page link',
+      'Try another post when a TikTok sound is heavily edited',
+      'Choose a clip where the music is louder than speech and effects',
+    ],
+  },
+  completionPlacement: 'after-capabilities',
+  howItWorks: {
+    title: 'How it works',
+    description: 'A focused link-to-result flow with no recording or installation required.',
+    steps: [
+      {
+        title: 'Paste the TikTok link',
+        description: 'Add the public URL for the TikTok video whose music you want to identify.',
+      },
+      {
+        title: 'Sign in and identify',
+        description: 'Continue with Google when asked, then use one recognition credit.',
+      },
+      {
+        title: 'Get the track',
+        description: 'See the title, artist, artwork, and available listening links after a match.',
+      },
     ],
   },
   capabilities: {
@@ -105,6 +126,12 @@ export const tiktokSongFinderConfig: ToolLandingConfig = {
       },
     ],
   },
+  bottomAction: {
+    title: 'Ready to identify that TikTok song?',
+    description: 'Paste the public video link and let TuneClue listen for the track.',
+    actionLabel: 'Find a song',
+    href: '#tool',
+  },
   structuredData: {
     enableFaq: true,
   },
@@ -133,7 +160,7 @@ export function TikTokSongFinderPage() {
 
   const structured = buildToolStructuredData(tiktokSongFinderConfig, site)
   return (
-    <div data-tiktok-live="true">
+    <div className="tuneclue-shell" data-tiktok-live="true">
       <ToolStructuredData items={structured} />
       <ToolLandingPage
         config={tiktokSongFinderConfig}

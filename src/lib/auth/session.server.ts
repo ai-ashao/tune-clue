@@ -1,4 +1,4 @@
-import type { SharePlatform } from '@/lib/credits/share-tasks'
+import { isSharePlatform, type SharePlatform } from '@/lib/credits/share-tasks'
 import { getTuneClueDb } from '@/lib/db.server'
 import { readCookie, SESSION_COOKIE } from './cookies.server'
 import { randomUrlSafeToken, sha256Base64Url } from './crypto'
@@ -135,13 +135,13 @@ export async function getCurrentSessionUser(request: Request): Promise<SessionUs
   const rewardRows = await db
     .prepare('SELECT platform FROM share_rewards WHERE user_id = ? ORDER BY claimed_at ASC')
     .bind(row.id)
-    .all<{ platform: SharePlatform }>()
+    .all<{ platform: string }>()
 
   return {
     id: row.id,
     email: row.email,
     name: row.name || undefined,
     credits: Number(row.credits || 0),
-    shareRewards: rewardRows.results.map((item) => item.platform),
+    shareRewards: rewardRows.results.map((item) => item.platform).filter(isSharePlatform),
   }
 }

@@ -14,9 +14,8 @@ SEO visitor
 → result
 → optional Earn Credits
    ├─ WhatsApp +1 once
-   ├─ Telegram +1 once
    └─ X +1 once
-→ max free total = 4 recognition credits
+→ max free total = 3 recognition credits
 ```
 
 Login copy intentionally sells the outcome, not the accounting unit:
@@ -89,8 +88,8 @@ The ledger is append-only.
 
 ## Share rewards
 
-V1 uses share-intent URLs only; no WhatsApp, Telegram, or X developer API is required.
-The site cannot prove that a user completed a final social post. The reward is intentionally low-cost and one-time, capped at three share credits per Google account.
+V1 uses share-intent URLs only; no WhatsApp or X developer API is required.
+The site cannot prove that a user completed a final social post. The reward is intentionally low-cost and one-time, capped at two share credits per Google account.
 
 ## OAuth resume
 
