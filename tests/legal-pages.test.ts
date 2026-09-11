@@ -83,7 +83,8 @@ describe('legal page contracts', () => {
     expect(JSON.stringify(terms)).not.toContain('account-free tool')
     expect(JSON.stringify(terms)).toContain('whether the recognition provider finds a match')
     expect(JSON.stringify(terms)).toContain('cannot verify whether the user publishes the post')
-    expect(JSON.stringify(terms)).toContain('does not currently sell credits')
+    expect(JSON.stringify(terms)).toContain('one-time packs through Dodo Payments')
+    expect(JSON.stringify(terms)).not.toContain('does not currently sell credits')
   })
 
   it('keeps optional analytics fully disclosed without adding SaaS sections', () => {

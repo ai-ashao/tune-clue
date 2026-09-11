@@ -347,7 +347,7 @@ function buildAccountToolTermsDocument(profile: LegalProfile): LegalDocument {
   return {
     kind: 'terms',
     title: 'Terms of Service',
-    description: `These terms govern access to ${profile.productName}, including its account, song-recognition, and free-credit features.`,
+    description: `These terms govern access to ${profile.productName}, including its account, song-recognition, and free or purchased credit features.`,
     sections: [
       {
         id: 'acceptance',
@@ -381,11 +381,15 @@ function buildAccountToolTermsDocument(profile: LegalProfile): LegalDocument {
       },
       {
         id: 'credits-rewards',
-        title: '5. Free credits and rewards',
+        title: '5. Recognition credits, purchases, and rewards',
         paragraphs: [
           'A new eligible Google account receives one welcome credit. Each recognition request consumes one credit after the request passes validation, whether the recognition provider finds a match or returns no match. When the provider cannot run because of a provider or configuration failure, TuneClue attempts to return the consumed credit through a separate refund entry.',
           'An authenticated user may receive one additional credit for opening TuneClue’s share composer for each supported platform. The reward is granted when the composer opens; TuneClue cannot verify whether the user publishes the post. Each supported platform reward may be claimed only once per account, for a current maximum of two share-intent credits.',
-          'Free credits have no cash value, cannot be transferred or sold, and may not be obtained through duplicate accounts, automation, deception, or attempts to bypass usage controls. TuneClue does not currently sell credits or offer a subscription. Any future paid offering will require separate terms before it becomes available.',
+          'Free credits have no cash value, cannot be transferred or sold, and may not be obtained through duplicate accounts, automation, deception, or attempts to bypass usage controls.',
+          'When enabled, paid credits are sold as one-time packs through Dodo Payments. The pack page shows its price and included recognition attempts; applicable tax is shown at checkout. This is not a subscription and does not automatically renew. Credits are assigned only after server-side payment confirmation. Test checkouts do not provide usable recognition credits.',
+          'Purchased credits have no scheduled expiry under the current pack policy. They are tied to the purchasing TuneClue account, are not transferable, and are not a cash balance. One validated recognition attempt uses one credit even when no song is matched. Payment disputes can temporarily suspend the credits associated with that purchase.',
+          `For duplicate charges, undelivered purchases, a refund request, or an applicable consumer right, contact ${profile.contactEmail} with the order number. Refunds are processed through Dodo Payments. A completed full refund reverses that pack’s credits; partial refunds reverse a proportion of the pack using cumulative rounding up to whole credits. Previously consumed credits can result in a negative account balance after reversal. Mandatory consumer rights are not limited by this policy.`,
+          'If a payment dispute is resolved in the customer’s favour, or is otherwise not won or cancelled for the merchant, associated credits remain unavailable. A merchant win or cancellation restores only credits not already reversed for a completed refund.',
         ],
       },
       {
@@ -413,7 +417,7 @@ function buildAccountToolTermsDocument(profile: LegalProfile): LegalDocument {
         id: 'third-parties',
         title: '8. Third-party services',
         paragraphs: [
-          'The Service relies on third parties including Google for authentication, AudD for music recognition, and Cloudflare for hosting, security, and account and credit infrastructure. Those providers may process limited information as described in the Privacy Policy and under their own applicable terms.',
+          'The Service relies on third parties including Google for authentication, AudD for music recognition, Cloudflare for hosting and account infrastructure, and Dodo Payments for hosted payment processing when credit purchases are available. Those providers may process limited information as described in the Privacy Policy and under their own applicable terms.',
           'Recognition results may include links to services such as Spotify, Apple Music, and Deezer. TuneClue does not control or guarantee the availability, content, pricing, or accuracy of any third-party service.',
         ],
       },
@@ -435,7 +439,7 @@ function buildAccountToolTermsDocument(profile: LegalProfile): LegalDocument {
         id: 'termination',
         title: '11. Suspension, termination, and deletion',
         paragraphs: [
-          'TuneClue may restrict or suspend access when reasonably necessary to investigate abuse, protect users or infrastructure, comply with law, or enforce these terms. You may stop using the Service at any time and may request account deletion through the contact address below. Deleting an account ends access to its remaining free credits.',
+          'TuneClue may restrict or suspend access when reasonably necessary to investigate abuse, protect users or infrastructure, comply with law, or enforce these terms. You may stop using the Service at any time and may request account deletion through the contact address below. Before requesting deletion of an account with purchased credits or unsettled orders, contact support to resolve its purchases and any applicable refund rights. Necessary transaction records may be retained to meet applicable legal obligations; account deletion does not override those obligations.',
         ],
       },
       {

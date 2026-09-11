@@ -1,0 +1,10 @@
+# Copy to .dev.vars for local Cloudflare development. NEVER commit real credentials.
+# Keep existing Google/AudD credentials when updating your own .dev.vars.
+BILLING_ENABLED=false
+DODO_PAYMENTS_ENVIRONMENT=test_mode
+DODO_LIVE_PAYMENTS_APPROVED=false
+BILLING_SITE_URL=http://localhost:3000
+DODO_PAYMENTS_API_KEY=
+DODO_PAYMENTS_WEBHOOK_KEY=
+DODO_PAYMENTS_BUSINESS_ID=
+DODO_CREDIT_PACKS_JSON='[]'

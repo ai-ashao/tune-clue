@@ -2,6 +2,7 @@ import { ArrowLeft, LockKeyhole, Sparkles } from 'lucide-react'
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { fetchAuthSession, googleSignInUrl } from '@/lib/auth/client'
+import { takeBillingResume } from '@/lib/billing/resume'
 import {
   DEFAULT_SAMPLE_SECONDS,
   extractAudioSample,
@@ -16,19 +17,21 @@ import {
 import { saveResumeSample, takeResumeSample } from '@/lib/recognition/resume-sample'
 import { recognizeTikTokUrl } from '@/lib/recognition/tiktok-client'
 import type { RecognitionResult as RecognitionResultType } from '@/lib/recognition/types'
+import { PurchaseCreditsAction } from './purchase-credits-action'
 import { RecognitionResult } from './recognition-result'
 
 type WorkbenchState =
   | { status: 'idle' }
   | { status: 'working'; message: string }
   | { status: 'auth-required'; sample?: File }
-  | { status: 'insufficient-credits' }
+  | { status: 'insufficient-credits'; sample?: File }
+  | { status: 'ready-sample'; sample: File }
   | { status: 'done'; result: RecognitionResultType; remainingCredits: number }
   | { status: 'error'; message: string }
 
 export function IdentifyWorkbench() {
   const positionId = useId()
-  const [source] = useState<PendingRecognitionSource | undefined>(() =>
+  const [source, setSource] = useState<PendingRecognitionSource | undefined>(() =>
     takePendingRecognitionSource(),
   )
   const [position, setPosition] = useState(0)
@@ -59,7 +62,7 @@ export function IdentifyWorkbench() {
       return
     }
     if (session.credits < 1) {
-      setState({ status: 'insufficient-credits' })
+      setState({ status: 'insufficient-credits', sample })
       return
     }
 
@@ -71,7 +74,7 @@ export function IdentifyWorkbench() {
         return
       }
       if (response.code === 'insufficient-credits') {
-        setState({ status: 'insufficient-credits' })
+        setState({ status: 'insufficient-credits', sample })
         return
       }
       setState({ status: 'error', message: response.message })
@@ -92,6 +95,32 @@ export function IdentifyWorkbench() {
       return
     }
 
+    const purchaseResume = new URL(window.location.href).searchParams.get('purchase_resume') === '1'
+    if (purchaseResume) {
+      if (resumeAttempted.current) return
+      resumeAttempted.current = true
+      fetchAuthSession()
+        .then(async (session) => {
+          if (!session.authenticated)
+            throw new Error('Sign in with the account that saved this song search.')
+          const saved = await takeBillingResume(session.user.id)
+          if (!saved)
+            throw new Error(
+              'The saved song search expired. Your purchased credits are still in your account.',
+            )
+          if (saved.kind === 'sample') setState({ status: 'ready-sample', sample: saved.sample })
+          else setSource(saved)
+          window.history.replaceState(window.history.state, '', '/identify')
+        })
+        .catch((error) =>
+          setState({
+            status: 'error',
+            message: error instanceof Error ? error.message : 'Could not restore your song search.',
+          }),
+        )
+        .finally(() => setCheckingResume(false))
+      return
+    }
     const resume = new URL(window.location.href).searchParams.get('resume') === '1'
     if (!resume) {
       setCheckingResume(false)
@@ -357,6 +386,22 @@ export function IdentifyWorkbench() {
           </div>
         ) : null}
 
+        {state.status === 'ready-sample' ? (
+          <div className="tc-workspace-center">
+            <h2 className="tc-workspace-title">Your song search is ready</h2>
+            <p className="tc-workspace-copy">
+              The short sample was restored. This recognition uses 1 credit even if no song matches.
+            </p>
+            <Button
+              type="button"
+              className="tc-primary-action"
+              onClick={() => identifyPreparedSample(state.sample)}
+            >
+              Identify this sample →
+            </Button>
+          </div>
+        ) : null}
+
         {state.status === 'working' ? (
           <div className="tc-workspace-center tc-processing">
             <span className="tc-loader-ring" aria-hidden="true" />
@@ -409,6 +454,7 @@ export function IdentifyWorkbench() {
               <Sparkles aria-hidden="true" size={14} />
               Earn Free Credits
             </a>
+            <PurchaseCreditsAction source={source} sample={state.sample} position={safePosition} />
           </div>
         ) : null}
 

@@ -2,6 +2,7 @@ import { LogOut, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { fetchAuthSession, googleSignInUrl, signOut } from '@/lib/auth/client'
 import type { AuthSessionResponse } from '@/lib/auth/types'
+import { BillingOrderHistory } from './billing-order-history'
 
 export function AccountPage() {
   const [session, setSession] = useState<AuthSessionResponse>()
@@ -45,6 +46,9 @@ export function AccountPage() {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">
+        <a className="tc-header-signin" href="/buy-credits">
+          Buy credits
+        </a>
         <a className="tc-header-signin" href="/earn-credits">
           Earn free credits
         </a>
@@ -60,6 +64,7 @@ export function AccountPage() {
           Sign out
         </button>
       </div>
+      <BillingOrderHistory />
     </main>
   )
 }

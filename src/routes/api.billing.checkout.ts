@@ -1,0 +1,26 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { billingFailure, billingJson, readJson, requireSameOrigin } from '@/lib/billing/http'
+
+export const Route = createFileRoute('/api/billing/checkout')({
+  server: {
+    handlers: {
+      POST: async ({ request }) => {
+        try {
+          const { billingConfig, billingContext, billingUser } = await import(
+            '@/lib/billing/runtime.server'
+          )
+          requireSameOrigin(request, (await billingConfig()).siteUrl)
+          const user = await billingUser(request)
+          const body = await readJson(request)
+          const { startCheckout } = await import('@/lib/billing/service')
+          return billingJson({
+            ok: true,
+            ...(await startCheckout(await billingContext(), user, body)),
+          })
+        } catch (error) {
+          return billingFailure(error)
+        }
+      },
+    },
+  },
+})

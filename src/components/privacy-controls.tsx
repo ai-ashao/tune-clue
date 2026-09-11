@@ -19,7 +19,8 @@ export function PrivacyControls({ locale = 'en' }: Readonly<{ locale?: Locale }>
   }, [])
 
   useEffect(() => {
-    if (!publicEnv.ga4Id) return
+    // Payment redirects can carry customer email in their query. Do not load GA here.
+    if (window.location.pathname === '/billing/return' || !publicEnv.ga4Id) return
     window.dataLayer = window.dataLayer || []
     window.gtag = window.gtag || createGtagQueue(window.dataLayer)
     window.gtag('consent', 'default', { analytics_storage: 'denied' })

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as BuyCreditsRouteImport } from './routes/buy-credits'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EarnCreditsRouteImport } from './routes/earn-credits'
@@ -27,11 +28,18 @@ import { Route as ToolReferenceRouteImport } from './routes/tool-reference'
 import { Route as ToolReferenceUploadRouteImport } from './routes/tool-reference-upload'
 import { Route as ApiHealthRouteImport } from './routes/api.health'
 import { Route as ApiRecognizeRouteImport } from './routes/api.recognize'
+import { Route as BillingReturnRouteImport } from './routes/billing.return'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as ApiAuthGoogleRouteImport } from './routes/api.auth.google'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api.auth.logout'
 import { Route as ApiAuthSessionRouteImport } from './routes/api.auth.session'
+import { Route as ApiBillingCatalogRouteImport } from './routes/api.billing.catalog'
+import { Route as ApiBillingCheckoutRouteImport } from './routes/api.billing.checkout'
+import { Route as ApiBillingOrderRouteImport } from './routes/api.billing.order'
+import { Route as ApiBillingOrdersRouteImport } from './routes/api.billing.orders'
+import { Route as ApiBillingReconcileRouteImport } from './routes/api.billing.reconcile'
+import { Route as ApiBillingWebhookRouteImport } from './routes/api.billing.webhook'
 import { Route as ApiRewardsShareRouteImport } from './routes/api.rewards.share'
 import { Route as ApiSandboxSessionRouteImport } from './routes/api.sandbox.session'
 import { Route as ApiTiktokPocRouteImport } from './routes/api.tiktok.poc'
@@ -51,6 +59,11 @@ const AboutRoute = AboutRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyCreditsRoute = BuyCreditsRouteImport.update({
+  id: '/buy-credits',
+  path: '/buy-credits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -128,6 +141,11 @@ const ApiRecognizeRoute = ApiRecognizeRouteImport.update({
   path: '/api/recognize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BillingReturnRoute = BillingReturnRouteImport.update({
+  id: '/billing/return',
+  path: '/billing/return',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
@@ -151,6 +169,36 @@ const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
 const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
   id: '/api/auth/session',
   path: '/api/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingCatalogRoute = ApiBillingCatalogRouteImport.update({
+  id: '/api/billing/catalog',
+  path: '/api/billing/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingCheckoutRoute = ApiBillingCheckoutRouteImport.update({
+  id: '/api/billing/checkout',
+  path: '/api/billing/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingOrderRoute = ApiBillingOrderRouteImport.update({
+  id: '/api/billing/order',
+  path: '/api/billing/order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingOrdersRoute = ApiBillingOrdersRouteImport.update({
+  id: '/api/billing/orders',
+  path: '/api/billing/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingReconcileRoute = ApiBillingReconcileRouteImport.update({
+  id: '/api/billing/reconcile',
+  path: '/api/billing/reconcile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingWebhookRoute = ApiBillingWebhookRouteImport.update({
+  id: '/api/billing/webhook',
+  path: '/api/billing/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiRewardsShareRoute = ApiRewardsShareRouteImport.update({
@@ -183,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/buy-credits': typeof BuyCreditsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/earn-credits': typeof EarnCreditsRoute
@@ -198,11 +247,18 @@ export interface FileRoutesByFullPath {
   '/tool-reference-upload': typeof ToolReferenceUploadRoute
   '/api/health': typeof ApiHealthRoute
   '/api/recognize': typeof ApiRecognizeRoute
+  '/billing/return': typeof BillingReturnRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides/': typeof GuidesIndexRoute
   '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/billing/catalog': typeof ApiBillingCatalogRoute
+  '/api/billing/checkout': typeof ApiBillingCheckoutRoute
+  '/api/billing/order': typeof ApiBillingOrderRoute
+  '/api/billing/orders': typeof ApiBillingOrdersRoute
+  '/api/billing/reconcile': typeof ApiBillingReconcileRoute
+  '/api/billing/webhook': typeof ApiBillingWebhookRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
   '/api/tiktok/poc': typeof ApiTiktokPocRoute
@@ -213,6 +269,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/buy-credits': typeof BuyCreditsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/earn-credits': typeof EarnCreditsRoute
@@ -228,11 +285,18 @@ export interface FileRoutesByTo {
   '/tool-reference-upload': typeof ToolReferenceUploadRoute
   '/api/health': typeof ApiHealthRoute
   '/api/recognize': typeof ApiRecognizeRoute
+  '/billing/return': typeof BillingReturnRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides': typeof GuidesIndexRoute
   '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/billing/catalog': typeof ApiBillingCatalogRoute
+  '/api/billing/checkout': typeof ApiBillingCheckoutRoute
+  '/api/billing/order': typeof ApiBillingOrderRoute
+  '/api/billing/orders': typeof ApiBillingOrdersRoute
+  '/api/billing/reconcile': typeof ApiBillingReconcileRoute
+  '/api/billing/webhook': typeof ApiBillingWebhookRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
   '/api/tiktok/poc': typeof ApiTiktokPocRoute
@@ -244,6 +308,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/buy-credits': typeof BuyCreditsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/earn-credits': typeof EarnCreditsRoute
@@ -259,11 +324,18 @@ export interface FileRoutesById {
   '/tool-reference-upload': typeof ToolReferenceUploadRoute
   '/api/health': typeof ApiHealthRoute
   '/api/recognize': typeof ApiRecognizeRoute
+  '/billing/return': typeof BillingReturnRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/guides/': typeof GuidesIndexRoute
   '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/billing/catalog': typeof ApiBillingCatalogRoute
+  '/api/billing/checkout': typeof ApiBillingCheckoutRoute
+  '/api/billing/order': typeof ApiBillingOrderRoute
+  '/api/billing/orders': typeof ApiBillingOrdersRoute
+  '/api/billing/reconcile': typeof ApiBillingReconcileRoute
+  '/api/billing/webhook': typeof ApiBillingWebhookRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
   '/api/tiktok/poc': typeof ApiTiktokPocRoute
@@ -276,6 +348,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/buy-credits'
     | '/contact'
     | '/dashboard'
     | '/earn-credits'
@@ -291,11 +364,18 @@ export interface FileRouteTypes {
     | '/tool-reference-upload'
     | '/api/health'
     | '/api/recognize'
+    | '/billing/return'
     | '/guides/$slug'
     | '/guides/'
     | '/api/auth/google'
     | '/api/auth/logout'
     | '/api/auth/session'
+    | '/api/billing/catalog'
+    | '/api/billing/checkout'
+    | '/api/billing/order'
+    | '/api/billing/orders'
+    | '/api/billing/reconcile'
+    | '/api/billing/webhook'
     | '/api/rewards/share'
     | '/api/sandbox/session'
     | '/api/tiktok/poc'
@@ -306,6 +386,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/buy-credits'
     | '/contact'
     | '/dashboard'
     | '/earn-credits'
@@ -321,11 +402,18 @@ export interface FileRouteTypes {
     | '/tool-reference-upload'
     | '/api/health'
     | '/api/recognize'
+    | '/billing/return'
     | '/guides/$slug'
     | '/guides'
     | '/api/auth/google'
     | '/api/auth/logout'
     | '/api/auth/session'
+    | '/api/billing/catalog'
+    | '/api/billing/checkout'
+    | '/api/billing/order'
+    | '/api/billing/orders'
+    | '/api/billing/reconcile'
+    | '/api/billing/webhook'
     | '/api/rewards/share'
     | '/api/sandbox/session'
     | '/api/tiktok/poc'
@@ -336,6 +424,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/buy-credits'
     | '/contact'
     | '/dashboard'
     | '/earn-credits'
@@ -351,11 +440,18 @@ export interface FileRouteTypes {
     | '/tool-reference-upload'
     | '/api/health'
     | '/api/recognize'
+    | '/billing/return'
     | '/guides/$slug'
     | '/guides/'
     | '/api/auth/google'
     | '/api/auth/logout'
     | '/api/auth/session'
+    | '/api/billing/catalog'
+    | '/api/billing/checkout'
+    | '/api/billing/order'
+    | '/api/billing/orders'
+    | '/api/billing/reconcile'
+    | '/api/billing/webhook'
     | '/api/rewards/share'
     | '/api/sandbox/session'
     | '/api/tiktok/poc'
@@ -367,6 +463,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
+  BuyCreditsRoute: typeof BuyCreditsRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   EarnCreditsRoute: typeof EarnCreditsRoute
@@ -382,11 +479,18 @@ export interface RootRouteChildren {
   ToolReferenceUploadRoute: typeof ToolReferenceUploadRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiRecognizeRoute: typeof ApiRecognizeRoute
+  BillingReturnRoute: typeof BillingReturnRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   ApiAuthGoogleRoute: typeof ApiAuthGoogleRouteWithChildren
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
+  ApiBillingCatalogRoute: typeof ApiBillingCatalogRoute
+  ApiBillingCheckoutRoute: typeof ApiBillingCheckoutRoute
+  ApiBillingOrderRoute: typeof ApiBillingOrderRoute
+  ApiBillingOrdersRoute: typeof ApiBillingOrdersRoute
+  ApiBillingReconcileRoute: typeof ApiBillingReconcileRoute
+  ApiBillingWebhookRoute: typeof ApiBillingWebhookRoute
   ApiRewardsShareRoute: typeof ApiRewardsShareRoute
   ApiSandboxSessionRoute: typeof ApiSandboxSessionRoute
   ApiTiktokPocRoute: typeof ApiTiktokPocRoute
@@ -414,6 +518,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buy-credits': {
+      id: '/buy-credits'
+      path: '/buy-credits'
+      fullPath: '/buy-credits'
+      preLoaderRoute: typeof BuyCreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -521,6 +632,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRecognizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/billing/return': {
+      id: '/billing/return'
+      path: '/billing/return'
+      fullPath: '/billing/return'
+      preLoaderRoute: typeof BillingReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/': {
       id: '/guides/'
       path: '/guides'
@@ -554,6 +672,48 @@ declare module '@tanstack/react-router' {
       path: '/api/auth/session'
       fullPath: '/api/auth/session'
       preLoaderRoute: typeof ApiAuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/catalog': {
+      id: '/api/billing/catalog'
+      path: '/api/billing/catalog'
+      fullPath: '/api/billing/catalog'
+      preLoaderRoute: typeof ApiBillingCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/checkout': {
+      id: '/api/billing/checkout'
+      path: '/api/billing/checkout'
+      fullPath: '/api/billing/checkout'
+      preLoaderRoute: typeof ApiBillingCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/order': {
+      id: '/api/billing/order'
+      path: '/api/billing/order'
+      fullPath: '/api/billing/order'
+      preLoaderRoute: typeof ApiBillingOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/orders': {
+      id: '/api/billing/orders'
+      path: '/api/billing/orders'
+      fullPath: '/api/billing/orders'
+      preLoaderRoute: typeof ApiBillingOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/reconcile': {
+      id: '/api/billing/reconcile'
+      path: '/api/billing/reconcile'
+      fullPath: '/api/billing/reconcile'
+      preLoaderRoute: typeof ApiBillingReconcileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/webhook': {
+      id: '/api/billing/webhook'
+      path: '/api/billing/webhook'
+      fullPath: '/api/billing/webhook'
+      preLoaderRoute: typeof ApiBillingWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/rewards/share': {
@@ -610,6 +770,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
+  BuyCreditsRoute: BuyCreditsRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   EarnCreditsRoute: EarnCreditsRoute,
@@ -625,11 +786,18 @@ const rootRouteChildren: RootRouteChildren = {
   ToolReferenceUploadRoute: ToolReferenceUploadRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiRecognizeRoute: ApiRecognizeRoute,
+  BillingReturnRoute: BillingReturnRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   ApiAuthGoogleRoute: ApiAuthGoogleRouteWithChildren,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
+  ApiBillingCatalogRoute: ApiBillingCatalogRoute,
+  ApiBillingCheckoutRoute: ApiBillingCheckoutRoute,
+  ApiBillingOrderRoute: ApiBillingOrderRoute,
+  ApiBillingOrdersRoute: ApiBillingOrdersRoute,
+  ApiBillingReconcileRoute: ApiBillingReconcileRoute,
+  ApiBillingWebhookRoute: ApiBillingWebhookRoute,
   ApiRewardsShareRoute: ApiRewardsShareRoute,
   ApiSandboxSessionRoute: ApiSandboxSessionRoute,
   ApiTiktokPocRoute: ApiTiktokPocRoute,
