@@ -8,3 +8,12 @@ DODO_PAYMENTS_API_KEY=
 DODO_PAYMENTS_WEBHOOK_KEY=
 DODO_PAYMENTS_BUSINESS_ID=
 DODO_CREDIT_PACKS_JSON='[]'
+
+# TuneClue internal administration: all settings are server-only.
+ADMIN_ENABLED=false
+ADMIN_WRITE_ENABLED=false
+ADMIN_USER_IDS=
+ADMIN_SITE_ORIGIN=https://tuneclue.com
+ADMIN_DEPLOYMENT_LABEL=
+# Optional estimate only, never the provider's actual invoice.
+AUDD_ESTIMATED_REQUEST_COST_USD=

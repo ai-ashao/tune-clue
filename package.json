@@ -16,9 +16,12 @@
     "test": "vitest run --exclude tests/browser-viewport.spec.ts",
     "e2e": "node scripts/e2e-smoke.mjs",
     "e2e:browser": "playwright test",
-    "verify": "pnpm check && pnpm test && pnpm test:billing && pnpm build && pnpm typecheck && pnpm e2e && pnpm e2e:browser",
+    "verify": "pnpm check && pnpm test && pnpm test:billing && pnpm test:admin && pnpm build && pnpm typecheck && pnpm e2e && pnpm e2e:browser",
     "test:billing": "node scripts/test-billing.mjs",
-    "format:billing": "node scripts/format-billing.mjs"
+    "format:billing": "node scripts/format-billing.mjs",
+    "test:admin": "node scripts/test-admin.mjs",
+    "format:admin": "node scripts/format-admin.mjs",
+    "e2e:admin": "playwright test --config playwright.admin.config.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",

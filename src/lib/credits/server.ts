@@ -34,14 +34,9 @@ export async function reserveRecognitionCredit(userId: string, attemptId: string
 
 export async function refundRecognitionCredit(userId: string, attemptId: string) {
   const db = await getTuneClueDb()
-  await db
-    .prepare(
-      `INSERT OR IGNORE INTO credit_transactions
-       (id, user_id, delta, type, reference_id, idempotency_key, created_at)
-       VALUES (?, ?, 1, 'refund', ?, ?, ?)`,
-    )
-    .bind(crypto.randomUUID(), userId, attemptId, `refund:${attemptId}`, Date.now())
-    .run()
+  const { returnAutomaticCredit } = await import('../recognition/safe-refund')
+  // Only a logged technical failure with a matching real debit can be returned.
+  return returnAutomaticCredit(db, userId, attemptId)
 }
 
 export async function grantShareReward(userId: string, platform: SharePlatform) {

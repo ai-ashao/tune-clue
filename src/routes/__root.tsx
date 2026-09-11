@@ -56,6 +56,9 @@ function RootComponent() {
   const surfaceMode = surfaceModeForPath(pathname)
   const navigation = siteNavigationForMode(surfaceMode)
 
+  // AdminShell has its own navigation and never mounts public analytics/privacy controls.
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) return <Outlet />
+
   const standardNav = navigation.header.links.flatMap((linkId) => {
     if (linkId === 'guides' && navigation.guidesPlacement !== 'header') return []
     const resolved = resolveHeaderLink(linkId, locale, navigation)
@@ -200,7 +203,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
     inLanguage: localeConfig[locale].htmlLang,
   }
   return (
-    <html lang={localeConfig[locale].htmlLang}>
+    <html
+      lang={
+        pathname === '/admin' || pathname.startsWith('/admin/')
+          ? 'zh-CN'
+          : localeConfig[locale].htmlLang
+      }
+    >
       <head>
         <HeadContent />
       </head>

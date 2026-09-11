@@ -39,6 +39,7 @@ export function IdentifyWorkbench() {
   const [checkingResume, setCheckingResume] = useState(true)
   const [state, setState] = useState<WorkbenchState>({ status: 'idle' })
   const resumeAttempted = useRef(false)
+  const recognitionInFlight = useRef(false)
   const [previewUrl, setPreviewUrl] = useState<string>()
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export function IdentifyWorkbench() {
   }, [source])
 
   const identifyPreparedSample = useCallback(async (sample: File) => {
+    setState({ status: 'working', message: 'Checking your recognition session…' })
     const session = await fetchAuthSession()
     if (!session.available) {
       setState({
@@ -154,60 +156,90 @@ export function IdentifyWorkbench() {
   }, [identifyPreparedSample, source])
 
   async function runLocalRecognition(file: File) {
-    setState({ status: 'working', message: 'Preparing a short audio sample in your browser…' })
+    if (recognitionInFlight.current) return
+    recognitionInFlight.current = true
+    setState({ status: 'working', message: 'Checking your recognition session…' })
     try {
-      const sample = await extractAudioSample(file, position, DEFAULT_SAMPLE_SECONDS)
-      await identifyPreparedSample(sample)
-    } catch (error) {
+      setState({ status: 'working', message: 'Preparing a short audio sample in your browser…' })
+      try {
+        const sample = await extractAudioSample(file, position, DEFAULT_SAMPLE_SECONDS)
+        await identifyPreparedSample(sample)
+      } catch (error) {
+        setState({
+          status: 'error',
+          message:
+            error instanceof LocalMediaDecodeError || error instanceof Error
+              ? error.message
+              : 'TuneClue could not prepare this file.',
+        })
+      }
+    } catch {
       setState({
         status: 'error',
         message:
-          error instanceof LocalMediaDecodeError || error instanceof Error
-            ? error.message
-            : 'TuneClue could not prepare this file.',
+          'The request could not finish. Please check its status before starting another search.',
       })
+    } finally {
+      recognitionInFlight.current = false
     }
   }
 
   async function runTikTokRecognition(url: string) {
-    const session = await fetchAuthSession()
-    if (!session.available) {
-      setState({
-        status: 'error',
-        message: 'Google sign-in and free recognition are not configured in this environment yet.',
-      })
-      return
-    }
-    if (!session.authenticated) {
-      setState({ status: 'auth-required' })
-      return
-    }
-    if (session.credits < 1) {
-      setState({ status: 'insufficient-credits' })
-      return
-    }
-
-    setState({ status: 'working', message: 'Reading the public TikTok audio and identifying it…' })
-    const response = await recognizeTikTokUrl(url)
-    if (!response.ok) {
-      if (response.code === 'auth-required') {
+    if (recognitionInFlight.current) return
+    recognitionInFlight.current = true
+    setState({ status: 'working', message: 'Checking your recognition session…' })
+    try {
+      const session = await fetchAuthSession()
+      if (!session.available) {
+        setState({
+          status: 'error',
+          message:
+            'Google sign-in and free recognition are not configured in this environment yet.',
+        })
+        return
+      }
+      if (!session.authenticated) {
         setState({ status: 'auth-required' })
         return
       }
-      if (response.code === 'insufficient-credits') {
+      if (session.credits < 1) {
         setState({ status: 'insufficient-credits' })
         return
       }
-      setState({ status: 'error', message: response.message })
-      return
-    }
 
-    setState({
-      status: 'done',
-      result: response.result,
-      remainingCredits: response.remainingCredits,
-    })
-    window.dispatchEvent(new Event('tuneclue:credits-changed'))
+      setState({
+        status: 'working',
+        message: 'Reading the public TikTok audio and identifying it…',
+      })
+      const response = await recognizeTikTokUrl(url)
+      if (!response.ok) {
+        if (response.code === 'auth-required') {
+          setState({ status: 'auth-required' })
+          return
+        }
+        if (response.code === 'insufficient-credits') {
+          setState({ status: 'insufficient-credits' })
+          return
+        }
+        setState({ status: 'error', message: response.message })
+        return
+      }
+
+      setState({
+        status: 'done',
+        result: response.result,
+        remainingCredits: response.remainingCredits,
+      })
+      window.dispatchEvent(new Event('tuneclue:credits-changed'))
+    } catch {
+      setState({
+        status: 'error',
+        message:
+          'The request could not finish. Please check its status before starting another search.',
+      })
+    } finally {
+      recognitionInFlight.current = false
+    }
   }
 
   async function continueWithGoogle(sample?: File) {

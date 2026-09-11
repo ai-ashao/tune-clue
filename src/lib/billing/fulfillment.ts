@@ -5,6 +5,20 @@ import type { BillingDb, BillingEnvironment, BillingOrder, BillingStatement } fr
 
 export type EventReference = { id: string; type: string; occurredAt: number }
 
+// Server-only transaction extension. Callers cannot supply this through HTTP.
+// Admin uses it to commit business writes and the operation's audit atomically.
+export type BillingCommit = {
+  before: () => BillingStatement[]
+  after: (outcome: string) => BillingStatement[]
+}
+export async function commitWithoutPayment(
+  db: BillingDb,
+  commit: BillingCommit | undefined,
+  outcome: string,
+) {
+  if (commit) await db.batch([...commit.before(), ...commit.after(outcome)])
+}
+
 export async function eventState(db: BillingDb, environment: BillingEnvironment, id: string) {
   return db
     .prepare('SELECT state FROM billing_events WHERE environment = ? AND event_id = ?')
@@ -36,8 +50,10 @@ export async function recordReview(
   order: BillingOrder,
   event: EventReference,
   reason: string,
+  commit?: BillingCommit,
 ) {
   await db.batch([
+    ...(commit?.before() || []),
     db
       .prepare(
         "UPDATE billing_orders SET status = 'review', review_reason = ?, updated_at = ? WHERE id = ?",
@@ -48,6 +64,7 @@ export async function recordReview(
       VALUES (?, ?, ?, ?, 'review', ?, ?)
       ON CONFLICT(environment, event_id) DO UPDATE SET state = 'review', reason = excluded.reason`)
       .bind(order.environment, event.id, event.type, order.id, Date.now(), reason),
+    ...(commit?.after('review_required') || []),
   ])
 }
 
@@ -58,6 +75,7 @@ export async function fulfillPayment(
   order: BillingOrder,
   payment: PaymentSnapshot,
   event: EventReference,
+  commit?: BillingCommit,
 ) {
   const now = Date.now()
   const environment = order.environment
@@ -193,5 +211,9 @@ export async function fulfillPayment(
       processed_at = excluded.processed_at, reason = NULL`)
       .bind(environment, event.id, event.type, order.id, now, now),
   )
-  await db.batch(statements)
+  await db.batch([
+    ...(commit?.before() || []),
+    ...statements,
+    ...(commit?.after(payment.status === 'succeeded' ? 'applied' : 'payment_not_ready') || []),
+  ])
 }

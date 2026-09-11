@@ -39,7 +39,10 @@ export type TikTokPageFetch = {
   status: number
 }
 
-export async function fetchTikTokPage(inputUrl: string): Promise<TikTokPageFetch> {
+export async function fetchTikTokPage(
+  inputUrl: string,
+  signal?: AbortSignal,
+): Promise<TikTokPageFetch> {
   let current = normalizeTikTokInputUrl(inputUrl)
   const cookies = new Map<string, string>()
 
@@ -59,6 +62,7 @@ export async function fetchTikTokPage(inputUrl: string): Promise<TikTokPageFetch
         },
       },
       FETCH_TIMEOUT_MS,
+      signal,
     )
 
     mergeSetCookies(cookies, response.headers)
@@ -92,7 +96,7 @@ export async function fetchTikTokPage(inputUrl: string): Promise<TikTokPageFetch
   throw new TikTokFetchError('upstream-failed', 'TikTok redirect resolution failed.')
 }
 
-export async function fetchTikTokOEmbed(url: string) {
+export async function fetchTikTokOEmbed(url: string, signal?: AbortSignal) {
   const endpoint = new URL('https://www.tiktok.com/oembed')
   endpoint.searchParams.set('url', normalizeTikTokInputUrl(url).toString())
 
@@ -105,6 +109,7 @@ export async function fetchTikTokOEmbed(url: string) {
       },
     },
     FETCH_TIMEOUT_MS,
+    signal,
   )
 
   if (!response.ok) return undefined
@@ -115,6 +120,7 @@ export async function probeTikTokMedia(input: {
   mediaUrl: string
   referer: string
   cookieHeader?: string
+  signal?: AbortSignal
 }): Promise<TikTokMediaProbe> {
   const mediaUrl = assertTrustedMedia(input.mediaUrl)
   const response = await fetchWithTimeout(
@@ -131,6 +137,7 @@ export async function probeTikTokMedia(input: {
       },
     },
     FETCH_TIMEOUT_MS,
+    input.signal,
   )
 
   const contentLength = parseContentLength(response.headers.get('content-length'))
@@ -170,6 +177,7 @@ export async function fetchTikTokAudioFile(input: {
   mediaUrl: string
   referer: string
   cookieHeader?: string
+  signal?: AbortSignal
 }) {
   const mediaUrl = assertTrustedMedia(input.mediaUrl)
   const response = await fetchWithTimeout(
@@ -185,6 +193,7 @@ export async function fetchTikTokAudioFile(input: {
       },
     },
     15_000,
+    input.signal,
   )
 
   if (!response.ok) {
@@ -340,17 +349,23 @@ function extensionForContentType(contentType: string) {
   return 'bin'
 }
 
-async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number) {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs: number,
+  signal?: AbortSignal,
+) {
+  signal?.throwIfAborted()
+  const deadline = AbortSignal.timeout(timeoutMs)
+  const combined = signal ? AbortSignal.any([signal, deadline]) : deadline
   try {
-    return await fetch(url, { ...init, signal: controller.signal })
+    // The signal remains active while the response body is read, not just until headers arrive.
+    return await fetch(url, { ...init, signal: combined })
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
+    if (signal?.aborted) throw error
+    if (deadline.aborted) {
       throw new TikTokFetchError('upstream-failed', 'TikTok upstream request timed out.')
     }
     throw error
-  } finally {
-    clearTimeout(timer)
   }
 }

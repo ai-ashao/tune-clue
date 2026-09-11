@@ -1,12 +1,10 @@
 export type RecognitionStatus = 'matched' | 'no-match'
-
 export type RecognitionLinks = {
   spotify?: string
   appleMusic?: string
   deezer?: string
   songLink?: string
 }
-
 export type RecognitionResult =
   | {
       status: 'matched'
@@ -19,9 +17,14 @@ export type RecognitionResult =
       links: RecognitionLinks
     }
   | { status: 'no-match' }
-
 export type RecognitionApiResponse =
-  | { ok: true; result: RecognitionResult; remainingCredits: number }
+  | {
+      ok: true
+      result: RecognitionResult
+      remainingCredits: number
+      attemptId?: string
+      replayed?: boolean
+    }
   | {
       ok: false
       code:
@@ -35,5 +38,12 @@ export type RecognitionApiResponse =
         | 'auth-required'
         | 'auth-unavailable'
         | 'insufficient-credits'
+        | 'request-conflict'
+        | 'in-progress'
+        | 'result-expired'
+        | 'result-unknown'
+        | 'recognition-unavailable'
       message: string
+      attemptId?: string
+      requestId?: string
     }

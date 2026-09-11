@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BuyCreditsRouteImport } from './routes/buy-credits'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -26,11 +27,19 @@ import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as TiktokSongFinderRouteImport } from './routes/tiktok-song-finder'
 import { Route as ToolReferenceRouteImport } from './routes/tool-reference'
 import { Route as ToolReferenceUploadRouteImport } from './routes/tool-reference-upload'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ApiHealthRouteImport } from './routes/api.health'
 import { Route as ApiRecognizeRouteImport } from './routes/api.recognize'
 import { Route as BillingReturnRouteImport } from './routes/billing.return'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
+import { Route as AdminOrdersIndexRouteImport } from './routes/admin.orders.index'
+import { Route as AdminOrdersOrderIdRouteImport } from './routes/admin.orders.$orderId'
+import { Route as AdminRecognitionsIndexRouteImport } from './routes/admin.recognitions.index'
+import { Route as AdminRecognitionsAttemptIdRouteImport } from './routes/admin.recognitions.$attemptId'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
+import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
+import { Route as ApiAdminSplatRouteImport } from './routes/api.admin.$'
 import { Route as ApiAuthGoogleRouteImport } from './routes/api.auth.google'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api.auth.logout'
 import { Route as ApiAuthSessionRouteImport } from './routes/api.auth.session'
@@ -40,6 +49,7 @@ import { Route as ApiBillingOrderRouteImport } from './routes/api.billing.order'
 import { Route as ApiBillingOrdersRouteImport } from './routes/api.billing.orders'
 import { Route as ApiBillingReconcileRouteImport } from './routes/api.billing.reconcile'
 import { Route as ApiBillingWebhookRouteImport } from './routes/api.billing.webhook'
+import { Route as ApiRecognitionStatusRouteImport } from './routes/api.recognition.status'
 import { Route as ApiRewardsShareRouteImport } from './routes/api.rewards.share'
 import { Route as ApiSandboxSessionRouteImport } from './routes/api.sandbox.session'
 import { Route as ApiTiktokPocRouteImport } from './routes/api.tiktok.poc'
@@ -59,6 +69,11 @@ const AboutRoute = AboutRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuyCreditsRoute = BuyCreditsRouteImport.update({
@@ -131,6 +146,11 @@ const ToolReferenceUploadRoute = ToolReferenceUploadRouteImport.update({
   path: '/tool-reference-upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
   path: '/api/health',
@@ -154,6 +174,42 @@ const GuidesIndexRoute = GuidesIndexRouteImport.update({
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/guides/$slug',
   path: '/guides/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminOrdersIndexRoute = AdminOrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOrdersOrderIdRoute = AdminOrdersOrderIdRouteImport.update({
+  id: '/orders/$orderId',
+  path: '/orders/$orderId',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRecognitionsIndexRoute = AdminRecognitionsIndexRouteImport.update({
+  id: '/recognitions/',
+  path: '/recognitions/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRecognitionsAttemptIdRoute =
+  AdminRecognitionsAttemptIdRouteImport.update({
+    id: '/recognitions/$attemptId',
+    path: '/recognitions/$attemptId',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiAdminSplatRoute = ApiAdminSplatRouteImport.update({
+  id: '/api/admin/$',
+  path: '/api/admin/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthGoogleRoute = ApiAuthGoogleRouteImport.update({
@@ -201,6 +257,11 @@ const ApiBillingWebhookRoute = ApiBillingWebhookRouteImport.update({
   path: '/api/billing/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRecognitionStatusRoute = ApiRecognitionStatusRouteImport.update({
+  id: '/api/recognition/status',
+  path: '/api/recognition/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiRewardsShareRoute = ApiRewardsShareRouteImport.update({
   id: '/api/rewards/share',
   path: '/api/rewards/share',
@@ -231,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
   '/buy-credits': typeof BuyCreditsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
@@ -249,7 +311,12 @@ export interface FileRoutesByFullPath {
   '/api/recognize': typeof ApiRecognizeRoute
   '/billing/return': typeof BillingReturnRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/admin/orders/$orderId': typeof AdminOrdersOrderIdRoute
+  '/admin/recognitions/$attemptId': typeof AdminRecognitionsAttemptIdRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/api/admin/$': typeof ApiAdminSplatRoute
   '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
@@ -259,10 +326,14 @@ export interface FileRoutesByFullPath {
   '/api/billing/orders': typeof ApiBillingOrdersRoute
   '/api/billing/reconcile': typeof ApiBillingReconcileRoute
   '/api/billing/webhook': typeof ApiBillingWebhookRoute
+  '/api/recognition/status': typeof ApiRecognitionStatusRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
   '/api/tiktok/poc': typeof ApiTiktokPocRoute
   '/api/tiktok/recognize': typeof ApiTiktokRecognizeRoute
+  '/admin/orders/': typeof AdminOrdersIndexRoute
+  '/admin/recognitions/': typeof AdminRecognitionsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
   '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRoutesByTo {
@@ -287,7 +358,12 @@ export interface FileRoutesByTo {
   '/api/recognize': typeof ApiRecognizeRoute
   '/billing/return': typeof BillingReturnRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/guides': typeof GuidesIndexRoute
+  '/admin/orders/$orderId': typeof AdminOrdersOrderIdRoute
+  '/admin/recognitions/$attemptId': typeof AdminRecognitionsAttemptIdRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/api/admin/$': typeof ApiAdminSplatRoute
   '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
@@ -297,10 +373,14 @@ export interface FileRoutesByTo {
   '/api/billing/orders': typeof ApiBillingOrdersRoute
   '/api/billing/reconcile': typeof ApiBillingReconcileRoute
   '/api/billing/webhook': typeof ApiBillingWebhookRoute
+  '/api/recognition/status': typeof ApiRecognitionStatusRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
   '/api/tiktok/poc': typeof ApiTiktokPocRoute
   '/api/tiktok/recognize': typeof ApiTiktokRecognizeRoute
+  '/admin/orders': typeof AdminOrdersIndexRoute
+  '/admin/recognitions': typeof AdminRecognitionsIndexRoute
+  '/admin/users': typeof AdminUsersIndexRoute
   '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRoutesById {
@@ -308,6 +388,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
   '/buy-credits': typeof BuyCreditsRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
@@ -326,7 +407,12 @@ export interface FileRoutesById {
   '/api/recognize': typeof ApiRecognizeRoute
   '/billing/return': typeof BillingReturnRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/admin/orders/$orderId': typeof AdminOrdersOrderIdRoute
+  '/admin/recognitions/$attemptId': typeof AdminRecognitionsAttemptIdRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/api/admin/$': typeof ApiAdminSplatRoute
   '/api/auth/google': typeof ApiAuthGoogleRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
@@ -336,10 +422,14 @@ export interface FileRoutesById {
   '/api/billing/orders': typeof ApiBillingOrdersRoute
   '/api/billing/reconcile': typeof ApiBillingReconcileRoute
   '/api/billing/webhook': typeof ApiBillingWebhookRoute
+  '/api/recognition/status': typeof ApiRecognitionStatusRoute
   '/api/rewards/share': typeof ApiRewardsShareRoute
   '/api/sandbox/session': typeof ApiSandboxSessionRoute
   '/api/tiktok/poc': typeof ApiTiktokPocRoute
   '/api/tiktok/recognize': typeof ApiTiktokRecognizeRoute
+  '/admin/orders/': typeof AdminOrdersIndexRoute
+  '/admin/recognitions/': typeof AdminRecognitionsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
   '/api/auth/google/callback': typeof ApiAuthGoogleCallbackRoute
 }
 export interface FileRouteTypes {
@@ -348,6 +438,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/admin'
     | '/buy-credits'
     | '/contact'
     | '/dashboard'
@@ -366,7 +457,12 @@ export interface FileRouteTypes {
     | '/api/recognize'
     | '/billing/return'
     | '/guides/$slug'
+    | '/admin/'
     | '/guides/'
+    | '/admin/orders/$orderId'
+    | '/admin/recognitions/$attemptId'
+    | '/admin/users/$userId'
+    | '/api/admin/$'
     | '/api/auth/google'
     | '/api/auth/logout'
     | '/api/auth/session'
@@ -376,10 +472,14 @@ export interface FileRouteTypes {
     | '/api/billing/orders'
     | '/api/billing/reconcile'
     | '/api/billing/webhook'
+    | '/api/recognition/status'
     | '/api/rewards/share'
     | '/api/sandbox/session'
     | '/api/tiktok/poc'
     | '/api/tiktok/recognize'
+    | '/admin/orders/'
+    | '/admin/recognitions/'
+    | '/admin/users/'
     | '/api/auth/google/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -404,7 +504,12 @@ export interface FileRouteTypes {
     | '/api/recognize'
     | '/billing/return'
     | '/guides/$slug'
+    | '/admin'
     | '/guides'
+    | '/admin/orders/$orderId'
+    | '/admin/recognitions/$attemptId'
+    | '/admin/users/$userId'
+    | '/api/admin/$'
     | '/api/auth/google'
     | '/api/auth/logout'
     | '/api/auth/session'
@@ -414,16 +519,21 @@ export interface FileRouteTypes {
     | '/api/billing/orders'
     | '/api/billing/reconcile'
     | '/api/billing/webhook'
+    | '/api/recognition/status'
     | '/api/rewards/share'
     | '/api/sandbox/session'
     | '/api/tiktok/poc'
     | '/api/tiktok/recognize'
+    | '/admin/orders'
+    | '/admin/recognitions'
+    | '/admin/users'
     | '/api/auth/google/callback'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/account'
+    | '/admin'
     | '/buy-credits'
     | '/contact'
     | '/dashboard'
@@ -442,7 +552,12 @@ export interface FileRouteTypes {
     | '/api/recognize'
     | '/billing/return'
     | '/guides/$slug'
+    | '/admin/'
     | '/guides/'
+    | '/admin/orders/$orderId'
+    | '/admin/recognitions/$attemptId'
+    | '/admin/users/$userId'
+    | '/api/admin/$'
     | '/api/auth/google'
     | '/api/auth/logout'
     | '/api/auth/session'
@@ -452,10 +567,14 @@ export interface FileRouteTypes {
     | '/api/billing/orders'
     | '/api/billing/reconcile'
     | '/api/billing/webhook'
+    | '/api/recognition/status'
     | '/api/rewards/share'
     | '/api/sandbox/session'
     | '/api/tiktok/poc'
     | '/api/tiktok/recognize'
+    | '/admin/orders/'
+    | '/admin/recognitions/'
+    | '/admin/users/'
     | '/api/auth/google/callback'
   fileRoutesById: FileRoutesById
 }
@@ -463,6 +582,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BuyCreditsRoute: typeof BuyCreditsRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
@@ -482,6 +602,7 @@ export interface RootRouteChildren {
   BillingReturnRoute: typeof BillingReturnRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  ApiAdminSplatRoute: typeof ApiAdminSplatRoute
   ApiAuthGoogleRoute: typeof ApiAuthGoogleRouteWithChildren
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
@@ -491,6 +612,7 @@ export interface RootRouteChildren {
   ApiBillingOrdersRoute: typeof ApiBillingOrdersRoute
   ApiBillingReconcileRoute: typeof ApiBillingReconcileRoute
   ApiBillingWebhookRoute: typeof ApiBillingWebhookRoute
+  ApiRecognitionStatusRoute: typeof ApiRecognitionStatusRoute
   ApiRewardsShareRoute: typeof ApiRewardsShareRoute
   ApiSandboxSessionRoute: typeof ApiSandboxSessionRoute
   ApiTiktokPocRoute: typeof ApiTiktokPocRoute
@@ -518,6 +640,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/buy-credits': {
@@ -618,6 +747,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolReferenceUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/health': {
       id: '/api/health'
       path: '/api/health'
@@ -651,6 +787,55 @@ declare module '@tanstack/react-router' {
       path: '/guides/$slug'
       fullPath: '/guides/$slug'
       preLoaderRoute: typeof GuidesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/orders/': {
+      id: '/admin/orders/'
+      path: '/orders'
+      fullPath: '/admin/orders/'
+      preLoaderRoute: typeof AdminOrdersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/orders/$orderId': {
+      id: '/admin/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/admin/orders/$orderId'
+      preLoaderRoute: typeof AdminOrdersOrderIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/recognitions/': {
+      id: '/admin/recognitions/'
+      path: '/recognitions'
+      fullPath: '/admin/recognitions/'
+      preLoaderRoute: typeof AdminRecognitionsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/recognitions/$attemptId': {
+      id: '/admin/recognitions/$attemptId'
+      path: '/recognitions/$attemptId'
+      fullPath: '/admin/recognitions/$attemptId'
+      preLoaderRoute: typeof AdminRecognitionsAttemptIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users/$userId': {
+      id: '/admin/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AdminUsersUserIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/admin/$': {
+      id: '/api/admin/$'
+      path: '/api/admin/$'
+      fullPath: '/api/admin/$'
+      preLoaderRoute: typeof ApiAdminSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/google': {
@@ -716,6 +901,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiBillingWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/recognition/status': {
+      id: '/api/recognition/status'
+      path: '/api/recognition/status'
+      fullPath: '/api/recognition/status'
+      preLoaderRoute: typeof ApiRecognitionStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/rewards/share': {
       id: '/api/rewards/share'
       path: '/api/rewards/share'
@@ -754,6 +946,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminOrdersOrderIdRoute: typeof AdminOrdersOrderIdRoute
+  AdminRecognitionsAttemptIdRoute: typeof AdminRecognitionsAttemptIdRoute
+  AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
+  AdminOrdersIndexRoute: typeof AdminOrdersIndexRoute
+  AdminRecognitionsIndexRoute: typeof AdminRecognitionsIndexRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminOrdersOrderIdRoute: AdminOrdersOrderIdRoute,
+  AdminRecognitionsAttemptIdRoute: AdminRecognitionsAttemptIdRoute,
+  AdminUsersUserIdRoute: AdminUsersUserIdRoute,
+  AdminOrdersIndexRoute: AdminOrdersIndexRoute,
+  AdminRecognitionsIndexRoute: AdminRecognitionsIndexRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface ApiAuthGoogleRouteChildren {
   ApiAuthGoogleCallbackRoute: typeof ApiAuthGoogleCallbackRoute
 }
@@ -770,6 +984,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
+  AdminRoute: AdminRouteWithChildren,
   BuyCreditsRoute: BuyCreditsRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
@@ -789,6 +1004,7 @@ const rootRouteChildren: RootRouteChildren = {
   BillingReturnRoute: BillingReturnRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  ApiAdminSplatRoute: ApiAdminSplatRoute,
   ApiAuthGoogleRoute: ApiAuthGoogleRouteWithChildren,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
@@ -798,6 +1014,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBillingOrdersRoute: ApiBillingOrdersRoute,
   ApiBillingReconcileRoute: ApiBillingReconcileRoute,
   ApiBillingWebhookRoute: ApiBillingWebhookRoute,
+  ApiRecognitionStatusRoute: ApiRecognitionStatusRoute,
   ApiRewardsShareRoute: ApiRewardsShareRoute,
   ApiSandboxSessionRoute: ApiSandboxSessionRoute,
   ApiTiktokPocRoute: ApiTiktokPocRoute,

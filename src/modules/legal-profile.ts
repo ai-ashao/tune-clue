@@ -25,6 +25,16 @@ export const legalProfile = defineLegalProfile({
   privacy: {
     processingActivities: [
       {
+        data: 'Recognition request identifiers, source type, execution status, normalized result cache with a 24-hour replay window, credit links, and administrator troubleshooting audit entries.',
+        purpose:
+          'deduplicate recognition requests, investigate service failures, reconcile orders, and safely return eligible failed recognition credits.',
+        legalBasis:
+          'providing the requested service and legitimate interests in account security, reliability, and correct credit accounting, where permitted.',
+        retention:
+          'Result replay is limited to 24 hours. Diagnostic data is retained until an operational cleanup is performed; the request, accounting, and audit identifiers needed for recovery are retained with the corresponding records. A replay expiry does not itself delete database records.',
+        recipients: [site.name, 'Cloudflare'],
+      },
+      {
         data: 'Account email and optional name, TuneClue order and pack identifiers, and payment, refund, and dispute status returned by Dodo Payments.',
         purpose:
           'create a hosted checkout and deliver purchased recognition credits to the correct account.',

@@ -1,4 +1,9 @@
-import { AudDConfigurationError, recognizeWithAudD } from '@/lib/recognition/audd.server'
+import { RecognitionFailure } from '@/lib/recognition/attempts'
+import {
+  AudDConfigurationError,
+  type AudDExecution,
+  recognizeWithAudD,
+} from '@/lib/recognition/audd.server'
 import {
   fetchTikTokAudioFile,
   fetchTikTokOEmbed,
@@ -25,10 +30,14 @@ export class TikTokResolveError extends Error {
   }
 }
 
-export async function runTikTokPoc(input: { url: string; action: TikTokPocAction }) {
+export async function runTikTokPoc(input: {
+  url: string
+  action: TikTokPocAction
+  execution?: AudDExecution
+}) {
   let page: TikTokPageFetch
   try {
-    page = await fetchTikTokPage(input.url)
+    page = await fetchTikTokPage(input.url, input.execution?.signal)
   } catch (error) {
     if (error instanceof TikTokUrlPolicyError) {
       throw new TikTokResolveError('invalid-url', error.message)
@@ -36,7 +45,9 @@ export async function runTikTokPoc(input: { url: string; action: TikTokPocAction
     throw error
   }
 
-  const oEmbed = (await fetchTikTokOEmbed(page.finalUrl)) as TikTokOEmbed | undefined
+  const oEmbed = (await fetchTikTokOEmbed(page.finalUrl, input.execution?.signal)) as
+    | TikTokOEmbed
+    | undefined
 
   let parsed: ParsedTikTokPage
   try {
@@ -72,6 +83,7 @@ export async function runTikTokPoc(input: { url: string; action: TikTokPocAction
       mediaUrl: parsed.internalAudioUrl,
       referer: parsed.canonicalUrl,
       cookieHeader: page.cookieHeader,
+      signal: input.execution?.signal,
     }).catch(() => undefined)
   }
 
@@ -80,6 +92,7 @@ export async function runTikTokPoc(input: { url: string; action: TikTokPocAction
       mediaUrl: parsed.internalVideoUrl,
       referer: parsed.canonicalUrl,
       cookieHeader: page.cookieHeader,
+      signal: input.execution?.signal,
     }).catch(() => undefined)
   }
 
@@ -115,10 +128,11 @@ export async function runTikTokPoc(input: { url: string; action: TikTokPocAction
     mediaUrl: parsed.internalAudioUrl,
     referer: parsed.canonicalUrl,
     cookieHeader: page.cookieHeader,
+    signal: input.execution?.signal,
   })
 
   try {
-    const recognition = await recognizeWithAudD(audio)
+    const recognition = await recognizeWithAudD(audio, input.execution)
     return {
       action: input.action,
       resolved: publicResolved,
@@ -132,7 +146,7 @@ export async function runTikTokPoc(input: { url: string; action: TikTokPocAction
       audioContentType: audio.type,
     }
   } catch (error) {
-    if (error instanceof AudDConfigurationError) throw error
+    if (error instanceof AudDConfigurationError || error instanceof RecognitionFailure) throw error
     throw new TikTokResolveError(
       'provider-error',
       error instanceof Error ? error.message : 'AudD could not recognize the TikTok audio.',

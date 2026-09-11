@@ -1,7 +1,13 @@
 import { checkoutAvailable, providerReady, safeReturnTo } from './config'
 import type { BillingProvider } from './dodo'
-import type { EventReference } from './fulfillment'
-import { eventState, fulfillPayment, recordEvent, recordReview } from './fulfillment'
+import type { BillingCommit, EventReference } from './fulfillment'
+import {
+  commitWithoutPayment,
+  eventState,
+  fulfillPayment,
+  recordEvent,
+  recordReview,
+} from './fulfillment'
 import { PaymentReviewError, validatePayment } from './payment'
 import type { VerifiedWebhook } from './signature'
 import {
@@ -70,6 +76,7 @@ async function applyCurrentPayment(
   event: EventReference,
   expectedOrder?: BillingOrder,
   requiredResource?: { kind: 'refund' | 'dispute'; id: string },
+  commit?: BillingCommit,
 ) {
   const { db, config, provider } = context
   const data = await provider.retrievePayment(paymentId)
@@ -103,10 +110,10 @@ async function applyCurrentPayment(
         )
       }
     }
-    await fulfillPayment(db, order, snapshot, event)
+    await fulfillPayment(db, order, snapshot, event, commit)
   } catch (error) {
     if (error instanceof PaymentReviewError) {
-      await recordReview(db, order, event, error.code)
+      await recordReview(db, order, event, error.code, commit)
       console.error('TuneClue payment needs review', { orderId: order.id, code: error.code })
       return
     }
@@ -144,7 +151,12 @@ export async function receiveWebhook(context: BillingContext, event: VerifiedWeb
   return { received: true }
 }
 
-export async function reconcileOrder(context: BillingContext, userId: string, orderId: string) {
+export async function reconcileOrderDetailed(
+  context: BillingContext,
+  userId: string,
+  orderId: string,
+  commit?: BillingCommit,
+) {
   const { db, config, provider } = context
   const order = await ownOrder(db, orderId, userId)
   if (!providerReady(config) || order.environment !== config.environment) {
@@ -154,22 +166,50 @@ export async function reconcileOrder(context: BillingContext, userId: string, or
       409,
     )
   }
-  if (!order.checkout_session_id || !(await reserveReconciliation(db, order)))
-    return publicOrder(order)
-  // Never accept a payment_id, amount, status or user identity from the return URL.
-  const session = await provider.retrieveCheckout(order.checkout_session_id)
-  if (session.id !== order.checkout_session_id)
-    throw new PaymentReviewError('payment-session-mismatch')
-  if (!session.payment_id) return publicOrder(await ownOrder(db, orderId, userId))
-  await applyCurrentPayment(
-    context,
-    identifier(session.payment_id),
-    {
-      id: `sync_${crypto.randomUUID()}`,
-      type: 'server.reconcile',
-      occurredAt: Date.now(),
-    },
-    order,
-  )
-  return publicOrder(await ownOrder(db, orderId, userId))
+  if (!order.checkout_session_id) {
+    await commitWithoutPayment(db, commit, 'checkout_missing')
+    return { outcome: 'checkout_missing', order: publicOrder(order) }
+  }
+  if (!(await reserveReconciliation(db, order))) {
+    await commitWithoutPayment(db, commit, 'throttled')
+    return { outcome: 'throttled', order: publicOrder(order) }
+  }
+  const event = {
+    id: `sync_${crypto.randomUUID()}`,
+    type: 'server.reconcile',
+    occurredAt: Date.now(),
+  }
+  try {
+    // The session ID is always read from the stored order, never from the client.
+    const session = await provider.retrieveCheckout(order.checkout_session_id)
+    if (session.id !== order.checkout_session_id)
+      throw new PaymentReviewError('payment-session-mismatch')
+    if (!session.payment_id) {
+      await commitWithoutPayment(db, commit, 'payment_not_ready')
+      return {
+        outcome: 'payment_not_ready',
+        order: publicOrder(await ownOrder(db, orderId, userId)),
+      }
+    }
+    await applyCurrentPayment(
+      context,
+      identifier(session.payment_id),
+      event,
+      order,
+      undefined,
+      commit,
+    )
+  } catch (error) {
+    if (!(error instanceof PaymentReviewError)) throw error
+    await recordReview(db, order, event, error.code, commit)
+  }
+  const current = await ownOrder(db, orderId, userId)
+  return {
+    outcome: current.status === 'review' ? 'review_required' : 'reconciled',
+    order: publicOrder(current),
+  }
+}
+
+export async function reconcileOrder(context: BillingContext, userId: string, orderId: string) {
+  return (await reconcileOrderDetailed(context, userId, orderId)).order
 }
